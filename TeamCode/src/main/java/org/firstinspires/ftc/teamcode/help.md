@@ -90,6 +90,15 @@ Pedro Pathing: https://pedropathing.com/
 Pedro Pathing Visualizer: https://visualizer.pedropathing.com/  
 Panels: https://panels.bylazar.com/docs/com.bylazar.docs/  
 Metal Maniacs DECODE repository: https://github.com/HeyItsMeBen/MetalManiacs_UnEarthed  
+Biobuzz Game Manual: https://ftc-resources.firstinspires.org/ftc/game/manual
+
+### Contributors
+Bernie - BernieCodez
+Ben - HeyItsMeBen
+Andrew - FriendOfTheFire
+Ahmed - ThePythonCode
+Gauransh - skullblazed
+Sparsh - tecktrailblazer
 
 ### Fixing Gradle (I know everyone's favorite)
 Delete all files that are highlighted in orange. 
