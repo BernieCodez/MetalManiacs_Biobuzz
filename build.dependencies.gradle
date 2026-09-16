@@ -1,11 +1,8 @@
 repositories {
     mavenCentral()
     google() // Needed for androidx
-    maven {
-        url 'https://repo.dairy.foundation/releases/' //Pedro Pathing
-        url = 'https://mymaven.bylazar.com/releases' //Panels
-
-    }
+    maven { url 'https://repo.dairy.foundation/releases/' } //Pedro Pathing
+    maven { url 'https://mymaven.bylazar.com/releases' } //Panels
 }
 
 dependencies {
