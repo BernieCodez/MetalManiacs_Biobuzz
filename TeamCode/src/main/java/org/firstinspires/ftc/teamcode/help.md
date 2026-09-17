@@ -76,13 +76,9 @@ clean as possible, so try not to just let an AI agent run
 free in the repo pls 🙏
 
 ### Hardware Mapping
-Configuration name: Regibot  
-Control hub:  
-Port 0: Front Left Wheel - frontLeft  
-Port 1: Front Right Wheel - frontRight  
-Port 2: Back Left Wheel - backLeft  
-Port 3: Back Right Wheel - backRight  
-...
+Change all configurations in Config.java as it will 
+update across the different files that use it. Make sure
+the port is denoted in that file as well.
 
 ### Essential Resources
 FTC Robot Controller documentation: https://ftc-docs.firstinspires.org/en/latest/  

@@ -18,14 +18,14 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Config;
 
 public class Constants {
-
     public static MecanumConfig drivetrainConfig = new MecanumConfig(c -> {
-        c.frontLeftName.set("frontLeft");
-        c.frontRightName.set("frontRight");
-        c.backLeftName.set("backLeft");
-        c.backRightName.set("backRight");
+        c.frontLeftName.set(Config.FRONT_LEFT_WHEEL);
+        c.frontRightName.set(Config.FRONT_RIGHT_WHEEL);
+        c.backLeftName.set(Config.BACK_LEFT_WHEEL);
+        c.backRightName.set(Config.BACK_RIGHT_WHEEL);
         c.frontLeftDirection.set(DcMotorSimple.Direction.REVERSE);
         c.frontRightDirection.set(DcMotorSimple.Direction.FORWARD);
         c.backLeftDirection.set(DcMotorSimple.Direction.FORWARD);
@@ -35,7 +35,7 @@ public class Constants {
     });
 
     public static PinpointConfig localizerConfig = new PinpointConfig(c -> {
-        c.name.set("pinpoint");
+        c.name.set(Config.PINPOINT);
         c.podType.set(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         c.xPodOffset.set(-1.9579110934039738);
         c.yPodOffset.set(-6.565860538032112);
