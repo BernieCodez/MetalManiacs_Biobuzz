@@ -77,6 +77,8 @@ public class PushbotDriveCode extends OpMode {
         leftClaw.setPosition(LEFT_HAND_CLOSED);
         rightClaw.setPosition(HAND_CLOSED);
 
+        driver.light(255,0,0);
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -90,8 +92,6 @@ public class PushbotDriveCode extends OpMode {
     public void loop() {
         driver.update();
 
-        driver.light(255,255,255,1);
-
         //adjust driver speed
         if (driver.wasJustPressed(RumbleGamepad.Button.DPAD_UP)) {
             driveSpeed = Math.min(1.0, driveSpeed + 0.1);
@@ -101,7 +101,7 @@ public class PushbotDriveCode extends OpMode {
         }
 
         //drive
-        double forward = driver.leftY();
+        double forward = -driver.leftY();
         double turn = driver.rightX();
 
         double leftPower = Range.clip(forward - turn, -1.0, 1.0) * driveSpeed;
@@ -112,9 +112,9 @@ public class PushbotDriveCode extends OpMode {
 
         //arm
         int currentArmPos = armMotor.getCurrentPosition();
-        if (driver.wasJustPressed(RumbleGamepad.Button.RIGHT_BUMPER)) {
+        if (driver.isDown(RumbleGamepad.Button.RIGHT_BUMPER)) {
             armTuning.targetPosition = Math.min(400,armTuning.targetPosition + 1); //clamp to max 400 pos
-        } else if (driver.wasJustPressed(RumbleGamepad.Button.LEFT_BUMPER)) {
+        } else if (driver.isDown(RumbleGamepad.Button.LEFT_BUMPER)) {
             armTuning.targetPosition = Math.max(0,armTuning.targetPosition -1); //clamp to min 0 pos
         }
 

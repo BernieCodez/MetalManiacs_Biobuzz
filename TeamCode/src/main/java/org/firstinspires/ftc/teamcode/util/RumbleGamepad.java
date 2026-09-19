@@ -246,8 +246,20 @@ public class RumbleGamepad {
         return gamepad.touchpad;
     }
 
+    public boolean rightBumper() {return gamepad.right_bumper;}
+
+    public boolean leftBumper() {return gamepad.left_bumper;}
+
     //leds & rumble :)
-    public void light(int r, int g, int b, int ms) { //use 0-255 for rgb
+    public void light(int r, int g, int b) { //use 0-255 for rgb
+        gamepad.setLedColor(
+                Math.min(1,Math.max(r/255.0,0)),//has to divide because it wants 0-1 inputs...
+                Math.min(1,Math.max(g/255.0,0)),
+                Math.min(1,Math.max(b/255.0,0)),
+                Integer.MAX_VALUE); //light effect lasts "forever"
+    }
+
+    public void light(int r, int g, int b, int ms) { //you can optionally define how long you want it to be
         gamepad.setLedColor(Math.min(1,Math.max(r/255.0,0)), Math.min(1,Math.max(g/255.0,0)), Math.min(1,Math.max(b/255.0,0)), ms);//has to divide because it wants 0-1 inputs...
     }
 
