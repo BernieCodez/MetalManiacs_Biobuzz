@@ -2,19 +2,16 @@ package org.firstinspires.ftc.teamcode.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Config;
 
-@TeleOp(name = "Run Motor", group = "A - Test")
-public class RunMotor extends LinearOpMode {
+@TeleOp(name = "Run Servo", group = "Z - Test")
+public class RunServo extends LinearOpMode {
 
     private int selected = 0;
-
-    private double speed = 1;
-    private boolean previousUp;
-    private boolean previousDown;
-    DcMotor motor;
+    private double position;
+    private Servo servo;
 
     @Override
     public void runOpMode() {
@@ -63,22 +60,35 @@ public class RunMotor extends LinearOpMode {
                 return;
             }
         }
-        motor = hardwareMap.get(DcMotor.class, Config.MOTORS[selected]);
+
+        servo = hardwareMap.get(
+                Servo.class,
+                Config.SERVOS[selected]
+        );
+
+        position = servo.getPosition();
+
         waitForStart();
 
-        if (isStopRequested()) return;
-
-        //Run the selected option
-        while (opModeIsActive()) {
-            speed = Math.min(1,Math.max(-1,speed + gamepad1.left_stick_y*.2)); //Speed can not go over 1 and go below -1
-            motor.setPower(speed);
-
-            telemetry.addLine("Use left stick to control motor speed");
-            telemetry.addData("Motor", Config.MOTORS[selected]);
-            telemetry.addData("Power", speed);
-            telemetry.update();
+        if (isStopRequested()) {
+            return;
         }
 
-    }
+        while (opModeIsActive()) {
 
+            // Stick up = increase position
+            // Stick down = decrease position
+            position -= gamepad1.left_stick_y * 0.01;
+
+            // Keep position between 0 and 1
+            position = Math.max(0, Math.min(1, position));
+
+            servo.setPosition(position);
+
+            telemetry.addLine("Use left stick to control servo position");
+            telemetry.addData("Servo", Config.SERVOS[selected]);
+            telemetry.addData("Position", position);
+            telemetry.update();
+        }
+    }
 }

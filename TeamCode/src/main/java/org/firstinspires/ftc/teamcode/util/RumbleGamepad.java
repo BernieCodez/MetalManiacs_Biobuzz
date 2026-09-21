@@ -31,7 +31,9 @@ public class RumbleGamepad {
         TOUCHPAD,
 
         RIGHT_BUMPER,
-        LEFT_BUMPER
+        LEFT_BUMPER,
+        LEFT_STICK,
+        RIGHT_STICK
     }
 
     //analog inputs (range of 0-1)
@@ -162,6 +164,12 @@ public class RumbleGamepad {
             case LEFT_BUMPER:
                 return gamepad.left_bumper;
 
+            case RIGHT_STICK:
+                return gamepad.right_stick_button;
+
+            case LEFT_STICK:
+                return gamepad.left_stick_button;
+
             default:
                 return false;
         }
@@ -249,6 +257,10 @@ public class RumbleGamepad {
     public boolean rightBumper() {return gamepad.right_bumper;}
 
     public boolean leftBumper() {return gamepad.left_bumper;}
+
+    public boolean leftStick() {return gamepad.left_stick_button;}
+
+    public boolean rightStick() {return gamepad.right_stick_button;}
 
     //leds & rumble :)
     public void light(int r, int g, int b) { //use 0-255 for rgb

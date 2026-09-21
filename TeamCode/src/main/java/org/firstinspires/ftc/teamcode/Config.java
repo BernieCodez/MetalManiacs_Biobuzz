@@ -19,5 +19,13 @@ public class Config {
             BACK_RIGHT_WHEEL
     };
 
+    public static final String HOOD = "hood";
+    public static final String GATE = "gate";
+
+    public static final String[] SERVOS = {
+            HOOD,
+            GATE
+    };
+
     public static final String PINPOINT = "pinpoint";
 }

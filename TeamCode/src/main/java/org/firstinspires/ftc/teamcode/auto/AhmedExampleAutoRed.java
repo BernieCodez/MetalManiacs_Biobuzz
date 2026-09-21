@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.pedropathing.paths.interpolator.Interpolator;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.util.OpModeStorage;
 
 @Autonomous(name = "AhmedExampleAutoRed", group = "Autonomous")
 public class AhmedExampleAutoRed extends LinearOpMode {
@@ -59,23 +60,31 @@ public class AhmedExampleAutoRed extends LinearOpMode {
         follower.setPose(start);
         follower.update();
 
-        waitForStart();
-        schedule(autoRoutine());
+        try{
+            waitForStart();
+            schedule(autoRoutine());
 
-        while (opModeIsActive()) {
-            follower.update();
-            Scheduler.execute();
+            while (opModeIsActive()) {
+                follower.update();
+                Scheduler.execute();
 
-            telemetry.addData("x", follower.pose().x());
-            telemetry.addData("y", follower.pose().y());
-            telemetry.addData("heading", follower.pose().heading());
+                telemetry.addData("x", follower.pose().x());
+                telemetry.addData("y", follower.pose().y());
+                telemetry.addData("heading", follower.pose().heading());
 
-            if (follower.currentPath() != null) {
-                telemetry.addData("Current path distance remaining", follower.distanceToEndpoint());
-                telemetry.addData("Path number", follower.pathIndex());
+                if (follower.currentPath() != null) {
+                    telemetry.addData("Current path distance remaining", follower.distanceToEndpoint());
+                    telemetry.addData("Path number", follower.pathIndex());
+                }
+
+                telemetry.update();
             }
 
-            telemetry.update();
+        } finally {
+            //robots stopping position carries over to teleop!
+            if (follower != null) {
+                OpModeStorage.autonomousEndPose = follower.pose();
+            }
         }
     }
 

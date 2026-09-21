@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.util.OpModeStorage;
 
 @Autonomous(name = "Pedro Pathing Autonomous", group = "Autonomous")
 public class ExampleAuto extends OpMode {
@@ -71,5 +72,12 @@ public class ExampleAuto extends OpMode {
         telemetry.addData("Heading", Math.toDegrees(follower.pose().heading()));
         telemetry.addData("Follower Mode", follower.mode());
         telemetry.update();
+    }
+
+    // in your autonomous
+
+    @Override
+    public void stop() {
+        OpModeStorage.autonomousEndPose = follower.pose(); //saves your position in that file
     }
 }
