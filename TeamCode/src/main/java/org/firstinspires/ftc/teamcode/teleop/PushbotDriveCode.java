@@ -1,4 +1,5 @@
-package org.firstinspires.ftc.teamcode.teleop; /**
+package org.firstinspires.ftc.teamcode.teleop;
+/**
  *  <DRIVER MANUAL>
  *
  *  --DRIVER CONTROLS--
@@ -46,8 +47,8 @@ public class PushbotDriveCode extends OpMode {
     DcMotor armMotor;
     Servo leftClaw;
     Servo rightClaw;
-    CRServo tail;
-    public boolean tailval;
+    Servo tail;
+    boolean isTailWagging = false;
     double driveSpeed = 1.0;
 
     ElapsedTime tailTimer = new ElapsedTime();
@@ -58,6 +59,8 @@ public class PushbotDriveCode extends OpMode {
 
     public static final double LEFT_HAND_OPEN = 0.2;
     public static final double LEFT_HAND_CLOSED = 0;
+    public static final double TAIL_LEFT = 0.3;
+    public static final double TAIL_RIGHT = 0.7;
 
     @Override
     public void init() {
@@ -69,7 +72,7 @@ public class PushbotDriveCode extends OpMode {
         armMotor = hardwareMap.get(DcMotor.class, "armMotor");
         leftClaw = hardwareMap.get(Servo.class, "leftClaw");
         rightClaw = hardwareMap.get(Servo.class, "rightClaw");
-        tail = hardwareMap.get(CRServo.class,"tail");
+        tail = hardwareMap.get(Servo.class, "tail");
         armTuning = new PushbotArm(hardwareMap);
 
         leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -127,25 +130,23 @@ public class PushbotDriveCode extends OpMode {
             rightClaw.setPosition(HAND_CLOSED);
         }
 
-        if (driver.wasJustPressed(RumbleGamepad.Button.Y)) {
-            tailval = true;
-            tailTimer.reset();
-            tailOn = true;
-            tail.setPower(1);
-        }
-
-        if (driver.wasJustReleased(RumbleGamepad.Button.Y)) {
-            tailval = false;
-            tail.setPower(0);
-        }
-
-        if (tailval && tailTimer.milliseconds() >= 300) {
-            tailOn = !tailOn;
-            tail.setPower(tailOn ? 1 : 0);
-            tailTimer.reset();
-        }
-
         armTuning.update();
+
+        //Tail
+        if (driver.wasJustPressed(RumbleGamepad.Button.Y)) {
+            isTailWagging = !isTailWagging;
+            tailTimer.reset();
+        }
+
+        if (isTailWagging) {
+            if (tailTimer.milliseconds() >= 300) {
+                tailOn = !tailOn;
+                tail.setPosition(tailOn ? TAIL_LEFT : TAIL_RIGHT);
+                tailTimer.reset();
+            }
+        } else {
+            tail.setPosition(0.5);
+        }
 
         //our favorite telemetry :D
         telemetry.addData("Drive Speed", driveSpeed);
