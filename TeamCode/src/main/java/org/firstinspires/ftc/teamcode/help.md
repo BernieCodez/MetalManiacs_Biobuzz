@@ -48,9 +48,9 @@ Our versioning system goes like this: v_._._
 The first _ is the competition number we are preparing 
 for.  
 The second _ is the major update. This includes creating
-new files or significant changes existing files.  
+new files or significant changes to existing files.  
 The third _ is the minor/bug fix update. This includes
-editing a few lines of in certain files or readjustment
+editing a few lines in certain files or readjustment
 of variable values.
 
 ### AI Policy

@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Config;
 
+//v uncommenting this will hide it on the driver station
+//@Disabled
 @TeleOp(name = "Run Servo", group = "Z - Test")
 public class RunServo extends LinearOpMode {
 

@@ -34,7 +34,7 @@ import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
 import java.util.List;
 
-@TeleOp(name = "Pushbot Code", group = "B - Outreach")
+@TeleOp(name = "Pushbot Code", group = "C - Outreach")
 public class PushbotDriveCode extends OpMode {
 
     public PushbotArm armTuning;
