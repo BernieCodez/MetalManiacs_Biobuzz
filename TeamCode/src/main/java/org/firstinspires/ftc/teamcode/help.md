@@ -33,7 +33,8 @@ Constants - Use UPPER_SNAKE_CASE. Ex "MAX_SPEED"
 ### Project Architecture
 teleop - code that is controlled by a human  
 auto - code that is NOT controlled by a human  
-pedro - pedro pathing related stuff (edit constants when updating new tuned values)  
+pedro - pedro pathing related stuff (edit constants when updating new 
+tuned values)  
 
 ### Version History
 Before pushing changes, make sure to name your push the 
@@ -98,7 +99,21 @@ Sparsh - tecktrailblazer
 
 ### Fixing Gradle (I know everyone's favorite)
 Delete all files that are highlighted in orange. 
-HIGHLIGHTED! If the text is orange do not delete it (unless it is also being highlighted orange ofc)!
+HIGHLIGHTED! If the text is orange do not delete it (unless it is also 
+being highlighted orange ofc)!
+
+### Fixing Pedro Pathing
+Check the Pedro Pathing version on the installation page: 
+https://pedropathing.com/docs/pathing/installation  
+Our current repo is version 3.0.1 so if the installation version is 
+dfferent then LET ME (BERNIE) KNOW and he will gracefully resolve the issue.
+Or if you are smart enough to figure out the gradle you can also just 
+change the installation version, build, and resync. (If those words
+meant gibberish to you I'd advise you to let me do the complex stuff)
+
+### Robot Working X Minutes Ago Then Not Working
+Probably a hardware issue. Not our problem 😎 (Please contact the 
+appropriate authorities in regards to the issue... aka Keshav)
 
 ### Miscellaneous
 If you have any other questions dm me (Bernie) and good luck :D
