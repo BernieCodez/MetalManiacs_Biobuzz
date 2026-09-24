@@ -9,7 +9,7 @@ import com.pedropathing.paths.Path;
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
-import static com.pedropathing.ivy.commands.Commands.*;
+import static com.pedropathing.ivy.commands.Commands.waitMs;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -26,41 +26,40 @@ public class GauranshAuto extends LinearOpMode {
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     private final Pose start = poseFactory.of(56.6345, 10.5381, 90);
-    private final Pose path1 = poseFactory.of(59.3842, 13.157, 0);
-    private final Pose point2 = poseFactory.of(59.3842, 13.157, 90);
-    private final Pose point2Segment1Heading = poseFactory.of(59.3842, 13.157, 90);
-    private final Pose point3 = poseFactory.of(11.0448, 12.1659, -90);
-    private final Pose point3Control1 = poseFactory.of(33.4447, 37.2967, 0);
-    private final Pose point3Segment1Start = poseFactory.of(11.0448, 12.1659, 90);
-    private final Pose point3Segment1End = poseFactory.of(11.0448, 12.1659, -90);
-    private final Pose point4 = poseFactory.of(60.2549, 124.0082, -90);
-    private final Pose point5 = poseFactory.of(47.2765, 131.3797, -270);
-    private final Pose point5Control1 = poseFactory.of(49.7511, 113.0284, 0);
-    private final Pose point5Segment1Start = poseFactory.of(47.2765, 131.3797, -90);
-    private final Pose point5Segment1End = poseFactory.of(47.2765, 131.3797, 90);
-    private final Pose point6 = poseFactory.of(59.6129, 124.5321, 270);
-    private final Pose point6Control1 = poseFactory.of(49.6981, 112.6532, 0);
-    private final Pose point6Segment1Start = poseFactory.of(59.6129, 124.5321, 90);
-    private final Pose point6Segment1End = poseFactory.of(59.6129, 124.5321, -90);
-    private final Pose point7 = poseFactory.of(57.1771, 12.3139, 0);
-    private final Pose point7Control1 = poseFactory.of(12.6465, 59.3901, 0);
-    private final Pose point7Segment1Start = poseFactory.of(57.1771, 12.3139, -90);
-    private final Pose point7Segment1End = poseFactory.of(57.1771, 12.3139, 0);
+    private final Pose shoot = poseFactory.of(56.8632, 12.9903, 90);
+    private final Pose garden = poseFactory.of(11.0448, 12.1659, -90);
+    private final Pose gardenControl1 = poseFactory.of(32.8102, 38.5658, 0);
+    private final Pose gardenSegment1Start = poseFactory.of(11.0448, 12.1659, 90);
+    private final Pose gardenSegment1End = poseFactory.of(11.0448, 12.1659, -90);
+    private final Pose shootAfterTip = poseFactory.of(58.7743, 118.932, -90);
+    private final Pose shootAfterTipControl1 = poseFactory.of(8.5815, 77.4619, 0);
+    private final Pose pollenIntake = poseFactory.of(47.2765, 127.784, -270);
+    private final Pose pollenIntakeControl1 = poseFactory.of(49.7511, 113.0284, 0);
+    private final Pose pollenIntakeSegment1Start = poseFactory.of(47.2765, 127.784, -90);
+    private final Pose pollenIntakeSegment1End = poseFactory.of(47.2765, 127.784, 90);
+    private final Pose shootAfterFlower = poseFactory.of(59.6129, 119.0329, 270);
+    private final Pose shootAfterFlowerControl1 = poseFactory.of(49.6981, 112.6532, 0);
+    private final Pose shootAfterFlowerSegment1Start = poseFactory.of(59.6129, 119.0329, 90);
+    private final Pose shootAfterFlowerSegment1End = poseFactory.of(59.6129, 119.0329, -90);
+    private final Pose backToStart = poseFactory.of(57.1771, 12.3139, 0);
+    private final Pose backToStartControl1 = poseFactory.of(0.3789, 82.0217, 0);
+    private final Pose backToStartSegment1Start = poseFactory.of(57.1771, 12.3139, -90);
+    private final Pose backToStartSegment1End = poseFactory.of(57.1771, 12.3139, 0);
 
     // Autonomous routine
     public Command autoRoutine() {
         return sequential(
-                follow(follower, path1()),
-                follow(follower, path2()),
+                follow(follower, shoot()),
                 waitMs(2000),
-                follow(follower, path3()),
-                follow(follower, path4()),
-                waitMs(2000),
-                follow(follower, path5()),
+                follow(follower, garden()),
                 waitMs(3500),
-                follow(follower, path6()),
+                follow(follower, shootaftertip()),
                 waitMs(2000),
-                follow(follower, path7())
+                follow(follower, pollenintake()),
+                waitMs(2500),
+                follow(follower, shootafterflower()),
+                waitMs(2000),
+                follow(follower, backtostart())
         );
     }
 
@@ -91,31 +90,27 @@ public class GauranshAuto extends LinearOpMode {
         }
     }
 
-    public Path path1() {
-        return line(start, path1).constant(path1);
+    public Path shoot() {
+        return line(start, shoot).constant(shoot);
     }
 
-    public Path path2() {
-        return line(path1, point2).heading(Interpolator.piecewise().until(1, Interpolator.constant(point2Segment1Heading)));
+    public Path garden() {
+        return curve(shoot, gardenControl1, garden).heading(Interpolator.piecewise().until(1, Interpolator.linear(gardenSegment1Start, gardenSegment1End).reverse()));
     }
 
-    public Path path3() {
-        return curve(point2, point3Control1, point3).heading(Interpolator.piecewise().until(1, Interpolator.linear(point3Segment1Start, point3Segment1End).reverse()));
+    public Path shootaftertip() {
+        return curve(garden, shootAfterTipControl1, shootAfterTip).linear(garden, shootAfterTip);
     }
 
-    public Path path4() {
-        return line(point3, point4).linear(point3, point4);
+    public Path pollenintake() {
+        return curve(shootAfterTip, pollenIntakeControl1, pollenIntake).heading(Interpolator.piecewise().until(1, Interpolator.linear(pollenIntakeSegment1Start, pollenIntakeSegment1End)));
     }
 
-    public Path path5() {
-        return curve(point4, point5Control1, point5).heading(Interpolator.piecewise().until(1, Interpolator.linear(point5Segment1Start, point5Segment1End)));
+    public Path shootafterflower() {
+        return curve(pollenIntake, shootAfterFlowerControl1, shootAfterFlower).heading(Interpolator.piecewise().until(1, Interpolator.linear(shootAfterFlowerSegment1Start, shootAfterFlowerSegment1End)));
     }
 
-    public Path path6() {
-        return curve(point5, point6Control1, point6).heading(Interpolator.piecewise().until(1, Interpolator.linear(point6Segment1Start, point6Segment1End)));
-    }
-
-    public Path path7() {
-        return curve(point6, point7Control1, point7).heading(Interpolator.piecewise().until(1, Interpolator.linear(point7Segment1Start, point7Segment1End)));
+    public Path backtostart() {
+        return curve(shootAfterFlower, backToStartControl1, backToStart).heading(Interpolator.piecewise().until(1, Interpolator.linear(backToStartSegment1Start, backToStartSegment1End)));
     }
 }
