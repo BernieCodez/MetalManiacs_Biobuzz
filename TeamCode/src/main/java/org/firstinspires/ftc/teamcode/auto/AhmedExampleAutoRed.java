@@ -27,29 +27,39 @@ public class AhmedExampleAutoRed extends LinearOpMode {
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(57.5899, 8.636, 90);
-    private final Pose pickuppollen = poseFactory.of(8.9764, 8.5562, -95.9061);
-    private final Pose pickuppollenControl1 = poseFactory.of(12.0404, 40.5483, 0);
-    private final Pose shoot = poseFactory.of(57.1382, 8.8618, 88.9526);
+    private final Pose start = poseFactory.of(56.711, 3.6556, 90);
+    private final Pose shoot = poseFactory.of(56.8452, 10.6196, 88.5424);
     private final Pose shootSegment1Target = poseFactory.of(58, 56, 0);
-    private final Pose pickupmorepollen = poseFactory.of(8.7444, 8.5059, 270);
-    private final Pose pickupmorepollenControl1 = poseFactory.of(33.6303, 18.5011, 0);
-    private final Pose shoot_2 = poseFactory.of(57.1236, 8.7551, 89.0007);
-    private final Pose shoot_2Segment1Target = poseFactory.of(58, 59, 0);
-    private final Pose shoot_3 = poseFactory.of(57.2213, 126.3876, -88.9476);
-    private final Pose shoot_3Control1 = poseFactory.of(5.4551, 68.009, 0);
-    private final Pose shoot_3Segment1Target = poseFactory.of(58, 84, 0);
-    private final Pose park = poseFactory.of(7.2989, 112.6315, -164.5944);
+    private final Pose pickuppollen = poseFactory.of(9.4337, 9.728, -109.4413);
+    private final Pose pickuppollenControl1 = poseFactory.of(5.3024, 48.7512, 0);
+    private final Pose pickuppollenSegment1Target = poseFactory.of(6, 0, 0);
+    private final Pose shoot_2 = poseFactory.of(57.2213, 126.3876, -88.9476);
+    private final Pose shoot_2Control1 = poseFactory.of(5.4551, 68.009, 0);
+    private final Pose shoot_2Segment1Target = poseFactory.of(58, 84, 0);
+    private final Pose pickupflowerpollen = poseFactory.of(47.5932, 129.6679, 93.2861);
+    private final Pose pickupflowerpollenSegment1Target = poseFactory.of(47, 140, 0);
+    private final Pose shoot_3 = poseFactory.of(57.4936, 126.3154, -90.6845);
+    private final Pose shoot_3Segment1Target = poseFactory.of(57, 85, 0);
+    private final Pose park = poseFactory.of(12.9969, 115.7836, -166.684);
+    private final Pose returntestingonly = poseFactory.of(56.9037, 3.3996, 89.9025);
+    private final Pose returntestingonlySegment1Target = poseFactory.of(57, 60, 0);
 
     // Autonomous routine
     public Command autoRoutine() {
         return sequential(
-                follow(follower, pickuppollen()),
                 follow(follower, shoot()),
-                follow(follower, pickupmorepollen()),
+                waitMs(1000),
+                follow(follower, pickuppollen()),
+                waitMs(1500),
                 follow(follower, shoot_2()),
+                waitMs(1000),
+                follow(follower, pickupflowerpollen()),
+                waitMs(1500),
                 follow(follower, shoot_3()),
-                follow(follower, park())
+                waitMs(1000),
+                follow(follower, park()),
+                waitMs(10000),
+                follow(follower, returntestingonly())
         );
     }
 
@@ -60,7 +70,7 @@ public class AhmedExampleAutoRed extends LinearOpMode {
         follower.setPose(start);
         follower.update();
 
-        try{
+        try {
             waitForStart();
             schedule(autoRoutine());
 
@@ -88,27 +98,31 @@ public class AhmedExampleAutoRed extends LinearOpMode {
         }
     }
 
-    public Path pickuppollen() {
-        return curve(start, pickuppollenControl1, pickuppollen).tangent();
-    }
-
     public Path shoot() {
-        return line(pickuppollen, shoot).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootSegment1Target)));
+        return line(start, shoot).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootSegment1Target)));
     }
 
-    public Path pickupmorepollen() {
-        return curve(shoot, pickupmorepollenControl1, pickupmorepollen).constant(pickupmorepollen);
+    public Path pickuppollen() {
+        return curve(shoot, pickuppollenControl1, pickuppollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickuppollenSegment1Target)));
     }
 
     public Path shoot_2() {
-        return line(pickupmorepollen, shoot_2).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shoot_2Segment1Target)));
+        return curve(pickuppollen, shoot_2Control1, shoot_2).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shoot_2Segment1Target)));
+    }
+
+    public Path pickupflowerpollen() {
+        return line(shoot_2, pickupflowerpollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickupflowerpollenSegment1Target)));
     }
 
     public Path shoot_3() {
-        return curve(shoot_2, shoot_3Control1, shoot_3).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shoot_3Segment1Target)));
+        return line(pickupflowerpollen, shoot_3).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shoot_3Segment1Target)));
     }
 
     public Path park() {
         return line(shoot_3, park).tangent();
+    }
+
+    public Path returntestingonly() {
+        return line(park, returntestingonly).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(returntestingonlySegment1Target)));
     }
 }
