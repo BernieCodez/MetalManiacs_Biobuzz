@@ -10,10 +10,6 @@ public class Turret {
 
     private final DcMotorEx turret;
 
-    //encoder positions
-    private static final int MIN_POSITION = 0;
-    private static final int MAX_POSITION = 0; //tbd
-
     public Turret(HardwareMap hardwareMap) {
 
         turret = hardwareMap.get(DcMotorEx.class, Config.TURRET);
@@ -39,10 +35,22 @@ public class Turret {
         turret.setPower(0);
     }
 
+    public void update(double targetAngle){
+        // Convert angle → encoder ticks
+        int targetPosition = angleToTicks(targetAngle);
+
+        // Command motor
+        setPosition(targetPosition);
+    }
+
+    public int angleToTicks(double angle){
+        return (int) Math.round(Config.TURRET_CENTER_TICKS + angle * Config.TURRET_TICKS_PER_DEGREE);
+    }
+
     //uses encoder position!
     public void setPosition(int position) {
 
-        position = Math.max(MIN_POSITION, Math.min(MAX_POSITION, position));//software limits :D
+        position = Math.max(Config.MIN_TURRET_POSITION, Math.min(Config.MAX_TURRET_POSITION, position));//software limits :D
 
         turret.setTargetPosition(position);
         turret.setPower(1.0);
@@ -83,5 +91,9 @@ public class Turret {
         turret.setPower(0);
         turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+    }
+
+    public double getHeading() {
+        return (turret.getCurrentPosition() - Config.TURRET_CENTER_TICKS) / Config.TURRET_TICKS_PER_DEGREE;
     }
 }

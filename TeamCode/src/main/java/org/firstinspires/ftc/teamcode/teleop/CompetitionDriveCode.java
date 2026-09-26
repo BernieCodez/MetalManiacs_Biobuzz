@@ -18,6 +18,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.pedropathing.drivetrain.DrivePowers;
 import com.pedropathing.follower.ManualDrive;
 
+import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
+import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.util.OpModeStorage;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
@@ -30,13 +32,18 @@ public class CompetitionDriveCode extends OpMode {
     private Follower follower;
     RumbleGamepad driver;
     public String teamColor = "red";
+    public boolean shouldAutoAim = true;
 
     public boolean fieldCentric = false; //false - robot centric | true - field centric
+
+    private AutoAimController autoAim;
+    private OuttakeController outtake;
 
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
         driver = new RumbleGamepad(gamepad1);
+        autoAim = new AutoAimController(hardwareMap);
     }
 
     @Override
@@ -68,25 +75,28 @@ public class CompetitionDriveCode extends OpMode {
             powers = ManualDrive.fieldCentric(
                     driver.leftY(),
                     driver.leftX(),
-                    driver.rightX(),
+                    -driver.rightX(),
                     follower.pose().heading()
             );
         }else {
             powers = new DrivePowers(
                     driver.leftY(),
                     driver.leftX(),
-                    driver.rightX()
+                    -driver.rightX()
             );
         }
         ManualDrive.driveOrHold(follower, powers);
 
         // relocalise button
-        if (driver.wasJustPressed(RumbleGamepad.Button.START)) {
+        if (driver.wasJustPressed(RumbleGamepad.Button.OPTION)) {
             Pose cornerPose = new Pose(10.5, 10.5, Math.toRadians(90));
             follower.setPose(cornerPose); // overrides our pose with that ^
         }
 
         follower.update();
+
+        autoAim.update(shouldAutoAim, teamColor, follower.pose(), driver.rightX());//autoaim must update before outtake because it fetches limelight info!
+        outtake.update();
 
         //TELEMETRY
         Pose robot = follower.pose(); // gets robot pose
