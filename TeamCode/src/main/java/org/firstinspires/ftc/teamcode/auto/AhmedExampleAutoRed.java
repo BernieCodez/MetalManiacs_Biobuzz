@@ -4,6 +4,7 @@ import static com.pedropathing.api.Paths.*;
 
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.ivy.commands.Commands;
 import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.ivy.Command;
@@ -11,7 +12,7 @@ import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.*;
 //©JavaDude
-import static com.pedropathing.ivy.groups.Groups.sequential;
+import static com.pedropathing.ivy.groups.Groups.*;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -20,10 +21,21 @@ import com.pedropathing.paths.interpolator.Interpolator;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.util.OpModeStorage;
 
+import org.firstinspires.ftc.teamcode.controllers.IntakeTransferController;
+import org.firstinspires.ftc.teamcode.Config;
+import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
+import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
+
 @Autonomous(name = "AhmedExampleAutoRed", group = "Autonomous")
 public class AhmedExampleAutoRed extends LinearOpMode {
 
     private Follower follower;
+
+    private IntakeTransferController intakeTransferController;
+    private OuttakeController outtakeController;
+    private AutoAimController autoAimController;
+    private Config.Hive currentTargetHive = null;
+    private boolean shouldAutoAim = false;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
@@ -47,19 +59,61 @@ public class AhmedExampleAutoRed extends LinearOpMode {
     // Autonomous routine
     public Command autoRoutine() {
         return sequential(
-                follow(follower, shoot()),
+                Commands.instant(() -> {
+                    intakeTransferController.runIntake();
+                    intakeTransferController.runGateOpen();
+                }),
+                parallel(
+                        Commands.instant(() -> {
+                            currentTargetHive = Config.Hive.RED_TOP;
+                            shouldAutoAim = true;
+                        }),
+                        follow(follower, shoot())
+                ),
                 waitMs(1000),
-                follow(follower, pickuppollen()),
+                parallel(
+                        Commands.instant(() -> {
+                            currentTargetHive = null;
+                            shouldAutoAim = false;
+                        }),
+                        follow(follower, pickuppollen())
+                ),
                 waitMs(1500),
-                follow(follower, shoot_2()),
+                parallel(
+                        Commands.instant(() -> {
+                            currentTargetHive = Config.Hive.RED_TOP;
+                            shouldAutoAim = true;
+                        }),
+                        follow(follower, shoot_2())
+                ),
                 waitMs(1000),
-                follow(follower, pickupflowerpollen()),
+                parallel(
+                        Commands.instant(() -> {
+                            currentTargetHive = null;
+                            shouldAutoAim = false;
+                        }),
+                        follow(follower, pickupflowerpollen())
+                ),
                 waitMs(1500),
-                follow(follower, shoot_3()),
+                parallel(
+                        Commands.instant(() -> {
+                            currentTargetHive = Config.Hive.RED_TOP;
+                            shouldAutoAim = true;
+                        }),
+                        follow(follower, shoot_3())
+                ),
                 waitMs(1000),
-                follow(follower, park()),
+                parallel(
+                        Commands.instant(() -> {
+                            currentTargetHive = null;
+                            shouldAutoAim = false;
+                        }),
+                        follow(follower, park())
+                ),
                 waitMs(10000),
-                follow(follower, returntestingonly())
+                parallel(
+                        follow(follower, returntestingonly())
+                )
         );
     }
 
@@ -67,6 +121,9 @@ public class AhmedExampleAutoRed extends LinearOpMode {
     public void runOpMode() {
         Scheduler.reset();
         follower = Constants.create(hardwareMap);
+        intakeTransferController = new IntakeTransferController(hardwareMap);
+        outtakeController = new OuttakeController(hardwareMap);
+        autoAimController = new AutoAimController(hardwareMap);
         follower.setPose(start);
         follower.update();
 
@@ -77,6 +134,9 @@ public class AhmedExampleAutoRed extends LinearOpMode {
             while (opModeIsActive()) {
                 follower.update();
                 Scheduler.execute();
+
+                outtakeController.update(currentTargetHive, follower.pose());
+                autoAimController.update(currentTargetHive, follower.pose(), shouldAutoAim, 0.0);
 
                 telemetry.addData("x", follower.pose().x());
                 telemetry.addData("y", follower.pose().y());

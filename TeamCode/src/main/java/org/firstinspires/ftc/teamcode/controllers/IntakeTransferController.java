@@ -10,13 +10,13 @@ public class IntakeTransferController {
         gate = new Gate(hardwareMap);
 
     }
-    public void runIntake(double power1){
+    public void runIntake(){
         intakeTransfer.setPower(0.5);
         }
-    public void runGateOpen(double power2){
-        gate.setPower(0.25);
+    public void runGateOpen(){
+        gate.open();
         }
-    public void runGateClose(double power3) { gate.setPower(-0.25); }
+    public void runGateClose() { gate.close(); }
 
 
 
