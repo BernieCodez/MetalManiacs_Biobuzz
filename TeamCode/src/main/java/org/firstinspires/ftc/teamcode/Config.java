@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Configurable
 public class Config {
-
+    public static final String TRANSFER = "transfer";
     public static final String INTAKE = "intake";
     public static final String FLYWHEEL = "flywheel";
     public static final String TURRET = "turret";
@@ -26,6 +26,7 @@ public class Config {
             BACK_LEFT_WHEEL,
             BACK_RIGHT_WHEEL,
             TURRET
+
     };
 
     public static final String HOOD = "hood";
@@ -33,7 +34,10 @@ public class Config {
 
     public static final String[] SERVOS = {
             HOOD,
-            GATE
+            GATE,
+            BACK_RIGHT_WHEEL,
+            TRANSFER,
+
     };
 
     public static final String PINPOINT = "pinpoint";
