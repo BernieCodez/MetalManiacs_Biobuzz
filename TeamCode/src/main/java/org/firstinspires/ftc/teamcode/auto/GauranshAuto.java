@@ -1,27 +1,38 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.auto;
 
 import static com.pedropathing.api.Paths.*;
 
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.follower.Follower;
+import com.pedropathing.ivy.commands.Commands;
 import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.waitMs;
+import static com.pedropathing.ivy.groups.Groups.parallel;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.pedropathing.paths.interpolator.Interpolator;
 
+import org.firstinspires.ftc.teamcode.Config;
+import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
+import org.firstinspires.ftc.teamcode.controllers.IntakeTransferController;
+import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 @Autonomous(name = "GauranshAuto", group = "Autonomous")
 public class GauranshAuto extends LinearOpMode {
 
     private Follower follower;
+    private IntakeTransferController intakeTransferController;
+    private OuttakeController outtakeController;
+    private AutoAimController autoAimController;
+    private Config.Hive currentTargetHive = null;
+    private boolean shouldAutoAim = false;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
@@ -41,25 +52,64 @@ public class GauranshAuto extends LinearOpMode {
     private final Pose shootAfterFlowerControl1 = poseFactory.of(49.6981, 112.6532, 0);
     private final Pose shootAfterFlowerSegment1Start = poseFactory.of(59.6129, 119.0329, 90);
     private final Pose shootAfterFlowerSegment1End = poseFactory.of(59.6129, 119.0329, -90);
-    private final Pose backToStart = poseFactory.of(57.1771, 12.3139, 0);
-    private final Pose backToStartControl1 = poseFactory.of(0.3789, 82.0217, 0);
-    private final Pose backToStartSegment1Start = poseFactory.of(57.1771, 12.3139, -90);
-    private final Pose backToStartSegment1End = poseFactory.of(57.1771, 12.3139, 0);
+    private final Pose park = poseFactory.of(14.6637, 116.1652, -90);
+    private final Pose parkSegment1Start = poseFactory.of(14.6637, 116.1652, -90);
+    private final Pose parkSegment1End = poseFactory.of(14.6637, 116.1652, -90);
 
     // Autonomous routine
     public Command autoRoutine() {
         return sequential(
-                follow(follower, shoot()),
+                Commands.instant(() -> {
+                    intakeTransferController.runIntake();
+                    intakeTransferController.runGateOpen();
+                }),
+                parallel(
+                        Commands.instant(() -> {
+                            currentTargetHive = Config.Hive.BLUE_TOP;
+                            shouldAutoAim = true;
+                        }),
+                follow(follower, shoot())
+                ),
                 waitMs(2000),
-                follow(follower, garden()),
+                parallel(
+                        Commands.instant(() -> {
+                            currentTargetHive = null;
+                            shouldAutoAim = false;
+                        }),
+                follow(follower, garden())
+                ),
                 waitMs(3500),
-                follow(follower, shootaftertip()),
+                parallel(
+                        Commands.instant(() -> {
+                            currentTargetHive = Config.Hive.BLUE_TOP;
+                            shouldAutoAim = true;
+                        }),
+                follow(follower, shootaftertip())
+                ),
                 waitMs(2000),
-                follow(follower, pollenintake()),
+                parallel(
+                        Commands.instant(() -> {
+                            currentTargetHive = null;
+                            shouldAutoAim = false;
+                        }),
+                follow(follower, pollenintake())
+                ),
                 waitMs(2500),
-                follow(follower, shootafterflower()),
+                parallel(
+                        Commands.instant(() -> {
+                            currentTargetHive = Config.Hive.BLUE_TOP;
+                            shouldAutoAim = true;
+                        }),
+                follow(follower, shootafterflower())
+                ),
                 waitMs(2000),
-                follow(follower, backtostart())
+                parallel(
+                        Commands.instant(() -> {
+                            currentTargetHive = null;
+                            shouldAutoAim = false;
+                        }),
+                follow(follower, park())
+                )
         );
     }
 
@@ -110,7 +160,7 @@ public class GauranshAuto extends LinearOpMode {
         return curve(pollenIntake, shootAfterFlowerControl1, shootAfterFlower).heading(Interpolator.piecewise().until(1, Interpolator.linear(shootAfterFlowerSegment1Start, shootAfterFlowerSegment1End)));
     }
 
-    public Path backtostart() {
-        return curve(shootAfterFlower, backToStartControl1, backToStart).heading(Interpolator.piecewise().until(1, Interpolator.linear(backToStartSegment1Start, backToStartSegment1End)));
+    public Path park() {
+        return line(shootAfterFlower, park).heading(Interpolator.piecewise().until(1, Interpolator.linear(parkSegment1Start, parkSegment1End)));
     }
 }
