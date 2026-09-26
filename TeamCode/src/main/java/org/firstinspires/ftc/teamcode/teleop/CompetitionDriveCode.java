@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.pedropathing.drivetrain.DrivePowers;
 import com.pedropathing.follower.ManualDrive;
 
+import org.firstinspires.ftc.teamcode.Config;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
@@ -38,18 +39,21 @@ public class CompetitionDriveCode extends OpMode {
 
     private AutoAimController autoAim;
     private OuttakeController outtake;
+    public Config.Hive activeHive = null;
 
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
         driver = new RumbleGamepad(gamepad1);
         autoAim = new AutoAimController(hardwareMap);
+        outtake = new OuttakeController(hardwareMap);
     }
 
     @Override
     public void start(){
         follower.setPose(OpModeStorage.autonomousEndPose);
         follower.update();
+        outtake.close();
     }
 
     @Override
@@ -94,14 +98,37 @@ public class CompetitionDriveCode extends OpMode {
         }
 
         follower.update();
+        Pose robot = follower.pose(); // gets robot pose
 
-        autoAim.update(shouldAutoAim, teamColor, follower.pose(), driver.rightX());//autoaim must update before outtake because it fetches limelight info!
-        outtake.update();
+        activeHive = getTargetHive(teamColor, robot);
+        autoAim.update(activeHive, robot, shouldAutoAim, driver.rightX());//autoaim must update before outtake because it fetches limelight info!
+        outtake.update(activeHive, robot);
+
+        if (driver.isDown(RumbleGamepad.Button.RIGHT_BUMPER)){
+            outtake.fire();
+        }
+        if (driver.wasJustReleased(RumbleGamepad.Button.RIGHT_BUMPER)){
+            outtake.close();
+        }
 
         //TELEMETRY
-        Pose robot = follower.pose(); // gets robot pose
         telemetry.addData("Robot X", robot.x());
         telemetry.addData("Robot Y", robot.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
+    }
+
+    @Override
+    public void stop(){
+        outtake.stop();
+    }
+
+    private Config.Hive getTargetHive(String teamColor, Pose robot) {
+        boolean top = robot.y() > Config.HIVE_BOUNDARY;
+
+        if (teamColor.equals("red")) {
+            return top ? Config.Hive.RED_TOP : Config.Hive.RED_BOTTOM;
+        } else {
+            return top ? Config.Hive.BLUE_TOP : Config.Hive.BLUE_BOTTOM;
+        }
     }
 }

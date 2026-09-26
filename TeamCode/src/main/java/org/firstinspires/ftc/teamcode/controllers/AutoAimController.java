@@ -11,7 +11,6 @@ public class AutoAimController {
 
     private final Limelight limelight;
     private final Turret turret;
-    private Config.Hive activeHive = null;
     private double targetAngle; //MEASURED IN DEGREES :)
     private final double MANUAL_TURRET_SPEED = 30; //multiplier
 
@@ -21,10 +20,7 @@ public class AutoAimController {
 
     }
 
-    public void update(boolean shouldAutoAim, String teamColor, Pose robot, double manual) {
-        //update active target
-        activeHive = getTargetHive(teamColor, robot);
-
+    public void update(Config.Hive activeHive, Pose robot, boolean shouldAutoAim, double manual) {
         //fetch limelight tag data
         limelight.update(activeHive);
 
@@ -33,7 +29,7 @@ public class AutoAimController {
             targetAngle = turret.getHeading();
             targetAngle += manual*MANUAL_TURRET_SPEED;
         }else{
-            targetAngle = calculateLocalizedAngle(robot); //calc using pedro pathing localization
+            targetAngle = calculateLocalizedAngle(activeHive, robot); //calc using pedro pathing localization
 
             //april tag is visible
             if (limelight.tVisible) {
@@ -46,18 +42,8 @@ public class AutoAimController {
         turret.update(normalizeAngle(targetAngle));
     }
 
-    private Config.Hive getTargetHive(String teamColor, Pose robot) {
-        boolean top = robot.y() > Config.HIVE_BOUNDARY;
-
-        if (teamColor.equals("red")) {
-            return top ? Config.Hive.RED_TOP : Config.Hive.RED_BOTTOM;
-        } else {
-            return top ? Config.Hive.BLUE_TOP : Config.Hive.BLUE_BOTTOM;
-        }
-    }
-
     //calculates the amount the turret needs to rotate in order to be facing the goal from its localized pedro position
-    public double calculateLocalizedAngle(Pose robot) {
+    public double calculateLocalizedAngle(Config.Hive activeHive, Pose robot) {
         double deltaX = activeHive.pose.x() - robot.x();
         double deltaY = activeHive.pose.y() - robot.y();
 

@@ -9,22 +9,21 @@ import org.firstinspires.ftc.teamcode.Config;
 
 public class Gate {
     private Servo gate;
-    double MAX_POWER = 0;
 
     public Gate(HardwareMap hardwareMap){
         gate = hardwareMap.get(Servo.class, Config.GATE);
         gate.setDirection(Servo.Direction.FORWARD);
     }
 
-    public void setPower(double power){
-        gate.setPosition(power);
+    public void open(){
+        gate.setPosition(Config.GATE_OPEN);
     }
 
-    public void stop(){
-        gate.setPosition(0);
+    public void close(){
+        gate.setPosition(Config.GATE_CLOSE);
     }
 
-    public double getPower(){
+    public double getPosition(){
         return gate.getPosition();
     }
 

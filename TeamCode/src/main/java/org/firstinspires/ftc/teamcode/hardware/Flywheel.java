@@ -10,6 +10,8 @@ public class Flywheel {
 
     private final DcMotorEx flywheel;
 
+    private double optimalSpeed;
+
     public Flywheel(HardwareMap hardwareMap) {
 
         flywheel = hardwareMap.get(DcMotorEx.class, Config.FLYWHEEL);
@@ -29,6 +31,11 @@ public class Flywheel {
         flywheel.setPower(0);
     }
 
+    public void setVelocityByDistance(double distance){
+        optimalSpeed = Config.FLYWHEEL_DISTANCE_SLOPE * distance + Config.FLYWHEEL_DISTANCE_INTERCEPT;
+        flywheel.setVelocity(optimalSpeed);
+    }
+
     //set velocity in encoder ticks per second
     public void setVelocity(double velocity) {
         flywheel.setVelocity(velocity);
@@ -44,5 +51,9 @@ public class Flywheel {
 
     public double getPower() {
         return flywheel.getPower();
+    }
+
+    public boolean atTargetVelocity() {
+        return Math.abs(flywheel.getVelocity() - optimalSpeed) < Config.FLYWHEEL_VELOCITY_TOLERANCE;
     }
 }

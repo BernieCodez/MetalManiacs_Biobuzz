@@ -47,7 +47,7 @@ public class Limelight {
         }
         tVisible = getBestTVisible(activeHive);
         tx = getBestTX(activeHive);
-//        ty = lastGoodResult.getTy();
+        ty = lastGoodResult.getTy();
     }
 
     public boolean isActiveHiveTag(int id, Config.Hive activeHive){ return activeHive.tagIds.contains(id);}
