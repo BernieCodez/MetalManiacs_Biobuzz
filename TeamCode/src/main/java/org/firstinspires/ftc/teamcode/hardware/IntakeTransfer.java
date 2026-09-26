@@ -6,24 +6,24 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Config;
 
-public class Transfer {
-    private DcMotorEx transfer;
-    double MAX_POWER = 0;
+public class IntakeTransfer {
+    private DcMotorEx intake;
+    double MAX_POWER = 0.7;
 
-    public Transfer(HardwareMap hardwareMap){
-        transfer = hardwareMap.get(DcMotorEx.class, Config.TRANSFER);
-        transfer.setDirection(DcMotorSimple.Direction.FORWARD);
+    public IntakeTransfer(HardwareMap hardwareMap){
+        intake = hardwareMap.get(DcMotorEx.class, Config.INTAKE);
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     public void setPower(double power){
-        transfer.setPower(power);
+        intake.setPower(power);
     }
 
     public void stop(){
-        transfer.setPower(0);
+        intake.setPower(0);
     }
 
     public double getPower(){
-        return transfer.getPower();
+        return intake.getPower();
     }
 }
