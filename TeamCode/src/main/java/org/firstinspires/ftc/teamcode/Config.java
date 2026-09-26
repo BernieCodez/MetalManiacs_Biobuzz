@@ -21,8 +21,7 @@ public class Config {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                     INTAKE/TRANSFER                                            //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static final String TRANSFER = "transfer";
-    public static final String INTAKE = "intake";
+    public static final String INTAKE_TRANSFER = "intakeTransfer";
     public static final String GATE = "gate";
     public static double GATE_OPEN = 0.5;
     public static double GATE_CLOSE = 0;
@@ -122,7 +121,7 @@ public class Config {
 //                                        GROUPINGS                                               //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String[] MOTORS = {
-            INTAKE,
+            INTAKE_TRANSFER,
             FLYWHEEL,
             FRONT_LEFT_WHEEL,
             FRONT_RIGHT_WHEEL,
@@ -134,9 +133,6 @@ public class Config {
 
     public static final String[] SERVOS = {
             HOOD,
-            GATE,
-            BACK_RIGHT_WHEEL,
-            TRANSFER,
-
+            GATE
     };
 }
