@@ -5,25 +5,24 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import static org.firstinspires.ftc.teamcode.Config.*;
 
-public class Gate {
-    private Servo gate;
+public class Hood {
+    private Servo hood;
 
-    public Gate(HardwareMap hardwareMap){
-        gate = hardwareMap.get(Servo.class, GATE);
-        gate.setDirection(Servo.Direction.FORWARD);
+    public Hood(HardwareMap hardwareMap){
+        hood = hardwareMap.get(Servo.class, HOOD);
+        hood.setDirection(Servo.Direction.FORWARD);
     }
 
     public void open(){
-        gate.setPosition(GATE_OPEN);
+        hood.setPosition(HOOD_NECTAR);
     }
 
     public void close(){
-        gate.setPosition(GATE_CLOSE);
+        hood.setPosition(HOOD_POLLEN);
     }
 
     public double getPosition(){
-        return gate.getPosition();
+        return hood.getPosition();
     }
-
 
 }

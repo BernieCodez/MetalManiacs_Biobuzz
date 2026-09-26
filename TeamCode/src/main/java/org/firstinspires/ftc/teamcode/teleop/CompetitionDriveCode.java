@@ -18,7 +18,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.pedropathing.drivetrain.DrivePowers;
 import com.pedropathing.follower.ManualDrive;
 
-import org.firstinspires.ftc.teamcode.Config;
+import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
@@ -32,14 +32,15 @@ public class CompetitionDriveCode extends OpMode {
 
     private Follower follower;
     RumbleGamepad driver;
-    public String teamColor = "red";
     public boolean shouldAutoAim = true;
 
     public boolean fieldCentric = false; //false - robot centric | true - field centric
 
     private AutoAimController autoAim;
     private OuttakeController outtake;
-    public Config.Hive activeHive = null;
+    public Alliance alliance = Alliance.RED;
+
+    public Alliance.Hive activeHive = alliance.TOP;//defaults top red
 
     @Override
     public void init() {
@@ -61,10 +62,10 @@ public class CompetitionDriveCode extends OpMode {
         driver.update();
 
         if (driver.wasJustPressed(RumbleGamepad.Button.START)){ //toggle team colors with start button
-            teamColor = teamColor.equals("red") ? "blue" : "red";
+            alliance = alliance == Alliance.RED ? Alliance.BLUE : Alliance.RED;
         }
 
-        if (Objects.equals(teamColor, "red")){
+        if (alliance == Alliance.RED){
             driver.light(255,0,0); //show red light on gamepad
         }else{
             driver.light(0,0,255); //show blue light on gamepad
@@ -100,7 +101,7 @@ public class CompetitionDriveCode extends OpMode {
         follower.update();
         Pose robot = follower.pose(); // gets robot pose
 
-        activeHive = getTargetHive(teamColor, robot);
+        activeHive = getTargetHive(alliance, robot);
         autoAim.update(activeHive, robot, shouldAutoAim, driver.rightX());//autoaim must update before outtake because it fetches limelight info!
         outtake.update(activeHive, robot);
 
@@ -122,13 +123,5 @@ public class CompetitionDriveCode extends OpMode {
         outtake.stop();
     }
 
-    private Config.Hive getTargetHive(String teamColor, Pose robot) {
-        boolean top = robot.y() > Config.HIVE_BOUNDARY;
-
-        if (teamColor.equals("red")) {
-            return top ? Config.Hive.RED_TOP : Config.Hive.RED_BOTTOM;
-        } else {
-            return top ? Config.Hive.BLUE_TOP : Config.Hive.BLUE_BOTTOM;
-        }
-    }
+    private Alliance.Hive getTargetHive(Alliance alliance, Pose robot) {return robot.y() > HIVE_BOUNDARY ? alliance.TOP : alliance.BOTTOM;}
 }

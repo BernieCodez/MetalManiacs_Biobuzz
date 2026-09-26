@@ -5,7 +5,7 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Config;
+import static org.firstinspires.ftc.teamcode.Config.*;
 
 import java.util.List;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class Limelight {
     public double ty;
 
     public Limelight(HardwareMap hardwareMap){
-        limelight = hardwareMap.get(Limelight3A.class, Config.LIMELIGHT);
+        limelight = hardwareMap.get(Limelight3A.class, LIMELIGHT);
         limelight.pipelineSwitch(0); //set pipeline index
         limelight.setPollRateHz(100);
         start();
@@ -31,14 +31,14 @@ public class Limelight {
 
     public void start(){limelight.start();}
 
-    public void update(Config.Hive activeHive){
+    public void update(Alliance.Hive activeHive){
         currentResult = limelight.getLatestResult();//fetch info packet
         if (currentResult != null && currentResult.isValid()){ //if it currently sees a tag
             lastGoodResult = currentResult;
             lastGoodTime = System.currentTimeMillis(); //start a stopwatch
         }
 
-        if (lastGoodResult != null && System.currentTimeMillis() - lastGoodTime <= Config.RESULT_TIMEOUT_MS){ //if the stopwatch is less than 1 second
+        if (lastGoodResult != null && System.currentTimeMillis() - lastGoodTime <= RESULT_TIMEOUT_MS){ //if the stopwatch is less than 1 second
             //use the last good result
             finalResult = lastGoodResult;
         }else{
@@ -50,11 +50,11 @@ public class Limelight {
         ty = lastGoodResult.getTy();
     }
 
-    public boolean isActiveHiveTag(int id, Config.Hive activeHive){ return activeHive.tagIds.contains(id);}
+    public boolean isActiveHiveTag(int id, Alliance.Hive activeHive){ return activeHive.allTagIds.contains(id);}
 
-    public boolean isMiddleTag(int id){return Config.MIDDLE_TAG_IDS.contains(id);}
+    public boolean isMiddleTag(int id, Alliance.Hive activeHive){return activeHive.middleTagIds.contains(id);}
 
-    public boolean getBestTVisible(Config.Hive activeHive){
+    public boolean getBestTVisible(Alliance.Hive activeHive){
         if (finalResult == null) { //safety checks in case finalResult is null
             return false;
         }
@@ -76,7 +76,7 @@ public class Limelight {
     //maintain outer tags as backups in case no middle tags are seen
     //if AT LEAST two middle tags are seen it will average together the tx
     //otherwise if it sees two outer tags it will average together the tx
-    public double getBestTX(Config.Hive activeHive){
+    public double getBestTX(Alliance.Hive activeHive){
         if (finalResult == null) { //safety checks in case finalResult is null
             return 0;
         }
@@ -102,7 +102,7 @@ public class Limelight {
             double tx = fiducial.getTargetXDegrees();
             backupTX = tx;
 
-            if(isMiddleTag(id)){
+            if(isMiddleTag(id, activeHive)){
                 //it must be an april on the inside
                 optimalTX = tx;
                 middleTagCount++;

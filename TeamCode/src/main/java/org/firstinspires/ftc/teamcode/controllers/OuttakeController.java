@@ -4,18 +4,21 @@ import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Config;
+import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.hardware.Flywheel;
 import org.firstinspires.ftc.teamcode.hardware.Gate;
+import org.firstinspires.ftc.teamcode.hardware.Hood;
 
 public class OuttakeController {
     private Flywheel flywheel;
     private Gate gate;
+    private Hood hood;
     public OuttakeController(HardwareMap hardwareMap){
         flywheel = new Flywheel(hardwareMap);
         gate = new Gate(hardwareMap);
+        hood = new Hood(hardwareMap);
     }
-    public void update(Config.Hive activeHive, Pose robot){ //maintain flywheel velocity
+    public void update(Alliance.Hive activeHive, Pose robot){ //maintain flywheel velocity
         if (activeHive == null) {
             flywheel.stop();
             return;

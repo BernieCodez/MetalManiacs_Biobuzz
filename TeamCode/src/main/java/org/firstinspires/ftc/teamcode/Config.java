@@ -33,6 +33,9 @@ public class Config {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String FLYWHEEL = "flywheel";
     public static final String HOOD = "hood";
+    public static final double HOOD_NECTAR = 0.5;
+    public static final double HOOD_POLLEN = 0.25;
+
     //PIDF for flywheels
     public static double FLYWHEEL_KP = 0.0;
     public static double FLYWHEEL_KI = 0.0;
@@ -85,37 +88,62 @@ public class Config {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     //GOAL POSITIONS FOR AUTO AIM
     public static final PoseFactory poseFactory = PoseFactory.degrees();
+
     public static final double HIVE_BOUNDARY = 72;
-    public enum Hive {
-        RED_TOP(
-                poseFactory.of(57, 87, 0),
-                Set.of(30, 31, 32, 33)
+
+    public enum Alliance {
+        RED(
+                new Hive(//audience side
+                        poseFactory.of(57, 57, 0),
+                        Set.of(34, 35, 36, 37),
+                        Set.of(35, 36)
+
+                ),
+                new Hive(//opposite audience
+                        poseFactory.of(57, 87, 0),
+                        Set.of(30, 31, 32, 33),
+                        Set.of(31, 32)
+
+                )
+
         ),
 
-        RED_BOTTOM(
-                poseFactory.of(57, 57, 0),
-                Set.of(34, 35, 36, 37)
-        ),
+        BLUE(
+                new Hive(//audience side
+                        poseFactory.of(87, 87, 0),
+                        Set.of(38, 39, 40, 41),
+                        Set.of(39, 40)
 
-        BLUE_TOP(
-                poseFactory.of(87,87,0),
-                Set.of(38, 39, 40, 41)
-        ),
+                ),
+                new Hive(//opposite audience
+                        poseFactory.of(87, 57, 0),
+                        Set.of(42, 43, 44, 45),
+                        Set.of(43, 44)
 
-        BLUE_BOTTOM(
-                poseFactory.of(87,57,0),
-                Set.of(42, 43, 44, 45)
+                )
         );
 
-        public final Pose pose;
-        public final Set<Integer> tagIds;
+        public final Hive TOP;
+        public final Hive BOTTOM;
 
-        Hive(Pose pose, Set<Integer> tagIds) {
-            this.pose = pose;
-            this.tagIds = tagIds;
+        Alliance(Hive top, Hive bottom) {
+            this.TOP = top;
+            this.BOTTOM = bottom;
+        }
+
+        public static class Hive {
+            public final Pose pose;
+            public final Set<Integer> allTagIds;
+            public final Set<Integer> middleTagIds;
+
+            Hive(Pose pose, Set<Integer> allTagIds, Set<Integer> middleTagIds) {
+                this.pose = pose;
+                this.allTagIds = allTagIds;
+                this.middleTagIds = middleTagIds;
+
+            }
         }
     }
-    public static final Set<Integer> MIDDLE_TAG_IDS = Set.of(31, 32, 35, 36, 39, 40, 43, 44);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                        GROUPINGS                                               //

@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Config;
+import static org.firstinspires.ftc.teamcode.Config.*;
 
 public class Turret {
 
@@ -12,21 +12,21 @@ public class Turret {
 
     public Turret(HardwareMap hardwareMap) {
 
-        turret = hardwareMap.get(DcMotorEx.class, Config.TURRET);
+        turret = hardwareMap.get(DcMotorEx.class, TURRET);
 
         // Apply the tuned velocity PIDF
         turret.setVelocityPIDFCoefficients(
-                Config.TURRET_VELOCITY_P,
-                Config.TURRET_VELOCITY_I,
-                Config.TURRET_VELOCITY_D,
-                Config.TURRET_VELOCITY_F
+                TURRET_VELOCITY_P,
+                TURRET_VELOCITY_I,
+                TURRET_VELOCITY_D,
+                TURRET_VELOCITY_F
         );
 
         // Apply the tuned position P
-        turret.setPositionPIDFCoefficients(Config.TURRET_POSITION_P);
+        turret.setPositionPIDFCoefficients(TURRET_POSITION_P);
 
         // Position tolerance
-        turret.setTargetPositionTolerance(Config.TURRET_POSITION_TOLERANCE);
+        turret.setTargetPositionTolerance(TURRET_POSITION_TOLERANCE);
 
         turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -44,13 +44,13 @@ public class Turret {
     }
 
     public int angleToTicks(double angle){
-        return (int) Math.round(Config.TURRET_CENTER_TICKS + angle * Config.TURRET_TICKS_PER_DEGREE);
+        return (int) Math.round(TURRET_CENTER_TICKS + angle * TURRET_TICKS_PER_DEGREE);
     }
 
     //uses encoder position!
     public void setPosition(int position) {
 
-        position = Math.max(Config.MIN_TURRET_POSITION, Math.min(Config.MAX_TURRET_POSITION, position));//software limits :D
+        position = Math.max(MIN_TURRET_POSITION, Math.min(MAX_TURRET_POSITION, position));//software limits :D
 
         turret.setTargetPosition(position);
         turret.setPower(1.0);
@@ -73,8 +73,7 @@ public class Turret {
     }
 
     public boolean atTarget() {
-        return Math.abs(getError())
-                <= Config.TURRET_POSITION_TOLERANCE;
+        return Math.abs(getError()) <= TURRET_POSITION_TOLERANCE;
     }
 
     //returns if the turret is currently moving towards a position
@@ -94,6 +93,6 @@ public class Turret {
     }
 
     public double getHeading() {
-        return (turret.getCurrentPosition() - Config.TURRET_CENTER_TICKS) / Config.TURRET_TICKS_PER_DEGREE;
+        return (turret.getCurrentPosition() - TURRET_CENTER_TICKS) / TURRET_TICKS_PER_DEGREE;
     }
 }

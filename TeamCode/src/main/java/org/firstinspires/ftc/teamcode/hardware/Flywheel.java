@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Config;
+import static org.firstinspires.ftc.teamcode.Config.*;
 
 public class Flywheel {
 
@@ -14,14 +14,14 @@ public class Flywheel {
 
     public Flywheel(HardwareMap hardwareMap) {
 
-        flywheel = hardwareMap.get(DcMotorEx.class, Config.FLYWHEEL);
+        flywheel = hardwareMap.get(DcMotorEx.class, FLYWHEEL);
 
         //set pidf vals
         flywheel.setVelocityPIDFCoefficients(
-                Config.FLYWHEEL_KP,
-                Config.FLYWHEEL_KI,
-                Config.FLYWHEEL_KD,
-                Config.FLYWHEEL_KF
+                FLYWHEEL_KP,
+                FLYWHEEL_KI,
+                FLYWHEEL_KD,
+                FLYWHEEL_KF
         );
 
         flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -32,7 +32,7 @@ public class Flywheel {
     }
 
     public void setVelocityByDistance(double distance){
-        optimalSpeed = Config.FLYWHEEL_DISTANCE_SLOPE * distance + Config.FLYWHEEL_DISTANCE_INTERCEPT;
+        optimalSpeed = FLYWHEEL_DISTANCE_SLOPE * distance + FLYWHEEL_DISTANCE_INTERCEPT;
         flywheel.setVelocity(optimalSpeed);
     }
 
@@ -54,6 +54,6 @@ public class Flywheel {
     }
 
     public boolean atTargetVelocity() {
-        return Math.abs(flywheel.getVelocity() - optimalSpeed) < Config.FLYWHEEL_VELOCITY_TOLERANCE;
+        return Math.abs(flywheel.getVelocity() - optimalSpeed) < FLYWHEEL_VELOCITY_TOLERANCE;
     }
 }

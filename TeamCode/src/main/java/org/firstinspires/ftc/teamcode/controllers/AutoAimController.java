@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.controllers;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.teamcode.Config;
+import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.hardware.Limelight;
 import org.firstinspires.ftc.teamcode.hardware.Turret;
 
@@ -20,7 +20,7 @@ public class AutoAimController {
 
     }
 
-    public void update(Config.Hive activeHive, Pose robot, boolean shouldAutoAim, double manual) {
+    public void update(Alliance.Hive activeHive, Pose robot, boolean shouldAutoAim, double manual) {
         //fetch limelight tag data
         limelight.update(activeHive);
 
@@ -43,7 +43,7 @@ public class AutoAimController {
     }
 
     //calculates the amount the turret needs to rotate in order to be facing the goal from its localized pedro position
-    public double calculateLocalizedAngle(Config.Hive activeHive, Pose robot) {
+    public double calculateLocalizedAngle(Alliance.Hive activeHive, Pose robot) {
         double deltaX = activeHive.pose.x() - robot.x();
         double deltaY = activeHive.pose.y() - robot.y();
 
