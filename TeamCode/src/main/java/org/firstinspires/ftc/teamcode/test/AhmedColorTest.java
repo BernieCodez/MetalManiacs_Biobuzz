@@ -1,12 +1,13 @@
-package org.firstinspires.ftc.teamcode.auto;
+package org.firstinspires.ftc.teamcode.test;
 
 import android.graphics.Color;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
-@TeleOp(name = "AhmedColorTest", group = "TeleOp")
+@Autonomous(name = "AhmedColorTest", group = "Autonomous")
 public class AhmedColorTest extends LinearOpMode {
 
     private RevColorSensorV3 colorSensor;
@@ -31,6 +32,8 @@ public class AhmedColorTest extends LinearOpMode {
 
             telemetry.clearAll();
             telemetry.addData("Color: ", detectedColor);
+            telemetry.addData("Hue: ", hsvValues[0]);
+            telemetry.addData("Saturation: ", hsvValues[1]);
             telemetry.update();
 
             idle();
@@ -43,7 +46,13 @@ public class AhmedColorTest extends LinearOpMode {
             return "NOTHING (Too Far)";
         }
 
-        Color.RGBToHSV(colorSensor.red(), colorSensor.green(), colorSensor.blue(), hsvValues);
+        NormalizedRGBA colors = colorSensor.getNormalizedColors();
+        Color.RGBToHSV(
+                (int) (colors.red * 255),
+                (int) (colors.green * 255),
+                (int) (colors.blue * 255),
+                hsvValues
+        );
 
         float currentHue = hsvValues[0];
 

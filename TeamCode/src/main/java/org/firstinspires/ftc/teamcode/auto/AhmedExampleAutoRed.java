@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.util.OpModeStorage;
 
 import org.firstinspires.ftc.teamcode.controllers.IntakeTransferController;
-import org.firstinspires.ftc.teamcode.Config;
+import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 
@@ -34,27 +34,28 @@ public class AhmedExampleAutoRed extends LinearOpMode {
     private IntakeTransferController intakeTransferController;
     private OuttakeController outtakeController;
     private AutoAimController autoAimController;
-    private Config.Hive currentTargetHive = null;
+    private Alliance.Hive currentTargetHive = null;
     private boolean shouldAutoAim = false;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     private final Pose start = poseFactory.of(56.711, 3.6556, 90);
-    private final Pose shoot = poseFactory.of(56.8452, 10.6196, 88.5424);
-    private final Pose shootSegment1Target = poseFactory.of(58, 56, 0);
-    private final Pose pickuppollen = poseFactory.of(9.4337, 9.728, -109.4413);
-    private final Pose pickuppollenControl1 = poseFactory.of(5.3024, 48.7512, 0);
-    private final Pose pickuppollenSegment1Target = poseFactory.of(6, 0, 0);
-    private final Pose shoot_2 = poseFactory.of(57.2213, 126.3876, -88.9476);
-    private final Pose shoot_2Control1 = poseFactory.of(5.4551, 68.009, 0);
-    private final Pose shoot_2Segment1Target = poseFactory.of(58, 84, 0);
-    private final Pose pickupflowerpollen = poseFactory.of(47.5932, 129.6679, 93.2861);
-    private final Pose pickupflowerpollenSegment1Target = poseFactory.of(47, 140, 0);
-    private final Pose shoot_3 = poseFactory.of(57.4936, 126.3154, -90.6845);
-    private final Pose shoot_3Segment1Target = poseFactory.of(57, 85, 0);
-    private final Pose park = poseFactory.of(12.9969, 115.7836, -166.684);
-    private final Pose returntestingonly = poseFactory.of(56.9037, 3.3996, 89.9025);
-    private final Pose returntestingonlySegment1Target = poseFactory.of(57, 60, 0);
+    private final Pose shootOne = poseFactory.of(56.8452, 10.6196, 88.5424);
+    private final Pose shootOneSegment1Target = poseFactory.of(58, 56, 0);
+    private final Pose pickUpPollen = poseFactory.of(9.4337, 9.728, -109.4413);
+    private final Pose pickUpPollenControl1 = poseFactory.of(5.3024, 48.7512, 0);
+    private final Pose pickUpPollenSegment1Target = poseFactory.of(6, 0, 0);
+    private final Pose shootTwo = poseFactory.of(57.2213, 126.3876, -88.9476);
+    private final Pose shootTwoControl1 = poseFactory.of(5.4551, 68.009, 0);
+    private final Pose shootTwoSegment1Target = poseFactory.of(58, 84, 0);
+    private final Pose pickUpFlowerPollen = poseFactory.of(47.5932, 129.6679, 93.2861);
+    private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(47, 140, 0);
+    private final Pose shootThree = poseFactory.of(57.4936, 10.5959, 90.3801);
+    private final Pose shootThreeControl1 = poseFactory.of(14.4503, 60.4959, 0);
+    private final Pose shootThreeSegment1Target = poseFactory.of(57, 85, 0);
+    private final Pose parkAtEnd = poseFactory.of(10.3602, 114.9048, 114.3165);
+    private final Pose returnTestingOnly = poseFactory.of(56.9037, 3.3996, 89.9025);
+    private final Pose returnTestingOnlySegment1Target = poseFactory.of(57, 60, 0);
 
     // Autonomous routine
     public Command autoRoutine() {
@@ -65,10 +66,10 @@ public class AhmedExampleAutoRed extends LinearOpMode {
                 }),
                 parallel(
                         Commands.instant(() -> {
-                            currentTargetHive = Config.Hive.RED_TOP;
+                            currentTargetHive = Alliance.RED.TOP;
                             shouldAutoAim = true;
                         }),
-                        follow(follower, shoot())
+                        follow(follower, shootOne())
                 ),
                 waitMs(1000),
                 parallel(
@@ -76,15 +77,15 @@ public class AhmedExampleAutoRed extends LinearOpMode {
                             currentTargetHive = null;
                             shouldAutoAim = false;
                         }),
-                        follow(follower, pickuppollen())
+                        follow(follower, pickUpPollen())
                 ),
                 waitMs(1500),
                 parallel(
                         Commands.instant(() -> {
-                            currentTargetHive = Config.Hive.RED_TOP;
+                            currentTargetHive = Alliance.RED.BOTTOM;
                             shouldAutoAim = true;
                         }),
-                        follow(follower, shoot_2())
+                        follow(follower, shootTwo())
                 ),
                 waitMs(1000),
                 parallel(
@@ -92,15 +93,15 @@ public class AhmedExampleAutoRed extends LinearOpMode {
                             currentTargetHive = null;
                             shouldAutoAim = false;
                         }),
-                        follow(follower, pickupflowerpollen())
+                        follow(follower, pickUpFlowerPollen())
                 ),
                 waitMs(1500),
                 parallel(
                         Commands.instant(() -> {
-                            currentTargetHive = Config.Hive.RED_TOP;
+                            currentTargetHive = Alliance.RED.TOP;
                             shouldAutoAim = true;
                         }),
-                        follow(follower, shoot_3())
+                        follow(follower, shootThree())
                 ),
                 waitMs(1000),
                 parallel(
@@ -108,11 +109,11 @@ public class AhmedExampleAutoRed extends LinearOpMode {
                             currentTargetHive = null;
                             shouldAutoAim = false;
                         }),
-                        follow(follower, park())
+                        follow(follower, parkAtEnd())
                 ),
                 waitMs(10000),
                 parallel(
-                        follow(follower, returntestingonly())
+                        follow(follower, returnTestingOnly())
                 )
         );
     }
@@ -158,31 +159,31 @@ public class AhmedExampleAutoRed extends LinearOpMode {
         }
     }
 
-    public Path shoot() {
-        return line(start, shoot).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootSegment1Target)));
+    public Path shootOne() {
+        return line(start, shootOne).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootOneSegment1Target)));
     }
 
-    public Path pickuppollen() {
-        return curve(shoot, pickuppollenControl1, pickuppollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickuppollenSegment1Target)));
+    public Path pickUpPollen() {
+        return curve(shootOne, pickUpPollenControl1, pickUpPollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpPollenSegment1Target)));
     }
 
-    public Path shoot_2() {
-        return curve(pickuppollen, shoot_2Control1, shoot_2).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shoot_2Segment1Target)));
+    public Path shootTwo() {
+        return curve(pickUpPollen, shootTwoControl1, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootTwoSegment1Target)));
     }
 
-    public Path pickupflowerpollen() {
-        return line(shoot_2, pickupflowerpollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickupflowerpollenSegment1Target)));
+    public Path pickUpFlowerPollen() {
+        return line(shootTwo, pickUpFlowerPollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpFlowerPollenSegment1Target)));
     }
 
-    public Path shoot_3() {
-        return line(pickupflowerpollen, shoot_3).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shoot_3Segment1Target)));
+    public Path shootThree() {
+        return curve(pickUpFlowerPollen, shootThreeControl1, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootThreeSegment1Target)));
     }
 
-    public Path park() {
-        return line(shoot_3, park).tangent();
+    public Path parkAtEnd() {
+        return line(shootThree, parkAtEnd).tangent();
     }
 
-    public Path returntestingonly() {
-        return line(park, returntestingonly).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(returntestingonlySegment1Target)));
+    public Path returnTestingOnly() {
+        return line(parkAtEnd, returnTestingOnly).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(returnTestingOnlySegment1Target)));
     }
 }

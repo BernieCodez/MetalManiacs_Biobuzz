@@ -25,7 +25,8 @@ public class Config {
     public static final String GATE = "gate";
     public static double GATE_OPEN = 0.5;
     public static double GATE_CLOSE = 0;
-
+    public static final String COLOR_SENSOR = "sensorColor";
+    public enum Element{RED_NECTAR, BLUE_NECTAR, POLLEN, NONE};
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -22,7 +22,7 @@ import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.util.OpModeStorage;
 
 import org.firstinspires.ftc.teamcode.controllers.IntakeTransferController;
-import org.firstinspires.ftc.teamcode.Config;
+import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 
@@ -34,7 +34,7 @@ public class AhmedExampleAutoBlue extends LinearOpMode {
     private IntakeTransferController intakeTransferController;
     private OuttakeController outtakeController;
     private AutoAimController autoAimController;
-    private Config.Hive currentTargetHive = null;
+    private Alliance.Hive currentTargetHive = null;
     private boolean shouldAutoAim = false;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
@@ -65,7 +65,7 @@ public class AhmedExampleAutoBlue extends LinearOpMode {
                 }),
                 parallel(
                         Commands.instant(() -> {
-                            currentTargetHive = Config.Hive.BLUE_TOP;
+                            currentTargetHive = Alliance.BLUE.TOP;
                             shouldAutoAim = true;
                         }),
                         follow(follower, shoot())
@@ -81,7 +81,7 @@ public class AhmedExampleAutoBlue extends LinearOpMode {
                 waitMs(1500),
                 parallel(
                         Commands.instant(() -> {
-                            currentTargetHive = Config.Hive.BLUE_TOP;
+                            currentTargetHive = Alliance.BLUE.TOP;
                             shouldAutoAim = true;
                         }),
                         follow(follower, shoot_2())
@@ -97,7 +97,7 @@ public class AhmedExampleAutoBlue extends LinearOpMode {
                 waitMs(1500),
                 parallel(
                         Commands.instant(() -> {
-                            currentTargetHive = Config.Hive.BLUE_TOP;
+                            currentTargetHive = Alliance.BLUE.TOP;
                             shouldAutoAim = true;
                         }),
                         follow(follower, shoot_3())
