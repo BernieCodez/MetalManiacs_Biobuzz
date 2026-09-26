@@ -23,7 +23,7 @@ public class IntakeTransfer {
         intakeTransfer.setPower(0);
     }
 
-    public double getPower(){
+    public static double getPower(){
         return intakeTransfer.getPower();
     }
 }
