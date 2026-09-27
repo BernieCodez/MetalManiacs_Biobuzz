@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Config;
+import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
 //v uncommenting this will hide it on the driver station
 //@Disabled
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Config;
 public class RunFlywheelsMaxSpeed extends LinearOpMode {
     DcMotor leftFlywheel;
     DcMotor rightFlywheel;
+    RumbleGamepad driver;
     public double speed;
 
     @Override
@@ -29,7 +31,14 @@ public class RunFlywheelsMaxSpeed extends LinearOpMode {
 
         //Run the selected option
         while (opModeIsActive()) {
-            speed = Math.min(1,Math.max(-1,speed + gamepad1.left_stick_y*.2)); //Speed can not go over 1 and go below -1
+
+            speed = 0.5;
+            if (driver.wasJustPressed(RumbleGamepad.Button.RIGHT_BUMPER)){
+                speed += 0.05;
+            } else if (driver.wasJustPressed(RumbleGamepad.Button.LEFT_BUMPER)) {
+                speed-=0.05;
+            }
+
             rightFlywheel.setPower(speed);
             leftFlywheel.setPower(speed);
 
