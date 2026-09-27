@@ -31,12 +31,7 @@ public class ColorSensor {
         }
 
         NormalizedRGBA colors = colorSensor.getNormalizedColors();
-        Color.RGBToHSV(
-                (int) (colors.red * 255),
-                (int) (colors.green * 255),
-                (int) (colors.blue * 255),
-                hsvValues
-        );
+        Color.RGBToHSV(colorSensor.red(), colorSensor.green(), colorSensor.blue(), hsvValues);
 
         float currentHue = hsvValues[0];
 
