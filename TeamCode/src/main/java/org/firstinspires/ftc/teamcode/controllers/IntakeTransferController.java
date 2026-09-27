@@ -18,6 +18,12 @@ public class IntakeTransferController {
         }
     public void runGateClose() { gate.close(); }
 
+    public boolean on(){
+
+        return Math.abs(intakeTransfer.getPower())>0.05;
+
+    }
+
 
 
     }

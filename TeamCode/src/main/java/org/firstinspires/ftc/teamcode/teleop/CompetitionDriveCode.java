@@ -20,7 +20,10 @@ import com.pedropathing.follower.ManualDrive;
 
 import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
+import org.firstinspires.ftc.teamcode.controllers.IntakeTransferController;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
+import org.firstinspires.ftc.teamcode.controllers.RumbleController;
+import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.util.OpModeStorage;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
@@ -30,6 +33,8 @@ import java.util.Objects;
 @TeleOp(name = "Competition Drive Code", group = "B - Competition")
 public class CompetitionDriveCode extends OpMode {
 
+    RumbleController rumble;
+    IntakeTransferController intakeTransfer;
     private Follower follower;
     RumbleGamepad driver;
     public boolean shouldAutoAim = true;
@@ -116,6 +121,9 @@ public class CompetitionDriveCode extends OpMode {
         telemetry.addData("Robot X", robot.x());
         telemetry.addData("Robot Y", robot.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
+
+            rumble.update(intakeTransfer.on());
+
     }
 
     @Override
@@ -124,4 +132,6 @@ public class CompetitionDriveCode extends OpMode {
     }
 
     private Alliance.Hive getTargetHive(Alliance alliance, Pose robot) {return robot.y() > HIVE_BOUNDARY ? alliance.TOP : alliance.BOTTOM;}
+
+
 }
