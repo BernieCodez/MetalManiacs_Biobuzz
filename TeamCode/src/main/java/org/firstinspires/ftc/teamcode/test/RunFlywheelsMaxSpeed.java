@@ -25,14 +25,15 @@ public class RunFlywheelsMaxSpeed extends LinearOpMode {
         rightFlywheel = hardwareMap.get(DcMotor.class, "rightFlywheel");
         leftFlywheel = hardwareMap.get(DcMotor.class, "leftFlywheel");
         leftFlywheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        driver = new RumbleGamepad(gamepad1);
+        speed = 0.5;
         waitForStart();
 
         if (isStopRequested()) return;
 
         //Run the selected option
         while (opModeIsActive()) {
-
-            speed = 0.5;
+            driver.update();
             if (driver.wasJustPressed(RumbleGamepad.Button.RIGHT_BUMPER)){
                 speed += 0.05;
             } else if (driver.wasJustPressed(RumbleGamepad.Button.LEFT_BUMPER)) {
