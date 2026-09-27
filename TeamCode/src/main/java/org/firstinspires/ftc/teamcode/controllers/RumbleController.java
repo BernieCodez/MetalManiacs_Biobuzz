@@ -8,21 +8,21 @@ import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
 public class RumbleController{
     private final RumbleGamepad rumbleGamepad;
     private final IntakeTransfer intakeTransfer;
-    private boolean isRumbling = false;
+    private boolean intakeOn = false;
 
     public RumbleController(RumbleGamepad rumbleGamepad, IntakeTransfer intakeTransfer) {
         this.rumbleGamepad = rumbleGamepad;
         this.intakeTransfer = intakeTransfer;
     }
-    public void update(){
+    public void update(boolean intakeOn){
         if(Math.abs(intakeTransfer.getPower())>0.05){
-            if(!isRumbling){
+            if(!intakeOn){
                 rumbleGamepad.rumbleOne();
-                isRumbling = true;
+                intakeOn = true;
             }else{
-                if (isRumbling){
+                if (intakeOn){
                     rumbleGamepad.stopRumble();
-                    isRumbling = false;
+                    intakeOn = false;
                 }
             }
         }
@@ -30,11 +30,11 @@ public class RumbleController{
 
     public void runRumble(){
         rumbleGamepad.rumbleOne();
-        isRumbling = true;
+        intakeOn = true;
     }
     public void stopRumble(){
         rumbleGamepad.stopRumble();
-        isRumbling = false;
+        intakeOn = false;
     }
 
 }
