@@ -1,6 +1,6 @@
 //this code was just for testing it btw if you want to learn this will help :)
 
-package org.firstinspires.ftc.teamcode.hardware;
+package org.firstinspires.ftc.teamcode.test;
 
 import static org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver.LayerHeight;
 

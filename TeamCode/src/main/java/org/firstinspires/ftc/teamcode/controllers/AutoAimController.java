@@ -4,7 +4,7 @@ import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import static org.firstinspires.ftc.teamcode.Config.*;
-import org.firstinspires.ftc.teamcode.hardware.Limelight;
+import org.firstinspires.ftc.teamcode.test.Limelight;
 import org.firstinspires.ftc.teamcode.hardware.Turret;
 
 public class AutoAimController {
