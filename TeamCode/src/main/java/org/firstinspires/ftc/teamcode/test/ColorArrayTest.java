@@ -34,7 +34,7 @@ public class ColorArrayTest extends LinearOpMode {
             Element sensorRead = outtakeController.getRealTimeDetection();
 
             telemetry.addData("Sensor Seeing: ", sensorRead.toString());
-            telemetry.addData("Elements: ", Arrays.toString(outtakeController.elements));
+            telemetry.addData("Elements: ", Arrays.asList(outtakeController.elementList));
             telemetry.update();
         }
     }
