@@ -65,7 +65,7 @@ public class GauranshAuto extends LinearOpMode {
                 }),
                 parallel(
                         Commands.instant(() -> {
-                            currentTargetHive = Config.Hive.BLUE_TOP;
+                            //currentTargetHive = Config.Hive.BLUE_TOP;
                             shouldAutoAim = true;
                         }),
                 follow(follower, shoot())
@@ -81,7 +81,7 @@ public class GauranshAuto extends LinearOpMode {
                 waitMs(3500),
                 parallel(
                         Commands.instant(() -> {
-                            currentTargetHive = Config.Hive.BLUE_TOP;
+                            //currentTargetHive = Config.Hive.BLUE_TOP;
                             shouldAutoAim = true;
                         }),
                 follow(follower, shootaftertip())
@@ -97,7 +97,7 @@ public class GauranshAuto extends LinearOpMode {
                 waitMs(2500),
                 parallel(
                         Commands.instant(() -> {
-                            currentTargetHive = Config.Hive.BLUE_TOP;
+                            //currentTargetHive = Config.Hive.BLUE_TOP;
                             shouldAutoAim = true;
                         }),
                 follow(follower, shootafterflower())

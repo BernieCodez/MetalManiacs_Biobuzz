@@ -164,4 +164,7 @@ public class Config {
             HOOD,
             GATE
     };
+
+    public class Hive {
+    }
 }
