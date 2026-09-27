@@ -13,26 +13,26 @@ import org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.Prism.PrismAnimations;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
-@TeleOp(name = "LED Test", group = "Test")
-public class LEDTest extends LinearOpMode {
+@TeleOp(name = "LED Example", group = "Test")
+public class LEDExample extends LinearOpMode {
 
-    private GoBildaPrismDriver prism;
-    private RumbleGamepad driver;
+    public GoBildaPrismDriver prism;
+    public RumbleGamepad driver;
 
     // ==========================================
     // ANIMATIONS
     // ==========================================
 
     // Purple
-    private final PrismAnimations.Solid purple =
+    public final PrismAnimations.Solid purple =
             new PrismAnimations.Solid(Color.PURPLE);
 
     // Orange
-    private final PrismAnimations.Solid orange =
+    public final PrismAnimations.Solid orange =
             new PrismAnimations.Solid(Color.ORANGE);
 
     // Rainbow
-    private final PrismAnimations.Rainbow rainbow =
+    public final PrismAnimations.Rainbow rainbow =
             new PrismAnimations.Rainbow(
                     0,
                     360,
@@ -41,25 +41,25 @@ public class LEDTest extends LinearOpMode {
             );
 
     // Purple sparkle
-    private final PrismAnimations.Sparkle sparkle =
+    public final PrismAnimations.Sparkle sparkle =
             new PrismAnimations.Sparkle(
                     Color.PURPLE,
                     Color.TRANSPARENT
             );
 
     // Police lights
-    private final PrismAnimations.PoliceLights policeLights =
+    public final PrismAnimations.PoliceLights policeLights =
             new PrismAnimations.PoliceLights();
 
     // Droid scan
-    private final PrismAnimations.DroidScan droidScan =
+    public final PrismAnimations.DroidScan droidScan =
             new PrismAnimations.DroidScan(
                     Color.PURPLE,
                     Color.TRANSPARENT
             );
 
     // Pulse
-    private final PrismAnimations.Pulse pulse =
+    public final PrismAnimations.Pulse pulse =
             new PrismAnimations.Pulse(
                     Color.PURPLE,
                     Color.BLUE
