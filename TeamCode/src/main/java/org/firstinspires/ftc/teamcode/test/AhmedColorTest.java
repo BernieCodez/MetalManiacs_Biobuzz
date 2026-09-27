@@ -4,7 +4,6 @@ import android.graphics.Color;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @Autonomous(name = "AhmedColorTest", group = "Autonomous")
@@ -25,15 +24,18 @@ public class AhmedColorTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         colorSensor = hardwareMap.get(RevColorSensorV3.class, "sensor_color");
 
+
         waitForStart();
 
         while (opModeIsActive()) {
+
             String detectedColor = getDetectedColor();
 
             telemetry.clearAll();
             telemetry.addData("Color: ", detectedColor);
             telemetry.addData("Hue: ", hsvValues[0]);
             telemetry.addData("Saturation: ", hsvValues[1]);
+            telemetry.addData("Distance: ", colorSensor.getDistance(DistanceUnit.CM));
             telemetry.update();
 
             idle();
@@ -46,13 +48,7 @@ public class AhmedColorTest extends LinearOpMode {
             return "NOTHING (Too Far)";
         }
 
-        NormalizedRGBA colors = colorSensor.getNormalizedColors();
-        Color.RGBToHSV(
-                (int) (colors.red * 255),
-                (int) (colors.green * 255),
-                (int) (colors.blue * 255),
-                hsvValues
-        );
+        Color.RGBToHSV(colorSensor.red(), colorSensor.green(), colorSensor.blue(), hsvValues);
 
         float currentHue = hsvValues[0];
 

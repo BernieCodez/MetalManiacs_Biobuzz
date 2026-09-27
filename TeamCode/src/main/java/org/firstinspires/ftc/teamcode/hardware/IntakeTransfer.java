@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import static org.firstinspires.ftc.teamcode.Config.*;
 
 public class IntakeTransfer {
-    private DcMotorEx intakeTransfer;
+    private static DcMotorEx intakeTransfer;
     double MAX_POWER = 0.7;
 
     public IntakeTransfer(HardwareMap hardwareMap){
