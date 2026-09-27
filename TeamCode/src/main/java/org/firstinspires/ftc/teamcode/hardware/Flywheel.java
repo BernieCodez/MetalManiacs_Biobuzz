@@ -8,52 +8,69 @@ import static org.firstinspires.ftc.teamcode.Config.*;
 
 public class Flywheel {
 
-    private final DcMotorEx flywheel;
+    private final DcMotorEx rightFlywheel;
+    private final DcMotorEx leftFlywheel;
 
     private double optimalSpeed;
 
     public Flywheel(HardwareMap hardwareMap) {
 
-        flywheel = hardwareMap.get(DcMotorEx.class, FLYWHEEL);
+        rightFlywheel = hardwareMap.get(DcMotorEx.class, FLYWHEEL_RIGHT);
 
         //set pidf vals
-        flywheel.setVelocityPIDFCoefficients(
+        rightFlywheel.setVelocityPIDFCoefficients(
+                FLYWHEEL_KP,
+                FLYWHEEL_KI,
+                FLYWHEEL_KD,
+                FLYWHEEL_KF
+        );
+        leftFlywheel = hardwareMap.get(DcMotorEx.class, FLYWHEEL_LEFT);
+
+        //set pidf vals
+        leftFlywheel.setVelocityPIDFCoefficients(
                 FLYWHEEL_KP,
                 FLYWHEEL_KI,
                 FLYWHEEL_KD,
                 FLYWHEEL_KF
         );
 
-        flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFlywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        flywheel.setPower(0);
+        rightFlywheel.setPower(0);
+
+        leftFlywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        leftFlywheel.setPower(0);
     }
 
     public void setVelocityByDistance(double distance){
         optimalSpeed = FLYWHEEL_DISTANCE_SLOPE * distance + FLYWHEEL_DISTANCE_INTERCEPT;
-        flywheel.setVelocity(optimalSpeed);
+        setVelocity(optimalSpeed);
     }
 
     //set velocity in encoder ticks per second
     public void setVelocity(double velocity) {
-        flywheel.setVelocity(velocity);
+        rightFlywheel.setVelocity(velocity);
+        leftFlywheel.setVelocity(velocity);
     }
 
     public void stop() {
-        flywheel.setVelocity(0);
+        rightFlywheel.setVelocity(0);
+        leftFlywheel.setVelocity(0);
     }
-
     public double getVelocity() {
-        return flywheel.getVelocity();
+        return (rightFlywheel.getVelocity() + leftFlywheel.getVelocity()) / 2;
     }
 
     public double getPower() {
-        return flywheel.getPower();
+        return (rightFlywheel.getPower() + leftFlywheel.getPower()) / 2;
     }
 
     public boolean atTargetVelocity() {
-        return Math.abs(flywheel.getVelocity() - optimalSpeed) < FLYWHEEL_VELOCITY_TOLERANCE;
+        return Math.abs(getVelocity() - optimalSpeed) < FLYWHEEL_VELOCITY_TOLERANCE;
     }
 }

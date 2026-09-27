@@ -32,7 +32,8 @@ public class Config {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                        FLYWHEELS                                               //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static final String FLYWHEEL = "flywheel";
+    public static final String FLYWHEEL_LEFT = "flywheelLeft";
+    public static final String FLYWHEEL_RIGHT = "flywheelRight";
     public static final String HOOD = "hood";
     public static final double HOOD_NECTAR = 0.5;
     public static final double HOOD_POLLEN = 0.25;
