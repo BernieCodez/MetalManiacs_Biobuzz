@@ -150,15 +150,17 @@ public class Config {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                        GROUPINGS                                               //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static final String PUSHBOT_ARM = "pushbotArm";
     public static final String[] MOTORS = {
             INTAKE_TRANSFER,
-            FLYWHEEL_LEFT,
             FLYWHEEL_RIGHT,
+            FLYWHEEL_LEFT,
             FRONT_LEFT_WHEEL,
             FRONT_RIGHT_WHEEL,
             BACK_LEFT_WHEEL,
             BACK_RIGHT_WHEEL,
-            TURRET
+            TURRET,
+            PUSHBOT_ARM
 
     };
 

@@ -16,6 +16,7 @@ public class Flywheel {
     public Flywheel(HardwareMap hardwareMap) {
 
         rightFlywheel = hardwareMap.get(DcMotorEx.class, FLYWHEEL_RIGHT);
+        leftFlywheel = hardwareMap.get(DcMotorEx.class, FLYWHEEL_LEFT);
 
         //set pidf vals
         rightFlywheel.setVelocityPIDFCoefficients(
@@ -24,7 +25,6 @@ public class Flywheel {
                 FLYWHEEL_KD,
                 FLYWHEEL_KF
         );
-        leftFlywheel = hardwareMap.get(DcMotorEx.class, FLYWHEEL_LEFT);
 
         //set pidf vals
         leftFlywheel.setVelocityPIDFCoefficients(

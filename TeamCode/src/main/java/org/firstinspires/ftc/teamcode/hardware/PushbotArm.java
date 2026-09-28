@@ -1,10 +1,11 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+@Configurable
 public class PushbotArm {
         //PIDF
         public static double P = 0.003;//proportinal
