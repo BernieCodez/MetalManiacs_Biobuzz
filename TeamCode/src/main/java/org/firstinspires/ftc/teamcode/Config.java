@@ -152,7 +152,8 @@ public class Config {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String[] MOTORS = {
             INTAKE_TRANSFER,
-            FLYWHEEL,
+            FLYWHEEL_LEFT,
+            FLYWHEEL_RIGHT,
             FRONT_LEFT_WHEEL,
             FRONT_RIGHT_WHEEL,
             BACK_LEFT_WHEEL,
