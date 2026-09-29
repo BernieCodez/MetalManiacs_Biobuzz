@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.teamcode.Config;
+import org.firstinspires.ftc.teamcode.Config.*;
 
 //v uncommenting this will hide it on the driver station
 //@Disabled
@@ -30,7 +30,7 @@ public class FlywheelPIDFTuner extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        DcMotorEx flywheel = hardwareMap.get(DcMotorEx.class, Config.FLYWHEEL);
+        DcMotorEx flywheel = hardwareMap.get(DcMotorEx.class, RIGHT_FLYWHEEL);
         flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheel.setVelocityPIDFCoefficients(
                 KP,

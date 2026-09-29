@@ -32,8 +32,8 @@ public class Config {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                        FLYWHEELS                                               //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static final String FLYWHEEL_LEFT = "flywheelLeft";
-    public static final String FLYWHEEL_RIGHT = "flywheelRight";
+    public static final String LEFT_FLYWHEEL = "leftFlywheel";
+    public static final String RIGHT_FLYWHEEL = "rightFlywheel";
     public static final String HOOD = "hood";
     public static final double HOOD_NECTAR = 0.5;
     public static final double HOOD_POLLEN = 0.25;
@@ -153,8 +153,8 @@ public class Config {
     public static final String PUSHBOT_ARM = "pushbotArm";
     public static final String[] MOTORS = {
             INTAKE_TRANSFER,
-            FLYWHEEL_RIGHT,
-            FLYWHEEL_LEFT,
+            RIGHT_FLYWHEEL,
+            LEFT_FLYWHEEL,
             FRONT_LEFT_WHEEL,
             FRONT_RIGHT_WHEEL,
             BACK_LEFT_WHEEL,
