@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 import static org.firstinspires.ftc.teamcode.Config.*;
 
-
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ public class LED {
     private GoBildaPrismDriver prism;
     private OuttakeController outtake;
 
-    private ArrayList < Element > lastArray = null;
+    private ArrayList<Element> lastArray = null;
 
     private static final int TOTAL_LEDS = 12;
     private static final int LEDS_PER_ELEMENT = 3;
@@ -33,6 +32,7 @@ public class LED {
         );
 
         outtake = new OuttakeController(hardwareMap);
+
         prism.clearAllAnimations();
 
         PrismAnimations.Solid reset =
@@ -48,7 +48,9 @@ public class LED {
         );
     }
 
-    public void update(ArrayList <Element>  currentArray) throws InterruptedException {
+    public void update(
+            ArrayList<Element> currentArray
+    ) throws InterruptedException {
 
         if (!currentArray.equals(lastArray)) {
 
@@ -58,8 +60,9 @@ public class LED {
         }
     }
 
-    private void updateLEDs(ArrayList <Element> elements)
-            throws InterruptedException {
+    private void updateLEDs(
+            ArrayList<Element> elements
+    ) throws InterruptedException {
 
         prism.clearAllAnimations();
 
@@ -68,7 +71,8 @@ public class LED {
 
         for (int slot = 0; slot < 4; slot++) {
 
-            Color color = Color.TRANSPARENT;
+            Color color =
+                    Color.TRANSPARENT;
 
             if (slot < elementsToDisplay) {
 
@@ -100,7 +104,9 @@ public class LED {
         }
     }
 
-    private Color getElementColor(Element element) {
+    private Color getElementColor(
+            Element element
+    ) {
 
         if (element == Element.RED_NECTAR) {
             return Color.RED;
@@ -119,7 +125,8 @@ public class LED {
 
     private void insertLED(
             int index,
-            PrismAnimations.Solid led) {
+            PrismAnimations.Solid led
+    ) {
 
         switch (index) {
 

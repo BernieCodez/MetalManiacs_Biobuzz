@@ -1,4 +1,4 @@
-//Only for teleop testing
+// Only for teleop testing
 
 package org.firstinspires.ftc.teamcode.test;
 
@@ -24,7 +24,18 @@ public class LEDTest extends LinearOpMode {
     private OuttakeController outtake;
     private RumbleGamepad driver;
 
-    private final List<Element> lastElements = new ArrayList<>();
+    private final List<Element> lastElements =
+            new ArrayList<>();
+
+    private boolean secondLEDGreen = false;
+
+    private static final int TOTAL_LEDS = 24;
+
+    private static final int BALL_START = 0;
+    private static final int BALL_END = 11;
+
+    private static final int STATUS_START = 12;
+    private static final int STATUS_END = 23;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -34,16 +45,15 @@ public class LEDTest extends LinearOpMode {
                 "prism"
         );
 
+        prism.setStripLength(TOTAL_LEDS);
+
         outtake = new OuttakeController(hardwareMap);
 
         driver = new RumbleGamepad(gamepad1);
 
-        /*
-         * Reset all 12 LEDs to transparent before starting.
-         */
         prism.clearAllAnimations();
 
-        updateLEDs(new ArrayList<>());
+        lightOff();
 
         sleep(300);
 
@@ -52,22 +62,29 @@ public class LEDTest extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) {
+            lightOff();
             return;
         }
 
-        /*
-         * Force the first LED update.
-         */
-        updateLEDs(getElements());
+        List<Element> currentElements =
+                getElements();
+
+        updateLEDs(
+                currentElements,
+                secondLEDGreen
+        );
 
         lastElements.clear();
-        lastElements.addAll(getElements());
+        lastElements.addAll(currentElements);
 
         while (opModeIsActive()) {
 
             driver.update();
 
-            outtake.update(null, null);
+            outtake.update(
+                    null,
+                    null
+            );
 
             if (driver.wasJustPressed(
                     RumbleGamepad.Button.A)) {
@@ -75,18 +92,31 @@ public class LEDTest extends LinearOpMode {
                 outtake.fire();
             }
 
-            List<Element> currentElements = getElements();
+            if (driver.wasJustPressed(
+                    RumbleGamepad.Button.SQUARE)) {
 
-            /*
-             * Only update the Prism when the element array
-             * actually changes.
-             */
-            if (!currentElements.equals(lastElements)) {
+                secondLEDGreen =
+                        !secondLEDGreen;
 
-                updateLEDs(currentElements);
+                updateStatusLED(
+                        secondLEDGreen
+                );
+            }
+
+            currentElements =
+                    getElements();
+
+            if (!currentElements.equals(
+                    lastElements)) {
+
+                updateBallLEDs(
+                        currentElements
+                );
 
                 lastElements.clear();
-                lastElements.addAll(currentElements);
+                lastElements.addAll(
+                        currentElements
+                );
             }
 
             telemetry.addData(
@@ -94,123 +124,169 @@ public class LEDTest extends LinearOpMode {
                     currentElements
             );
 
+            telemetry.addData(
+                    "Number of Balls",
+                    currentElements.size()
+            );
+
+            telemetry.addData(
+                    "Current Detection",
+                    outtake.getRealTimeDetection()
+            );
+
+            telemetry.addData(
+                    "LED 13-24",
+                    secondLEDGreen
+                            ? "GREEN"
+                            : "RED"
+            );
+
             telemetry.update();
 
             sleep(50);
         }
+
+        lightOff();
     }
 
-    /**
-     * Gets the current element list from the OuttakeController.
-     */
     private List<Element> getElements() {
 
-        List<Element> result = new ArrayList<>();
+        List<Element> result =
+                new ArrayList<>();
 
-        /*
-         * The controller's elementList is the source of truth.
-         */
-        result.addAll(outtake.elementList);
+        result.addAll(
+                outtake.elementList
+        );
 
         return result;
     }
 
-    /**
-     * Updates all 12 LEDs in batches.
-     *
-     * 4 balls maximum:
-     *
-     * Ball 0 = LEDs 0-2
-     * Ball 1 = LEDs 3-5
-     * Ball 2 = LEDs 6-8
-     * Ball 3 = LEDs 9-11
-     *
-     * Newest ball is displayed first.
-     */
-    private void updateLEDs(List<Element> elements)
-            throws InterruptedException {
+    private void updateLEDs(
+            List<Element> elements,
+            boolean green
+    ) throws InterruptedException {
 
-        /*
-         * Clear old animations first.
-         */
-        prism.clearAllAnimations();
+        updateBallLEDs(elements);
 
-        /*
-         * Maximum of 4 balls.
-         */
-        int ballCount = Math.min(elements.size(), 4);
-
-        /*
-         * Newest element goes first.
-         */
-        for (int ball = 0; ball < ballCount; ball++) {
-
-            int elementIndex =
-                    elements.size() - 1 - ball;
-
-            Element element =
-                    elements.get(elementIndex);
-
-            Color color =
-                    getElementColor(element);
-
-            /*
-             * Each ball gets exactly 3 LEDs.
-             */
-            int startLED = ball * 3;
-            int stopLED = startLED + 2;
-
-            PrismAnimations.Solid led =
-                    new PrismAnimations.Solid();
-
-            led.setPrimaryColor(color);
-            led.setBrightness(50);
-
-            led.setStartIndex(startLED);
-            led.setStopIndex(stopLED);
-
-            /*
-             * Each 3-LED block gets its own layer.
-             */
-            insertLEDGroup(ball, led);
-
-            /*
-             * Small delay keeps the I2C traffic
-             * from overwhelming the Prism.
-             */
-            sleep(15);
-        }
+        updateStatusLED(green);
     }
 
-    /**
-     * Converts an Element enum into a Prism color.
-     */
-    private Color getElementColor(Element element) {
+    private void updateBallLEDs(
+            List<Element> elements
+    ) throws InterruptedException {
 
-        if (element == Element.RED_NECTAR) {
+        prism.clearAllAnimations();
+
+        int ballCount =
+                Math.min(elements.size(), 4);
+
+        for (int ball = 0; ball < 4; ball++) {
+
+            Color color =
+                    Color.TRANSPARENT;
+
+            if (ball < ballCount) {
+
+                int elementIndex =
+                        elements.size()
+                                - 1
+                                - ball;
+
+                Element element =
+                        elements.get(
+                                elementIndex
+                        );
+
+                color =
+                        getElementColor(
+                                element
+                        );
+            }
+
+            int startLED =
+                    BALL_START
+                            + (ball * 3);
+
+            int stopLED =
+                    startLED + 2;
+
+            PrismAnimations.Solid led =
+                    new PrismAnimations.Solid(
+                            color,
+                            startLED,
+                            stopLED
+                    );
+
+            led.setBrightness(
+                    color == Color.TRANSPARENT
+                            ? 0
+                            : 50
+            );
+
+            insertLEDGroup(
+                    ball,
+                    led
+            );
+
+            sleep(15);
+        }
+
+        updateStatusLED(secondLEDGreen);
+    }
+
+    private void updateStatusLED(
+            boolean green
+    ) {
+
+        Color color =
+                green
+                        ? Color.GREEN
+                        : Color.RED;
+
+        PrismAnimations.Solid statusLED =
+                new PrismAnimations.Solid(
+                        color,
+                        STATUS_START,
+                        STATUS_END
+                );
+
+        statusLED.setBrightness(50);
+
+        prism.insertAndUpdateAnimation(
+                LayerHeight.LAYER_4,
+                statusLED
+        );
+    }
+
+    private Color getElementColor(
+            Element element
+    ) {
+
+        if (element ==
+                Element.RED_NECTAR) {
+
             return Color.RED;
         }
 
-        if (element == Element.BLUE_NECTAR) {
+        if (element ==
+                Element.BLUE_NECTAR) {
+
             return Color.BLUE;
         }
 
-        if (element == Element.POLLEN) {
+        if (element ==
+                Element.POLLEN) {
+
             return Color.YELLOW;
         }
 
-        /*
-         * NONE / unknown = transparent.
-         */
         return Color.TRANSPARENT;
     }
 
-    /**
-     * Sends one 3-LED block to its Prism animation layer.
-     */
     private void insertLEDGroup(
             int group,
-            PrismAnimations.Solid led) {
+            PrismAnimations.Solid led
+    ) {
 
         switch (group) {
 
@@ -241,6 +317,54 @@ public class LEDTest extends LinearOpMode {
                         led
                 );
                 break;
+        }
+    }
+
+    private void lightOff() {
+
+        prism.clearAllAnimations();
+
+        for (int layer = 0; layer <= 4; layer++) {
+
+            PrismAnimations.Solid off =
+                    new PrismAnimations.Solid(
+                            Color.TRANSPARENT,
+                            0,
+                            TOTAL_LEDS - 1
+                    );
+
+            off.setBrightness(0);
+
+            prism.insertAndUpdateAnimation(
+                    getLayer(layer),
+                    off
+            );
+        }
+    }
+
+    private GoBildaPrismDriver.LayerHeight getLayer(
+            int index
+    ) {
+
+        switch (index) {
+
+            case 0:
+                return LayerHeight.LAYER_0;
+
+            case 1:
+                return LayerHeight.LAYER_1;
+
+            case 2:
+                return LayerHeight.LAYER_2;
+
+            case 3:
+                return LayerHeight.LAYER_3;
+
+            case 4:
+                return LayerHeight.LAYER_4;
+
+            default:
+                return LayerHeight.LAYER_0;
         }
     }
 }
