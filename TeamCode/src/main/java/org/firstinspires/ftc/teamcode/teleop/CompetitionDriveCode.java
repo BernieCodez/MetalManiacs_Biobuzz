@@ -19,16 +19,16 @@ import com.pedropathing.drivetrain.DrivePowers;
 import com.pedropathing.follower.ManualDrive;
 
 import static org.firstinspires.ftc.teamcode.Config.*;
+
+import org.firstinspires.ftc.teamcode.Drivers;
+import org.firstinspires.ftc.teamcode.Profile;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 import org.firstinspires.ftc.teamcode.controllers.IntakeTransferController;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.controllers.RumbleController;
-import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.util.OpModeStorage;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
-
-import java.util.Objects;
 
 @TeleOp(name = "Competition Drive Code", group = "B - Competition")
 public class CompetitionDriveCode extends OpMode {
@@ -47,12 +47,15 @@ public class CompetitionDriveCode extends OpMode {
 
     public Alliance.Hive activeHive = alliance.TOP;//defaults top red
 
+    public Profile user;
+
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
         driver = new RumbleGamepad(gamepad1);
         autoAim = new AutoAimController(hardwareMap);
         outtake = new OuttakeController(hardwareMap);
+        user = Drivers.Ahmed;
     }
 
     @Override
