@@ -72,7 +72,7 @@ public class RumbleGamepad {
 
 
     //button currently held down
-    public boolean isDown(Button button) {
+    public boolean isDown(Trigger button) {
         return currentState.get(button);
     }
 
@@ -84,7 +84,7 @@ public class RumbleGamepad {
 
 
     //triggers once when the button gets released
-    public boolean wasJustReleased(Button button) {
+    public boolean wasJustReleased(Trigger button) {
         return !currentState.get(button) && previousState.get(button);
     }
 

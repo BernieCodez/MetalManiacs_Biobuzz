@@ -20,7 +20,7 @@ import com.pedropathing.follower.ManualDrive;
 
 import static org.firstinspires.ftc.teamcode.Config.*;
 
-import org.firstinspires.ftc.teamcode.Drivers;
+import org.firstinspires.ftc.teamcode.util.Drivers;
 import org.firstinspires.ftc.teamcode.Profile;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 import org.firstinspires.ftc.teamcode.controllers.IntakeTransferController;
@@ -32,6 +32,8 @@ import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
 @TeleOp(name = "Competition Drive Code", group = "B - Competition")
 public class CompetitionDriveCode extends OpMode {
+
+    IntakeTransferController intake;
 
     RumbleController rumble;
     IntakeTransferController intakeTransfer;
@@ -69,7 +71,7 @@ public class CompetitionDriveCode extends OpMode {
     public void loop() {
         driver.update();
 
-        if (driver.wasJustPressed(RumbleGamepad.Button.START)){ //toggle team colors with start button
+        if (driver.wasJustPressed(user.ALLIANCE_COLOR)){ //toggle team colors with start button
             alliance = alliance == Alliance.RED ? Alliance.BLUE : Alliance.RED;
         }
 
@@ -81,7 +83,7 @@ public class CompetitionDriveCode extends OpMode {
 
         //DRIVE TRAIN
         DrivePowers powers;
-        if (driver.wasJustPressed((RumbleGamepad.Button.LEFT_STICK))){
+        if (driver.wasJustPressed((user.FIELD_CENTRIC))){
             fieldCentric = !fieldCentric;
         }
         if (fieldCentric){
@@ -101,7 +103,7 @@ public class CompetitionDriveCode extends OpMode {
         ManualDrive.driveOrHold(follower, powers);
 
         // relocalise button
-        if (driver.wasJustPressed(RumbleGamepad.Button.OPTION)) {
+        if (driver.wasJustPressed(user.REMOVE_DRIFT)) {
             Pose cornerPose = new Pose(10.5, 10.5, Math.toRadians(90));
             follower.setPose(cornerPose); // overrides our pose with that ^
         }
@@ -113,10 +115,10 @@ public class CompetitionDriveCode extends OpMode {
         autoAim.update(activeHive, robot, shouldAutoAim, driver.rightX());//autoaim must update before outtake because it fetches limelight info!
         outtake.update(activeHive, robot);
 
-        if (driver.isDown(RumbleGamepad.Button.RIGHT_BUMPER)){
+        if (driver.isDown(RumbleGamepad.Trigger.RIGHT_TRIGGER)){
             outtake.fire();
         }
-        if (driver.wasJustReleased(RumbleGamepad.Button.RIGHT_BUMPER)){
+        if (driver.wasJustReleased(RumbleGamepad.Trigger.RIGHT_TRIGGER)){
             outtake.close();
         }
 
