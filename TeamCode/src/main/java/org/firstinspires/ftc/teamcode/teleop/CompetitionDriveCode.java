@@ -1,8 +1,8 @@
 /**
  *  <DRIVER MANUAL>
- *
- *  --DRIVER CONTROLS--
- *
+ *  *
+ *  *  --DRIVER CONTROLS--
+ *  *
  *  [MOVEMENT]
  *  LEFT STICK Y = forward / backward
  *  RIGHT STICK X = turn

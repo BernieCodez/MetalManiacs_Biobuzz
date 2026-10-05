@@ -42,12 +42,16 @@ public class RumbleGamepad {
         RIGHT_TRIGGER
     }
 
-    private final Map<Button, Boolean> currentState =
+    private final Map<Button, Boolean> currentStateButton =
             new EnumMap<>(Button.class);
 
-    private final Map<Button, Boolean> previousState =
+    private final Map<Button, Boolean> previousStateButton =
             new EnumMap<>(Button.class);
 
+    private final Map<Trigger, Boolean> currentStateTrigger =
+            new EnumMap<>(Trigger.class);
+    private final Map<Trigger, Boolean> previousStateTrigger =
+            new EnumMap<>(Trigger.class);
 
     public RumbleGamepad(Gamepad gamepad) {
         this.gamepad = gamepad;
@@ -56,42 +60,62 @@ public class RumbleGamepad {
         for (Button button : Button.values()) {
             boolean state = getButtonState(button);
 
-            currentState.put(button, state);
-            previousState.put(button, state);
+            currentStateButton.put(button, state);
+            previousStateButton.put(button, state);
+        }
+        for (Trigger trigger : Trigger.values()) {
+            boolean state = getTriggerState(trigger);
+
+            currentStateTrigger.put(trigger, state);
+            previousStateTrigger.put(trigger, state);
         }
     }
+
+
 
 
     //must be called at the start of the loop
     public void update() {
         for (Button button : Button.values()) {
-            previousState.put(button, currentState.get(button));
-            currentState.put(button, getButtonState(button));
+            previousStateButton.put(button, currentStateButton.get(button));
+            currentStateButton.put(button, getButtonState(button));
+        }
+        for (Trigger trigger : Trigger.values()) {
+            previousStateTrigger.put(trigger, currentStateTrigger.get(trigger));
+            currentStateTrigger.put(trigger, getTriggerState(trigger));
         }
     }
 
 
     //button currently held down
-    public boolean isDown(Trigger button) {
-        return currentState.get(button);
+    public boolean isDown(Button button) {
+        return currentStateButton.get(button);
     }
 
+    public boolean isDown(Trigger trigger){return currentStateTrigger.get(trigger);}
 
     //triggers once when the button goes down
+
     public boolean wasJustPressed(Button button) {
-        return currentState.get(button) && !previousState.get(button);
+        return currentStateButton.get(button) && !previousStateButton.get(button);
+    }
+    public boolean wasJustPressed(Trigger trigger){
+        return currentStateTrigger.get(trigger) && !previousStateTrigger.get(trigger);
     }
 
 
     //triggers once when the button gets released
-    public boolean wasJustReleased(Trigger button) {
-        return !currentState.get(button) && previousState.get(button);
+    public boolean wasJustReleased(Button button) {
+        return !currentStateButton.get(button) && previousStateButton.get(button);
+    }
+    public boolean wasJustReleased(Trigger trigger) {
+        return !currentStateTrigger.get(trigger) && previousStateTrigger.get(trigger);
     }
 
 
     //triggers once when the button state changes
     public boolean stateJustChanged(Button button) {
-        return currentState.get(button) != previousState.get(button);
+        return currentStateButton.get(button) != previousStateButton.get(button);
     }
 
     //USE READ VALUE ONLY WHEN NEEDED FOR DEBUG!
@@ -111,10 +135,23 @@ public class RumbleGamepad {
 
     //overloading for buttons!
     public boolean readValue(Button button) {
-        return currentState.get(button);
+        return currentStateButton.get(button);
     }
 
+    private boolean getTriggerState(Trigger trigger){
+        switch (trigger){
 
+            case LEFT_TRIGGER:
+                return gamepad.left_trigger > 0;
+
+            case RIGHT_TRIGGER:
+                return gamepad.right_trigger > 0;
+
+                default:
+                return false;
+
+        }
+    }
     private boolean getButtonState(Button button) {
         switch (button) {
 
