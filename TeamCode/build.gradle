@@ -49,5 +49,4 @@ android {
 
 dependencies {
     implementation project(':FtcRobotController')
-    implementation 'androidx.compose.animation:animation-core:1.12.1'
 }
