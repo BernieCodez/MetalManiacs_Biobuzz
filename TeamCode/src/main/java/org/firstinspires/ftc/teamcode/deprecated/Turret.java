@@ -1,11 +1,12 @@
-package org.firstinspires.ftc.teamcode.hardware;
+package org.firstinspires.ftc.teamcode.deprecated;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import static org.firstinspires.ftc.teamcode.Config.*;
+import static org.firstinspires.ftc.teamcode.deprecated.Config.*;
 
+@Deprecated(since = "v1.29.2")
 public class Turret {
 
     private final DcMotorEx turret;

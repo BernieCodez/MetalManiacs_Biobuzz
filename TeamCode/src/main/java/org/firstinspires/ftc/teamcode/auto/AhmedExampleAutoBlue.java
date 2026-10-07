@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.util.OpModeStorage;
 import org.firstinspires.ftc.teamcode.controllers.IntakeTransferController;
 import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
-import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
+import org.firstinspires.ftc.teamcode.deprecated.AutoAimController;
 
 @Autonomous(name = "AhmedExampleAutoBlue", group = "Autonomous")
 public class AhmedExampleAutoBlue extends LinearOpMode {

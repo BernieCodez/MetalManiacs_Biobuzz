@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.test;
+package org.firstinspires.ftc.teamcode.deprecated;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -7,13 +7,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.teamcode.Config;
+import org.firstinspires.ftc.teamcode.deprecated.Config;
 
 //HOW TO TUNE
 //Tune POSITION_P first then do all the velocity pids later
 
 //v uncommenting this will hide it on the driver station
-//@Disabled
+@Disabled
+@Deprecated(since = "v1.29.2")
 @Configurable
 @TeleOp(name = "Turret PIDF Tuner", group = "A - Test")
 public class TurretPIDFTuner extends LinearOpMode {

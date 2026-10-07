@@ -19,7 +19,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.pedropathing.paths.interpolator.Interpolator;
 
 import org.firstinspires.ftc.teamcode.Config;
-import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
+import org.firstinspires.ftc.teamcode.deprecated.AutoAimController;
 import org.firstinspires.ftc.teamcode.controllers.IntakeTransferController;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.pedro.Constants;

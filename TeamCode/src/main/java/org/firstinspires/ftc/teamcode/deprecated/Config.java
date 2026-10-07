@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.deprecated;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.api.PoseFactory;
@@ -6,11 +6,12 @@ import com.pedropathing.math.Pose;
 
 import java.util.Set;
 
+@Deprecated(since = "v1.29.2")
 @Configurable
 public class Config {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                       DRIVE TRAIN                                              //
-////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String FRONT_LEFT_WHEEL = "frontLeft";
     public static final String FRONT_RIGHT_WHEEL = "frontRight";
     public static final String BACK_LEFT_WHEEL = "backLeft";
@@ -20,7 +21,7 @@ public class Config {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                     INTAKE/TRANSFER                                            //
-////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String INTAKE_TRANSFER = "intakeTransfer";
     public static final String GATE = "gate";
     public static double GATE_OPEN = 0.5;
@@ -31,7 +32,7 @@ public class Config {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                        FLYWHEELS                                               //
-////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String LEFT_FLYWHEEL = "leftFlywheel";
     public static final String RIGHT_FLYWHEEL = "rightFlywheel";
     public static final String HOOD = "hood";
@@ -52,42 +53,57 @@ public class Config {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//                                        AUTOAIM                                                 //
-////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                         TURRET                                                 //
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    public static final String TURRET = "turret";
 
     public static boolean TUNING_ENABLED = true; //values from tuners get copied over
 
     //PIDF for position turret
-    public static double AUTOAIM_P = 0.015; //make lower if robot is not spinning fast enough, make higher if robot is spinning too fast and overshooting
-    public static double AUTOAIM_MAX_ROTATION_SPEED = 1; //0-1 1 is max
+    public static double TURRET_POSITION_P = 0.0;
+    //PIDF for velocity turret
+    public static double TURRET_VELOCITY_P = 0.0;
+    public static double TURRET_VELOCITY_I = 0.0;
+    public static double TURRET_VELOCITY_D = 0.0;
+    public static double TURRET_VELOCITY_F = 0.0;
+
+    public static int TURRET_POSITION_TOLERANCE = 10;
+
+    //encoder positions
+    public final static double TURRET_CENTER_TICKS = 750;
+    public final static double TURRET_TICKS_PER_DEGREE = 4.1667;
+    public static final int MIN_TURRET_POSITION = 0;
+    public static final int MAX_TURRET_POSITION = 1500; //placeholders beware!
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                      LOCALIZATION                                              //
-////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String PINPOINT = "pinpoint";
     public static final String LIMELIGHT = "limelight";
     public static final double RESULT_TIMEOUT_MS = 500;//for limelight
 
-    public static final Pose LOCALIZATION_RESET_POSITION = new Pose(10.5, 10.5, Math.toRadians(90));
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                       HIVE POSES                                               //
-////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     //GOAL POSITIONS FOR AUTO AIM
+    public static final PoseFactory poseFactory = PoseFactory.degrees();
 
     public static final double HIVE_BOUNDARY = 72;
 
     public enum Alliance {
         RED(
                 new Hive(//audience side
-                        new Pose(57, 57),
+                        poseFactory.of(57, 57, 0),
                         Set.of(34, 35, 36, 37),
                         Set.of(35, 36)
 
                 ),
                 new Hive(//opposite audience
-                        new Pose(57, 87),
+                        poseFactory.of(57, 87, 0),
                         Set.of(30, 31, 32, 33),
                         Set.of(31, 32)
 
@@ -97,13 +113,13 @@ public class Config {
 
         BLUE(
                 new Hive(//audience side
-                        new Pose(87, 87),
+                        poseFactory.of(87, 87, 0),
                         Set.of(38, 39, 40, 41),
                         Set.of(39, 40)
 
                 ),
                 new Hive(//opposite audience
-                        new Pose(87, 57),
+                        poseFactory.of(87, 57, 0),
                         Set.of(42, 43, 44, 45),
                         Set.of(43, 44)
 
@@ -134,7 +150,7 @@ public class Config {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                        GROUPINGS                                               //
-////////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String PUSHBOT_ARM = "pushbotArm";
     public static final String[] MOTORS = {
             INTAKE_TRANSFER,
@@ -144,6 +160,7 @@ public class Config {
             FRONT_RIGHT_WHEEL,
             BACK_LEFT_WHEEL,
             BACK_RIGHT_WHEEL,
+            TURRET,
             PUSHBOT_ARM
 
     };

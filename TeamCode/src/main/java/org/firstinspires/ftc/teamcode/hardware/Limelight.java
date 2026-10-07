@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.test;
+package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
@@ -46,7 +46,7 @@ public class Limelight {
         }
         tVisible = getBestTVisible(activeHive);
         tx = getBestTX(activeHive);
-        ty = lastGoodResult.getTy();
+        ty = lastGoodResult != null ? lastGoodResult.getTy() : 0;
     }
 
     public boolean isActiveHiveTag(int id, Alliance.Hive activeHive){ return activeHive.allTagIds.contains(id);}

@@ -57,6 +57,8 @@ public class CompetitionDriveCode extends OpMode {
         driver = new RumbleGamepad(gamepad1);
         autoAim = new AutoAimController(hardwareMap);
         outtake = new OuttakeController(hardwareMap);
+        rumble = new RumbleController(driver);
+        intakeTransfer = new IntakeTransferController(hardwareMap);
         user = Drivers.Ahmed;
     }
 
@@ -81,38 +83,24 @@ public class CompetitionDriveCode extends OpMode {
             driver.light(0,0,255); //show blue light on gamepad
         }
 
-        //DRIVE TRAIN
-        DrivePowers powers;
-        if (driver.wasJustPressed((user.FIELD_CENTRIC))){
-            fieldCentric = !fieldCentric;
-        }
-        if (fieldCentric){
-            powers = ManualDrive.fieldCentric(
-                    driver.leftY(),
-                    driver.leftX(),
-                    -driver.rightX(),
-                    follower.pose().heading()
-            );
-        }else {
-            powers = new DrivePowers(
-                    driver.leftY(),
-                    driver.leftX(),
-                    -driver.rightX()
-            );
-        }
-        ManualDrive.driveOrHold(follower, powers);
-
-        // relocalise button
-        if (driver.wasJustPressed(user.REMOVE_DRIFT)) {
-            Pose cornerPose = new Pose(10.5, 10.5, Math.toRadians(90));
-            follower.setPose(cornerPose); // overrides our pose with that ^
-        }
-
         follower.update();
         Pose robot = follower.pose(); // gets robot pose
 
+        // relocalise button (SHOULD BE IMMEDIATELY AFTER POSE IS UPDATED)
+        if (driver.wasJustPressed(user.REMOVE_DRIFT)) {
+            robot = LOCALIZATION_RESET_POSITION;
+            follower.setPose(robot); // overrides our pose with that ^
+        }
+
+        //AUTO AIM
+        if (driver.wasJustPressed(user.TOGGLE_AUTOAIM)){
+            shouldAutoAim = !shouldAutoAim;
+        }
+
         activeHive = getTargetHive(alliance, robot);
-        autoAim.update(activeHive, robot, shouldAutoAim, driver.rightX());//autoaim must update before outtake because it fetches limelight info!
+        autoAim.update(activeHive, robot);//autoaim must update before outtake because it fetches limelight info!
+
+        //OUTTAKE
         outtake.update(activeHive, robot);
 
         if (driver.isDown(RumbleGamepad.Trigger.RIGHT_TRIGGER)){
@@ -122,13 +110,36 @@ public class CompetitionDriveCode extends OpMode {
             outtake.close();
         }
 
+        //DRIVE TRAIN
+        DrivePowers powers;
+        if (driver.wasJustPressed(user.FIELD_CENTRIC)){
+            fieldCentric = !fieldCentric;
+        }
+        double rotation = shouldAutoAim ? autoAim.rotation : -driver.rightX();//override with auto aim's necessary rotation
+
+        if (fieldCentric){
+            powers = ManualDrive.fieldCentric(
+                    driver.leftY(),
+                    driver.leftX(),
+                    rotation,
+                    follower.pose().heading()
+            );
+        }else {
+            powers = new DrivePowers(
+                    driver.leftY(),
+                    driver.leftX(),
+                    rotation
+            );
+        }
+        ManualDrive.driveOrHold(follower, powers);
+
         //TELEMETRY
         telemetry.addData("Robot X", robot.x());
         telemetry.addData("Robot Y", robot.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
 
-            rumble.update(intakeTransfer.on());
-
+        //DRIVER FEEDBACK
+        rumble.update(intakeTransfer.isOn());
     }
 
     @Override
@@ -137,6 +148,4 @@ public class CompetitionDriveCode extends OpMode {
     }
 
     private Alliance.Hive getTargetHive(Alliance alliance, Pose robot) {return robot.y() > HIVE_BOUNDARY ? alliance.TOP : alliance.BOTTOM;}
-
-
 }
