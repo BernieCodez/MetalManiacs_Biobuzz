@@ -1,4 +1,3 @@
-/*
 package org.firstinspires.ftc.teamcode.test;
 
 import com.bylazar.configurables.annotations.Configurable;
@@ -7,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
-import org.firstinspires.ftc.teamcode.Config.*;
+import static org.firstinspires.ftc.teamcode.Config.*;
 
 //v uncommenting this will hide it on the driver station
 //@Disabled
@@ -30,9 +29,18 @@ public class FlywheelPIDFTuner extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        DcMotorEx flywheel = hardwareMap.get(DcMotorEx.class, RIGHT_FLYWHEEL);
-        flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flywheel.setVelocityPIDFCoefficients(
+        DcMotorEx rightFlywheel = hardwareMap.get(DcMotorEx.class, RIGHT_FLYWHEEL);
+        DcMotorEx leftFlywheel = hardwareMap.get(DcMotorEx.class, LEFT_FLYWHEEL);
+
+        rightFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFlywheel.setVelocityPIDFCoefficients(
+                KP,
+                KI,
+                KD,
+                KF
+        );
+        leftFlywheel.setVelocityPIDFCoefficients(
                 KP,
                 KI,
                 KD,
@@ -48,30 +56,44 @@ public class FlywheelPIDFTuner extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            if (Config.TUNING_ENABLED){
-                flywheel.setVelocityPIDFCoefficients(
-                        Config.FLYWHEEL_KP,
-                        Config.FLYWHEEL_KI,
-                        Config.FLYWHEEL_KD,
-                        Config.FLYWHEEL_KF
+            if (TUNING_ENABLED){
+                rightFlywheel.setVelocityPIDFCoefficients(
+                        FLYWHEEL_KP,
+                        FLYWHEEL_KI,
+                        FLYWHEEL_KD,
+                        FLYWHEEL_KF
+                );
+                leftFlywheel.setVelocityPIDFCoefficients(
+                        FLYWHEEL_KP,
+                        FLYWHEEL_KI,
+                        FLYWHEEL_KD,
+                        FLYWHEEL_KF
                 );
             }else{
-                flywheel.setVelocityPIDFCoefficients(
+                rightFlywheel.setVelocityPIDFCoefficients(
                         KP,
                         KI,
                         KD,
                         KF
                 );
             }
+            leftFlywheel.setVelocityPIDFCoefficients(
+                    KP,
+                    KI,
+                    KD,
+                    KF
+            );
 
 
             if (RUN_FLYWHEEL) {
-                flywheel.setVelocity(TARGET_VELOCITY);
+                rightFlywheel.setVelocity(TARGET_VELOCITY);
+                leftFlywheel.setVelocity(TARGET_VELOCITY);
             } else {
-                flywheel.setVelocity(0);
+                rightFlywheel.setVelocity(0);
+                leftFlywheel.setVelocity(0);
             }
 
-            double currentVelocity = flywheel.getVelocity();
+            double currentVelocity = rightFlywheel.getVelocity();
 
             double error = TARGET_VELOCITY - currentVelocity;
 
@@ -79,7 +101,7 @@ public class FlywheelPIDFTuner extends LinearOpMode {
             telemetry.addData("Target Velocity", "%.2f ticks/s", TARGET_VELOCITY);
             telemetry.addData("Current Velocity", "%.2f ticks/s", currentVelocity);
             telemetry.addData("Error", "%.2f ticks/s", error);
-            telemetry.addData("Power", "%.3f", flywheel.getPower());
+            telemetry.addData("Power", "%.3f", rightFlywheel.getPower());
             telemetry.addLine("");
             telemetry.addData("kP", KP);
             telemetry.addData("kI", KI);
@@ -91,6 +113,7 @@ public class FlywheelPIDFTuner extends LinearOpMode {
             telemetry.update();
         }
 
-        flywheel.setVelocity(0);
+        rightFlywheel.setVelocity(0);
+        leftFlywheel.setVelocity(0);
     }
-}*/
+}
