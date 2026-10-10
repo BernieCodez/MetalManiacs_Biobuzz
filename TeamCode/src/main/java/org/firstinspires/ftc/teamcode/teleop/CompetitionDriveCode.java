@@ -59,7 +59,7 @@ public class CompetitionDriveCode extends OpMode {
         outtake = new OuttakeController(hardwareMap);
         rumble = new RumbleController(driver);
         intakeTransfer = new IntakeTransferController(hardwareMap);
-        user = Drivers.Ahmed;
+        user = Drivers.activeDriver;
     }
 
     @Override
