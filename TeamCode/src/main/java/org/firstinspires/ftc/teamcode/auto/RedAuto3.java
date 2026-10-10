@@ -12,7 +12,6 @@ import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.*;
-//©JavaDude
 import static com.pedropathing.ivy.groups.Groups.*;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -28,8 +27,8 @@ import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 
-@Autonomous(name = "AhmedExampleAutoBlue", group = "Autonomous")
-public class AhmedExampleAutoBlue extends LinearOpMode {
+@Autonomous(name = "RedAuto3", group = "Autonomous")
+public class RedAuto3 extends LinearOpMode {
 
     private static final long AIM_MS = 700;
     private static final long SHOT_OPEN_MS = 250;
@@ -44,23 +43,23 @@ public class AhmedExampleAutoBlue extends LinearOpMode {
     private Alliance.Hive currentTargetHive = null;
     private boolean shouldAutoAim = false;
 
-    private final Alliance.Hive FRONT_CELL = Alliance.BLUE.TOP;
-    private final Alliance.Hive REAR_CELL = Alliance.BLUE.BOTTOM;
+    private final Alliance.Hive FRONT_CELL = Alliance.RED.TOP;
+    private final Alliance.Hive REAR_CELL = Alliance.RED.BOTTOM;
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(87.289, 140.3444, 270);
-    private final Pose shootOne = poseFactory.of(87.1548, 133.3804, -91.4577);
-    private final Pose pickUpPollen = poseFactory.of(134.5663, 134.272, 70.5585);
-    private final Pose pickUpPollenControl1 = poseFactory.of(138.6976, 95.2488, 0);
-    private final Pose pickUpPollenSegment1Target = poseFactory.of(138, 144, 0);
-    private final Pose shootTwo = poseFactory.of(86.7787, 17.6124, 91.0525);
-    private final Pose shootTwoControl1 = poseFactory.of(124, 75.991, 0);
-    private final Pose pickUpFlowerPollen = poseFactory.of(96.4068, 14.3321, -86.7141);
-    private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(97, 4, 0);
-    private final Pose shootThree = poseFactory.of(86.5064, 133.4041, -90.639);
-    private final Pose shootThreeControl1 = poseFactory.of(129.5497, 83.5041, 0);
-    private final Pose parkAtEnd = poseFactory.of(133.6398, 29.0952, -65.6835);
+    private final Pose start = poseFactory.of(56.711, 3.6556, 90);
+    private final Pose shootOne = poseFactory.of(56.8452, 10.6196, 88.5424);
+    private final Pose pickUpPollen = poseFactory.of(9.4337, 9.728, -109.4413);
+    private final Pose pickUpPollenControl1 = poseFactory.of(5.3024, 48.7512, 0);
+    private final Pose pickUpPollenSegment1Target = poseFactory.of(6, 0, 0);
+    private final Pose shootTwo = poseFactory.of(57.2213, 126.3876, -88.9476);
+    private final Pose shootTwoControl1 = poseFactory.of(20, 68.009, 0);
+    private final Pose pickUpFlowerPollen = poseFactory.of(47.5932, 129.6679, 93.2861);
+    private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(47, 140, 0);
+    private final Pose shootThree = poseFactory.of(57.4936, 10.5959, 89.361);
+    private final Pose shootThreeControl1 = poseFactory.of(14.4503, 60.4959, 0);
+    private final Pose parkAtEnd = poseFactory.of(10.3602, 114.9048, 114.3165);
 
     // Autonomous routine
     public Command autoRoutine() {
@@ -71,7 +70,7 @@ public class AhmedExampleAutoBlue extends LinearOpMode {
                 }),
                 instant(() -> currentTargetHive = FRONT_CELL),
                 follow(follower, shootOne()),
-                aimAndShoot(3),
+                aimAndShoot(4),
                 follow(follower, pickUpPollen()),
                 waitMs(1500),
                 instant(() -> currentTargetHive = REAR_CELL),

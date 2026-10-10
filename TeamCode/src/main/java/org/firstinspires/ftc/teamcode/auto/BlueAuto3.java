@@ -12,7 +12,6 @@ import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.*;
-//©JavaDude
 import static com.pedropathing.ivy.groups.Groups.*;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -28,8 +27,8 @@ import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 
-@Autonomous(name = "AhmedExampleAutoBlue", group = "Autonomous")
-public class AhmedExampleAutoBlue extends LinearOpMode {
+@Autonomous(name = "BlueAuto3", group = "Autonomous")
+public class BlueAuto3 extends LinearOpMode {
 
     private static final long AIM_MS = 700;
     private static final long SHOT_OPEN_MS = 250;
@@ -71,7 +70,7 @@ public class AhmedExampleAutoBlue extends LinearOpMode {
                 }),
                 instant(() -> currentTargetHive = FRONT_CELL),
                 follow(follower, shootOne()),
-                aimAndShoot(3),
+                aimAndShoot(4),
                 follow(follower, pickUpPollen()),
                 waitMs(1500),
                 instant(() -> currentTargetHive = REAR_CELL),
@@ -79,7 +78,7 @@ public class AhmedExampleAutoBlue extends LinearOpMode {
                 aimAndShoot(4),
                 follow(follower, pickUpFlowerPollen()),
                 waitMs(1500),
-                instant(() -> currentTargetHive = REAR_CELL),
+                instant(() -> currentTargetHive = FRONT_CELL),
                 follow(follower, shootThree()),
                 aimAndShoot(4),
                 follow(follower, parkAtEnd())
@@ -172,7 +171,7 @@ public class AhmedExampleAutoBlue extends LinearOpMode {
     }
 
     public Path shootThree() {
-        return curve(pickUpFlowerPollen, shootThreeControl1, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose)));
+        return curve(pickUpFlowerPollen, shootThreeControl1, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose)));
     }
 
     public Path parkAtEnd() {

@@ -12,7 +12,6 @@ import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.*;
-//©JavaDude
 import static com.pedropathing.ivy.groups.Groups.*;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -28,8 +27,8 @@ import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 
-@Autonomous(name = "AhmedExampleAutoBlue", group = "Autonomous")
-public class AhmedExampleAutoBlue extends LinearOpMode {
+@Autonomous(name = "BlueAuto1", group = "Autonomous")
+public class BlueAuto1 extends LinearOpMode {
 
     private static final long AIM_MS = 700;
     private static final long SHOT_OPEN_MS = 250;
@@ -50,17 +49,18 @@ public class AhmedExampleAutoBlue extends LinearOpMode {
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     private final Pose start = poseFactory.of(87.289, 140.3444, 270);
-    private final Pose shootOne = poseFactory.of(87.1548, 133.3804, -91.4577);
-    private final Pose pickUpPollen = poseFactory.of(134.5663, 134.272, 70.5585);
+    private final Pose shootOne = poseFactory.of(87.1548, 133.3804, -91.4576);
+    private final Pose pickUpPollen = poseFactory.of(134.5663, 134.272, 70.5587);
     private final Pose pickUpPollenControl1 = poseFactory.of(138.6976, 95.2488, 0);
     private final Pose pickUpPollenSegment1Target = poseFactory.of(138, 144, 0);
-    private final Pose shootTwo = poseFactory.of(86.7787, 17.6124, 91.0525);
+    private final Pose shootTwo = poseFactory.of(86.7787, 17.6124, 91.0524);
     private final Pose shootTwoControl1 = poseFactory.of(124, 75.991, 0);
-    private final Pose pickUpFlowerPollen = poseFactory.of(96.4068, 14.3321, -86.7141);
+    private final Pose pickUpFlowerPollen = poseFactory.of(96.4068, 14.3321, -86.7139);
     private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(97, 4, 0);
-    private final Pose shootThree = poseFactory.of(86.5064, 133.4041, -90.639);
-    private final Pose shootThreeControl1 = poseFactory.of(129.5497, 83.5041, 0);
-    private final Pose parkAtEnd = poseFactory.of(133.6398, 29.0952, -65.6835);
+    private final Pose shootThree = poseFactory.of(86.5807, 17.3882, 90.7808);
+    private final Pose pickUpFlowerPollen_2 = poseFactory.of(133.736, 96.6087, 2.8853);
+    private final Pose pickUpFlowerPollen_2Segment1Target = poseFactory.of(141.5, 97, 0);
+    private final Pose parkAtEnd = poseFactory.of(134.5186, 47.2588, -89.0915);
 
     // Autonomous routine
     public Command autoRoutine() {
@@ -71,7 +71,7 @@ public class AhmedExampleAutoBlue extends LinearOpMode {
                 }),
                 instant(() -> currentTargetHive = FRONT_CELL),
                 follow(follower, shootOne()),
-                aimAndShoot(3),
+                aimAndShoot(4),
                 follow(follower, pickUpPollen()),
                 waitMs(1500),
                 instant(() -> currentTargetHive = REAR_CELL),
@@ -82,6 +82,8 @@ public class AhmedExampleAutoBlue extends LinearOpMode {
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, shootThree()),
                 aimAndShoot(4),
+                follow(follower, pickUpFlowerPollen_2()),
+                waitMs(1500),
                 follow(follower, parkAtEnd())
         );
     }
@@ -172,10 +174,14 @@ public class AhmedExampleAutoBlue extends LinearOpMode {
     }
 
     public Path shootThree() {
-        return curve(pickUpFlowerPollen, shootThreeControl1, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose)));
+        return line(pickUpFlowerPollen, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose)));
+    }
+
+    public Path pickUpFlowerPollen_2() {
+        return line(shootThree, pickUpFlowerPollen_2).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpFlowerPollen_2Segment1Target)));
     }
 
     public Path parkAtEnd() {
-        return line(shootThree, parkAtEnd).tangent();
+        return line(pickUpFlowerPollen_2, parkAtEnd).tangent();
     }
 }
