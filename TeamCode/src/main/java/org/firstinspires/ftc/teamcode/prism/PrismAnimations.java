@@ -20,7 +20,7 @@
  *   SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode.Prism;
+package org.firstinspires.ftc.teamcode.prism;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchSimple;
 import com.qualcomm.robotcore.util.TypeConversion;
-import static org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver.LayerHeight;
+import static org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver.LayerHeight;
 
 public class PrismAnimations {
     public static AnimationBase RainbowSnakes;

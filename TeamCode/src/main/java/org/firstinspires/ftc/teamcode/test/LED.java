@@ -1,18 +1,17 @@
 package org.firstinspires.ftc.teamcode.test;
 
-import static org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver.LayerHeight;
+import static org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver.LayerHeight;
 
-import org.firstinspires.ftc.teamcode.Prism.Color;
-import org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver;
-import org.firstinspires.ftc.teamcode.Prism.PrismAnimations;
+import org.firstinspires.ftc.teamcode.prism.Color;
+import org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver;
+import org.firstinspires.ftc.teamcode.prism.PrismAnimations;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
-import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
+
 import static org.firstinspires.ftc.teamcode.Config.*;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class LED {
 

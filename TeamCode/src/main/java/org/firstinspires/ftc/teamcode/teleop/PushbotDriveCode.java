@@ -31,10 +31,10 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.Prism.Color;
-import org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver;
-import org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver.LayerHeight;
-import org.firstinspires.ftc.teamcode.Prism.PrismAnimations;
+import org.firstinspires.ftc.teamcode.prism.Color;
+import org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver;
+import org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver.LayerHeight;
+import org.firstinspires.ftc.teamcode.prism.PrismAnimations;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
 import java.util.ArrayList;

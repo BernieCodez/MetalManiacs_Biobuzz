@@ -1,12 +1,12 @@
 package org.firstinspires.ftc.teamcode.test;
 
-import static org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver.LayerHeight;
+import static org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver.LayerHeight;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-import org.firstinspires.ftc.teamcode.Prism.Color;
-import org.firstinspires.ftc.teamcode.Prism.GoBildaPrismDriver;
-import org.firstinspires.ftc.teamcode.Prism.PrismAnimations;
+import org.firstinspires.ftc.teamcode.prism.Color;
+import org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver;
+import org.firstinspires.ftc.teamcode.prism.PrismAnimations;
 import java.util.ArrayList;
 
 @TeleOp(name = "LED Touch Sensor - Multi Pattern", group = "Test")
