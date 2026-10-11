@@ -48,19 +48,23 @@ public class RedAuto1 extends LinearOpMode {
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(56.711, 3.6556, 90);
-    private final Pose shootOne = poseFactory.of(56.8452, 10.6196, 88.5424);
-    private final Pose pickUpPollen = poseFactory.of(9.4337, 9.728, -109.4413);
-    private final Pose pickUpPollenControl1 = poseFactory.of(5.3024, 48.7512, 0);
-    private final Pose pickUpPollenSegment1Target = poseFactory.of(6, 0, 0);
-    private final Pose shootTwo = poseFactory.of(57.2213, 126.3876, -88.9476);
-    private final Pose shootTwoControl1 = poseFactory.of(20, 68.009, 0);
-    private final Pose pickUpFlowerPollen = poseFactory.of(47.5932, 129.6679, 93.2861);
-    private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(47, 140, 0);
-    private final Pose shootThree = poseFactory.of(57.4193, 126.6118, -89.2192);
-    private final Pose pickUpFlowerPollen_2 = poseFactory.of(10.264, 47.3913, -177.1147);
-    private final Pose pickUpFlowerPollen_2Segment1Target = poseFactory.of(2.5, 47, 0);
-    private final Pose parkAtEnd = poseFactory.of(8.8954, 122.8147, 91.0395);
+    private final Pose start = poseFactory.of(87.289, 140.3444, 270);
+    private final Pose shootOne = poseFactory.of(87.1548, 133.3804, -91.4577);
+    private final Pose pickUpPollen = poseFactory.of(135.1522, 126.0691, 80.9757);
+    private final Pose pickUpPollenControl1 = poseFactory.of(131.9595, 88.2177, 0);
+    private final Pose pickUpPollenSegment1Target = poseFactory.of(138, 144, 0);
+    private final Pose pickUpPollen2 = poseFactory.of(135.0549, 140.0645, 90.3164);
+    private final Pose pickUpPollen2Segment1Target = poseFactory.of(135, 150, 0);
+    private final Pose shootTwo = poseFactory.of(84.435, 31.0886, 86.9016);
+    private final Pose shootTwoControl1 = poseFactory.of(90.8954, 112.0252, 0);
+    private final Pose shootTwoControl2 = poseFactory.of(140.0766, 21.794, 0);
+    private final Pose pickUpFlowerPollen = poseFactory.of(94.0631, 12.5743, -92.425);
+    private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(93.7, 4, 0);
+    private final Pose shootThree = poseFactory.of(84.237, 30.8644, 86.5373);
+    private final Pose pickUpFlowerPollen2 = poseFactory.of(131.3923, 98.6594, 5.8787);
+    private final Pose pickUpFlowerPollen2Control1 = poseFactory.of(114.0538, 25.2474, 0);
+    private final Pose pickUpFlowerPollen2Segment1Target = poseFactory.of(134.7, 99, 0);
+    private final Pose parkAtEnd = poseFactory.of(131.589, 21.4783, -89.854);
 
     // Autonomous routine
     public Command autoRoutine() {
@@ -73,6 +77,7 @@ public class RedAuto1 extends LinearOpMode {
                 follow(follower, shootOne()),
                 aimAndShoot(4),
                 follow(follower, pickUpPollen()),
+                follow(follower, pickUpPollen2()),
                 waitMs(1500),
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, shootTwo()),
@@ -82,7 +87,7 @@ public class RedAuto1 extends LinearOpMode {
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, shootThree()),
                 aimAndShoot(4),
-                follow(follower, pickUpFlowerPollen_2()),
+                follow(follower, pickUpFlowerPollen2()),
                 waitMs(1500),
                 follow(follower, parkAtEnd())
         );
@@ -165,8 +170,12 @@ public class RedAuto1 extends LinearOpMode {
         return curve(shootOne, pickUpPollenControl1, pickUpPollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpPollenSegment1Target)));
     }
 
+    public Path pickUpPollen2() {
+        return line(pickUpPollen, pickUpPollen2).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpPollen2Segment1Target)));
+    }
+
     public Path shootTwo() {
-        return curve(pickUpPollen, shootTwoControl1, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose)));
+        return curve(pickUpPollen2, shootTwoControl1, shootTwoControl2, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose)));
     }
 
     public Path pickUpFlowerPollen() {
@@ -177,11 +186,11 @@ public class RedAuto1 extends LinearOpMode {
         return line(pickUpFlowerPollen, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose)));
     }
 
-    public Path pickUpFlowerPollen_2() {
-        return line(shootThree, pickUpFlowerPollen_2).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpFlowerPollen_2Segment1Target)));
+    public Path pickUpFlowerPollen2() {
+        return curve(shootThree, pickUpFlowerPollen2Control1, pickUpFlowerPollen2).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpFlowerPollen2Segment1Target)));
     }
 
     public Path parkAtEnd() {
-        return line(pickUpFlowerPollen_2, parkAtEnd).tangent();
+        return line(pickUpFlowerPollen2, parkAtEnd).tangent();
     }
 }

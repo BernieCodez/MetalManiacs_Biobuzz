@@ -15,7 +15,7 @@ public class IntakeTransferController {
 
     }
     public void runIntake(){
-        intakeTransfer.setPower(0.5);
+        intakeTransfer.setPower(1);
         }
     public void runGateOpen(){
         gate.open();

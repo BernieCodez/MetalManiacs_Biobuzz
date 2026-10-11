@@ -49,18 +49,22 @@ public class BlueAuto1 extends LinearOpMode {
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     private final Pose start = poseFactory.of(87.289, 140.3444, 270);
-    private final Pose shootOne = poseFactory.of(87.1548, 133.3804, -91.4576);
-    private final Pose pickUpPollen = poseFactory.of(134.5663, 134.272, 70.5587);
-    private final Pose pickUpPollenControl1 = poseFactory.of(138.6976, 95.2488, 0);
+    private final Pose shootOne = poseFactory.of(87.1548, 133.3804, -91.4577);
+    private final Pose pickUpPollen = poseFactory.of(135.1522, 126.0691, 80.9757);
+    private final Pose pickUpPollenControl1 = poseFactory.of(131.9595, 88.2177, 0);
     private final Pose pickUpPollenSegment1Target = poseFactory.of(138, 144, 0);
-    private final Pose shootTwo = poseFactory.of(86.7787, 17.6124, 91.0524);
-    private final Pose shootTwoControl1 = poseFactory.of(124, 75.991, 0);
-    private final Pose pickUpFlowerPollen = poseFactory.of(96.4068, 14.3321, -86.7139);
-    private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(97, 4, 0);
-    private final Pose shootThree = poseFactory.of(86.5807, 17.3882, 90.7808);
-    private final Pose pickUpFlowerPollen_2 = poseFactory.of(133.736, 96.6087, 2.8853);
-    private final Pose pickUpFlowerPollen_2Segment1Target = poseFactory.of(141.5, 97, 0);
-    private final Pose parkAtEnd = poseFactory.of(133.6397, 22.0642, -88.9141);
+    private final Pose pickUpPollen2 = poseFactory.of(135.0549, 140.0645, 90.3164);
+    private final Pose pickUpPollen2Segment1Target = poseFactory.of(135, 150, 0);
+    private final Pose shootTwo = poseFactory.of(84.435, 31.0886, 86.9016);
+    private final Pose shootTwoControl1 = poseFactory.of(90.8954, 112.0252, 0);
+    private final Pose shootTwoControl2 = poseFactory.of(140.0766, 21.794, 0);
+    private final Pose pickUpFlowerPollen = poseFactory.of(94.0631, 12.5743, -92.425);
+    private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(93.7, 4, 0);
+    private final Pose shootThree = poseFactory.of(84.237, 30.8644, 86.5373);
+    private final Pose pickUpFlowerPollen2 = poseFactory.of(131.3923, 98.6594, 5.8787);
+    private final Pose pickUpFlowerPollen2Control1 = poseFactory.of(114.0538, 25.2474, 0);
+    private final Pose pickUpFlowerPollen2Segment1Target = poseFactory.of(134.7, 99, 0);
+    private final Pose parkAtEnd = poseFactory.of(131.589, 21.4783, -89.854);
 
     // Autonomous routine
     public Command autoRoutine() {
@@ -73,6 +77,7 @@ public class BlueAuto1 extends LinearOpMode {
                 follow(follower, shootOne()),
                 aimAndShoot(4),
                 follow(follower, pickUpPollen()),
+                follow(follower, pickUpPollen2()),
                 waitMs(1500),
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, shootTwo()),
@@ -82,7 +87,7 @@ public class BlueAuto1 extends LinearOpMode {
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, shootThree()),
                 aimAndShoot(4),
-                follow(follower, pickUpFlowerPollen_2()),
+                follow(follower, pickUpFlowerPollen2()),
                 waitMs(1500),
                 follow(follower, parkAtEnd())
         );
@@ -165,8 +170,12 @@ public class BlueAuto1 extends LinearOpMode {
         return curve(shootOne, pickUpPollenControl1, pickUpPollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpPollenSegment1Target)));
     }
 
+    public Path pickUpPollen2() {
+        return line(pickUpPollen, pickUpPollen2).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpPollen2Segment1Target)));
+    }
+
     public Path shootTwo() {
-        return curve(pickUpPollen, shootTwoControl1, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose)));
+        return curve(pickUpPollen2, shootTwoControl1, shootTwoControl2, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose)));
     }
 
     public Path pickUpFlowerPollen() {
@@ -177,11 +186,11 @@ public class BlueAuto1 extends LinearOpMode {
         return line(pickUpFlowerPollen, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose)));
     }
 
-    public Path pickUpFlowerPollen_2() {
-        return line(shootThree, pickUpFlowerPollen_2).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpFlowerPollen_2Segment1Target)));
+    public Path pickUpFlowerPollen2() {
+        return curve(shootThree, pickUpFlowerPollen2Control1, pickUpFlowerPollen2).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpFlowerPollen2Segment1Target)));
     }
 
     public Path parkAtEnd() {
-        return line(pickUpFlowerPollen_2, parkAtEnd).tangent();
+        return line(pickUpFlowerPollen2, parkAtEnd).tangent();
     }
 }
