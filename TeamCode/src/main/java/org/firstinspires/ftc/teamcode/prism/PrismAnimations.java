@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchSimple;
 import com.qualcomm.robotcore.util.TypeConversion;
-import static org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver.LayerHeight;
+import org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver.LayerHeight;
 
 public class PrismAnimations {
     public static AnimationBase RainbowSnakes;

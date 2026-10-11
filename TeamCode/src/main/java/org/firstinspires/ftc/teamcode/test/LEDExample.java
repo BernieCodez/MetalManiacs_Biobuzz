@@ -2,7 +2,7 @@
 
 package org.firstinspires.ftc.teamcode.test;
 
-import static org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver.LayerHeight;
+import org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver.LayerHeight;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

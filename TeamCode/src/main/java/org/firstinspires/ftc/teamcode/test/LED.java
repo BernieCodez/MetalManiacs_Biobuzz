@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.test;
 
-import static org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver.LayerHeight;
+import org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver.LayerHeight;
 
 import org.firstinspires.ftc.teamcode.prism.Color;
 import org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver;
