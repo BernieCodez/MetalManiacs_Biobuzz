@@ -17,6 +17,10 @@ public class AutoAimController {
 
     }
 
+    public boolean isAprilTag(){
+        return limelight.tVisible;
+    }
+
     public void update(Alliance.Hive activeHive, Pose robot) {
         //fetch limelight tag data
         limelight.update(activeHive);

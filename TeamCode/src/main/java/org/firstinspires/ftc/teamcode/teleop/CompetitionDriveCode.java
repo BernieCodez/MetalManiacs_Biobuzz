@@ -41,7 +41,7 @@ public class CompetitionDriveCode extends OpMode {
     RumbleGamepad driver;
     public boolean shouldAutoAim = true;
 
-    public boolean fieldCentric = false; //false - robot centric | true - field centric
+    public boolean fieldCentric = true; //false - robot centric | true - field centric
 
     private AutoAimController autoAim;
     private OuttakeController outtake;
@@ -120,14 +120,14 @@ public class CompetitionDriveCode extends OpMode {
         if (fieldCentric){
             powers = ManualDrive.fieldCentric(
                     driver.leftY(),
-                    driver.leftX(),
+                    -driver.leftX(),
                     rotation,
                     follower.pose().heading()
             );
         }else {
             powers = new DrivePowers(
                     driver.leftY(),
-                    driver.leftX(),
+                    -driver.leftX(),
                     rotation
             );
         }
@@ -137,6 +137,10 @@ public class CompetitionDriveCode extends OpMode {
         telemetry.addData("Robot X", robot.x());
         telemetry.addData("Robot Y", robot.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
+        telemetry.addData("Auto Aim", shouldAutoAim);
+        telemetry.addData("Field Centric", fieldCentric);
+        telemetry.addData("Sees April Tag", autoAim.isAprilTag());
+//        telemetry.addData("")
 
         //DRIVER FEEDBACK
         rumble.update(intakeTransfer.isOn());
