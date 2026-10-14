@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.test;
+package org.firstinspires.ftc.teamcode.deprecated;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Config.Element;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
 import java.util.Arrays;
-
+@Deprecated
 @TeleOp(name = "ColorArrayTest", group = "Test")
 public class ColorArrayTest extends LinearOpMode {
 

@@ -35,9 +35,9 @@ public class RunFlywheelsMaxSpeed extends LinearOpMode {
         while (opModeIsActive()) {
             driver.update();
             if (driver.wasJustPressed(RumbleGamepad.Button.RIGHT_BUMPER)){
-                speed += 0.05;
+                speed += 0.01;
             } else if (driver.wasJustPressed(RumbleGamepad.Button.LEFT_BUMPER)) {
-                speed-=0.05;
+                speed-=0.01;
             }
 
             rightFlywheel.setPower(speed);

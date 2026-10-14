@@ -1,6 +1,6 @@
 // Only for teleop testing
 
-package org.firstinspires.ftc.teamcode.test;
+package org.firstinspires.ftc.teamcode.deprecated;
 
 import org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver.LayerHeight;
 
@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Deprecated
 @TeleOp(name = "ElementArrayCheck", group = "Test")
 public class LEDTest extends LinearOpMode {
 

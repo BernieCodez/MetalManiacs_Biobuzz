@@ -1,5 +1,4 @@
-package org.firstinspires.ftc.teamcode.hardware;
-
+package org.firstinspires.ftc.teamcode.deprecated;
 import android.graphics.Color;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -7,7 +6,7 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import static org.firstinspires.ftc.teamcode.Config.*;
-
+@Deprecated
 public class ColorSensor {
 
     public RevColorSensorV3 colorSensor;

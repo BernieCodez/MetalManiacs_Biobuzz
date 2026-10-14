@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import static org.firstinspires.ftc.teamcode.Config.*;
 
-import org.firstinspires.ftc.teamcode.hardware.ColorSensor;
+import org.firstinspires.ftc.teamcode.deprecated.ColorSensor;
 import org.firstinspires.ftc.teamcode.hardware.Flywheel;
 import org.firstinspires.ftc.teamcode.hardware.Gate;
 import org.firstinspires.ftc.teamcode.hardware.Hood;

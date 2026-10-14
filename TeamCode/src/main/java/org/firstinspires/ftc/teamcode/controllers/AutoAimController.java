@@ -4,16 +4,21 @@ import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import static org.firstinspires.ftc.teamcode.Config.*;
+
 import org.firstinspires.ftc.teamcode.hardware.Limelight;
+import org.firstinspires.ftc.teamcode.test.LED;
+
 public class AutoAimController {
 
     private final Limelight limelight;
+    private final LED led;
     private double targetHeading;
     private double headingError;
     public double rotation = 0;
 
     public AutoAimController(HardwareMap hardwareMap) {
         limelight = new Limelight(hardwareMap);
+        led = new LED(hardwareMap);
 
     }
 
@@ -24,6 +29,7 @@ public class AutoAimController {
     public void update(Alliance.Hive activeHive, Pose robot) {
         //fetch limelight tag data
         limelight.update(activeHive);
+        led.update(limelight.tVisible);
 
         targetHeading = calculateLocalizedHeading(activeHive, robot); //calc using pedro pathing localization
 
@@ -44,7 +50,7 @@ public class AutoAimController {
         double deltaX = activeHive.pose.x() - robot.x();
         double deltaY = activeHive.pose.y() - robot.y();
 
-        return  Math.toDegrees(Math.atan2(deltaY, deltaX));
+        return Math.toDegrees(Math.atan2(deltaY, deltaX));
     }
 
     private double normalizeAngle(double angle) {//normalizes from -180 to 180
