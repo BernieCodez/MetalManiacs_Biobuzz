@@ -6,11 +6,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import static org.firstinspires.ftc.teamcode.Config.*;
 
 import org.firstinspires.ftc.teamcode.hardware.Limelight;
-import org.firstinspires.ftc.teamcode.test.LED;
+import org.firstinspires.ftc.teamcode.hardware.LED;
 
 public class AutoAimController {
 
-    private final Limelight limelight;
+    public final Limelight limelight;
     private final LED led;
     private double targetHeading;
     private double headingError;

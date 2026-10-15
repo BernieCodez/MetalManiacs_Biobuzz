@@ -58,10 +58,8 @@ of variable values.
 Generally, try to avoid using AI when coding, since it
 takes out all the fun in coding. Challenge yourself
 and only when ABSOLUTELY NECESSARY should you turn to AI.  
-
 Remember: AI is a tool, so treat it as such. Don't let it
 replace you, but allow it to help you when you are stuck.  
-
 Acceptable levels of AI usage:
  - Explaining what code does
  - Brainstorming solutions
@@ -70,8 +68,7 @@ Acceptable levels of AI usage:
 Gray area:
 Writing lines of code. It's acceptable as long as
 you completely understand what it is doing and can 
-thoroughly explain it to another software member.
-
+thoroughly explain it to another software member.   
 I (Bernie) would like to keep this year's repository as 
 clean as possible, so try not to just let an AI agent run 
 free in the repo pls 🙏
@@ -97,9 +94,26 @@ Ahmed - ThePythonCode
 Gauransh - skullblazed
 Sparsh - tecktrailblazer
 
+### Buttons Not Detecting
+Did you put: driver.update() at the very top of your loop?
+No? Do it >:)
+
 ### Fixing Gradle (I know everyone's favorite)
-Delete all files that are highlighted in orange. 
-HIGHLIGHTED! If the text is orange do not delete it (unless it is also 
+If the terminal reports anything along the lines of 
+"no devices/emulators found" (on the left side of the
+terminal) then that basically means you are not connected
+to the robot. Switch the config to use TeamCode temporarily
+and replug the wire from your computer to the control hub.
+If the device shows up with TeamCode, you can switch back
+to DeploySloth and run it again.  
+If you need to force a gradle sync you can do that by 
+clicking on the elephant icon in the right sidebar, second
+one down, below the bell. Then click the download icon (
+hovering over it should say "download sources")   
+Final last ditch effort if gradle still doesn't work:
+Switch to Project view instead of Andriod, then delete 
+all files that are highlighted in orange. HIGHLIGHTED! 
+If the text is orange do not delete it (unless it is also 
 being highlighted orange ofc)!
 
 ### Fixing Pedro Pathing
