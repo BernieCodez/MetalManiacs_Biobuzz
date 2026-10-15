@@ -26,7 +26,7 @@ public class RunFlywheelsMaxSpeed extends LinearOpMode {
         leftFlywheel = hardwareMap.get(DcMotor.class, "leftFlywheel");
         leftFlywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         driver = new RumbleGamepad(gamepad1);
-        speed = 0.5;
+        speed = 0.1;
         waitForStart();
 
         if (isStopRequested()) return;

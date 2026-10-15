@@ -4,13 +4,13 @@ import org.firstinspires.ftc.teamcode.util.RumbleGamepad.*;
 public class Drivers {
     Drivers drivers;
 
-    public final static Profile Ahmed = new Profile();
+    public final static Profile AHMED = new Profile("Ahmed");
 //    static{Ahmed.REMOVE_DRIFT = Button.B;}
-    public final static Profile Sparsh = new Profile();
+    public final static Profile SPARSH = new Profile("Sparsh");
 //    static{Sparsh.REMOVE_DRIFT = Button.B;}
     public static final Profile[] DRIVERS = {
-            Ahmed,
-            Sparsh,
+            AHMED,
+            SPARSH,
     };
     public static Profile activeDriver = DRIVERS[0]; // defaults to using top most driver as active!
 }

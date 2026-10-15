@@ -9,13 +9,11 @@ public class Profile {
     public Button REVERSE_INTAKE = Button.DPAD_DOWN;
     public Button TOGGLE_AUTOAIM = Button.A;
 
-    public Profile(Trigger FIRE, Button ALLIANCE_COLOR, Button FIELD_CENTRIC, Button REMOVE_DRIFT, Button INTAKE_ON, Button REVERSE_INTAKE, Button TOGGLE_AUTOAIM){
-        this.FIRE = FIRE;
-        this.ALLIANCE_COLOR = ALLIANCE_COLOR;
-        this.FIELD_CENTRIC = FIELD_CENTRIC;
-        this.REMOVE_DRIFT = REMOVE_DRIFT;
-        this.REVERSE_INTAKE = REVERSE_INTAKE;
-        this.TOGGLE_AUTOAIM = TOGGLE_AUTOAIM;
-    }
+    public String name;
+
     public Profile(){}
+
+    public Profile(String name){
+        this.name = name;
+    }
 }

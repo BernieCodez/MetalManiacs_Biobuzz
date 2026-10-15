@@ -299,6 +299,14 @@ public class RumbleGamepad {
 
     public boolean rightStick() {return gamepad.right_stick_button;}
 
+    //this function basically turns a linear -1 to 1 into an exponential curve
+    public static double exponentialInput(double input, double exponent) {
+        return Math.copySign(
+                Math.pow(Math.abs(input), exponent),
+                input
+        );
+    }
+
     //leds & rumble :)
     public void light(int r, int g, int b) { //use 0-255 for rgb
         gamepad.setLedColor(

@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.pedropathing.drivetrain.DrivePowers;
 import com.pedropathing.follower.ManualDrive;
 
+import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.RADIANS;
 import static org.firstinspires.ftc.teamcode.Config.*;
 
 import org.firstinspires.ftc.teamcode.util.Drivers;
@@ -45,7 +46,7 @@ public class CompetitionDriveCode extends OpMode {
 
     private AutoAimController autoAim;
     private OuttakeController outtake;
-    public Alliance alliance = Alliance.RED;
+    public Alliance alliance = currentAlliance;
 
     public Alliance.Hive activeHive = alliance.TOP;//defaults top red
 
@@ -86,6 +87,15 @@ public class CompetitionDriveCode extends OpMode {
         follower.update();
         Pose robot = follower.pose(); // gets robot pose
 
+        //reset yaw
+        if (driver.wasJustPressed(RumbleGamepad.Button.Y)) {
+            Constants.pinpoint.setHeading(0, RADIANS
+            );
+
+            robot = new Pose(robot.x(), robot.y(), 0);
+            follower.setPose(robot);
+        }
+
         // relocalise button (SHOULD BE IMMEDIATELY AFTER POSE IS UPDATED)
         if (driver.wasJustPressed(user.REMOVE_DRIFT)) {
             robot = LOCALIZATION_RESET_POSITION;
@@ -115,19 +125,21 @@ public class CompetitionDriveCode extends OpMode {
         if (driver.wasJustPressed(user.FIELD_CENTRIC)){
             fieldCentric = !fieldCentric;
         }
-        double rotation = shouldAutoAim ? autoAim.rotation : -driver.rightX();//override with auto aim's necessary rotation
-
+        double exponent = 3;
+        double rotation = shouldAutoAim ? autoAim.rotation : RumbleGamepad.exponentialInput(-driver.rightX(),exponent);//override with auto aim's necessary rotation
+        double strafe = RumbleGamepad.exponentialInput(-driver.leftX(), exponent);
+        double throttle = RumbleGamepad.exponentialInput(driver.leftY(), exponent);
         if (fieldCentric){
             powers = ManualDrive.fieldCentric(
-                    driver.leftY(),
-                    -driver.leftX(),
+                    throttle,
+                    strafe,
                     rotation,
                     follower.pose().heading()
             );
         }else {
             powers = new DrivePowers(
-                    driver.leftY(),
-                    -driver.leftX(),
+                    throttle,
+                    strafe,
                     rotation
             );
         }
@@ -139,7 +151,14 @@ public class CompetitionDriveCode extends OpMode {
         telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
         telemetry.addData("Auto Aim", shouldAutoAim);
         telemetry.addData("Field Centric", fieldCentric);
-        telemetry.addData("Sees April Tag", autoAim.isAprilTag());
+        telemetry.addLine("");
+        telemetry.addLine("Limelight");
+        telemetry.addData("TVisible", autoAim.limelight.ty);
+        telemetry.addData("TX", autoAim.limelight.tx);
+        telemetry.addLine("");
+        telemetry.addLine("Active Hive");
+        telemetry.addData("Active Hive", activeHive.name);
+
 //        telemetry.addData("")
 
         //DRIVER FEEDBACK

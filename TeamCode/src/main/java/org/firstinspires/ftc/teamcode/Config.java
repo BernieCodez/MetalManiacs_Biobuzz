@@ -85,16 +85,19 @@ public class Config {
     //GOAL POSITIONS FOR AUTO AIM
 
     public static final double HIVE_BOUNDARY = 72;
+    public static Alliance currentAlliance = Alliance.RED;//default to an alliance to avoid null exception errors
 
     public enum Alliance {
         RED(
                 new Hive(//audience side
+                        "RED TOP",
                         new Pose(57, 57),
                         Set.of(34, 35, 36, 37),
                         Set.of(35, 36)
 
                 ),
                 new Hive(//opposite audience
+                        "RED BOTTOM",
                         new Pose(57, 87),
                         Set.of(30, 31, 32, 33),
                         Set.of(31, 32)
@@ -105,12 +108,14 @@ public class Config {
 
         BLUE(
                 new Hive(//audience side
+                        "BLUE TOP",
                         new Pose(87, 87),
                         Set.of(38, 39, 40, 41),
                         Set.of(39, 40)
 
                 ),
                 new Hive(//opposite audience
+                        "BLUE BOTTOM",
                         new Pose(87, 57),
                         Set.of(42, 43, 44, 45),
                         Set.of(43, 44)
@@ -127,11 +132,13 @@ public class Config {
         }
 
         public static class Hive {
+            public final String name;
             public final Pose pose;
             public final Set<Integer> allTagIds;
             public final Set<Integer> middleTagIds;
 
-            Hive(Pose pose, Set<Integer> allTagIds, Set<Integer> middleTagIds) {
+            Hive(String name, Pose pose, Set<Integer> allTagIds, Set<Integer> middleTagIds) {
+                this.name = name;
                 this.pose = pose;
                 this.allTagIds = allTagIds;
                 this.middleTagIds = middleTagIds;
