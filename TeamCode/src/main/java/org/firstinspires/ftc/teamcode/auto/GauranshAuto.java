@@ -60,8 +60,7 @@ public class GauranshAuto extends LinearOpMode {
     public Command autoRoutine() {
         return sequential(
                 Commands.instant(() -> {
-                    intakeTransferController.runIntake();
-                    intakeTransferController.runGateOpen();
+                    intakeTransferController.setPower(1);
                 }),
                 parallel(
                         Commands.instant(() -> {

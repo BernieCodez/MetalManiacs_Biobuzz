@@ -7,20 +7,13 @@ import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
 public class IntakeTransferController {
     IntakeTransfer intakeTransfer;
     FlowerIntake flowerIntake;
-    Gate gate;
     public IntakeTransferController(HardwareMap hardwareMap){
         intakeTransfer = new IntakeTransfer(hardwareMap);
         flowerIntake = new FlowerIntake(hardwareMap);
-        gate = new Gate(hardwareMap);
-
     }
-    public void runIntake(){
-        intakeTransfer.setPower(1);
+    public void setPower(double power){
+        intakeTransfer.setPower(power);
         }
-    public void runGateOpen(){
-        gate.open();
-        }
-    public void runGateClose() { gate.close(); }
     public boolean isOn(){return Math.abs(intakeTransfer.getPower())>0.05;}
 
     public void toggleFlowerIntake(){

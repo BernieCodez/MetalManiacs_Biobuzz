@@ -8,6 +8,7 @@ public class Profile {
     public Button INTAKE_ON = Button.DPAD_UP;
     public Button REVERSE_INTAKE = Button.DPAD_DOWN;
     public Button TOGGLE_AUTOAIM = Button.A;
+    public Button INTAKE_FLOWER_TOGGLE = Button.B;
 
     public String name;
 

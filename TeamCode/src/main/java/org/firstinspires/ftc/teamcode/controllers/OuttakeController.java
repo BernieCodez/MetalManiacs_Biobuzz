@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.hardware.Hood;
 
 import java.util.ArrayList;
 public class OuttakeController {
-    private Flywheel flywheel;
+    public Flywheel flywheel;
     private Gate gate;
     private Hood hood;
     private ColorSensor colorSensor;
@@ -24,6 +24,8 @@ public class OuttakeController {
     private final ElapsedTime confirmationTimer = new ElapsedTime();
     private boolean hasAddedCurrentElement = false;
     public boolean tomuchballs = false;
+    public boolean useFlywheel = false;
+    public double distance = 0;
 
     public OuttakeController(HardwareMap hardwareMap){
         flywheel = new Flywheel(hardwareMap);
@@ -39,9 +41,11 @@ public class OuttakeController {
     public void update(Alliance.Hive activeHive, Pose robot){
         if (activeHive == null) {
             flywheel.stop();
+            useFlywheel = false;
         } else {
-            double distance = Math.hypot(robot.x() - activeHive.pose.x(), robot.y() - activeHive.pose.y());
+            distance = Math.hypot(robot.x() - activeHive.pose.x(), robot.y() - activeHive.pose.y());
             flywheel.setVelocityByDistance(distance);
+            useFlywheel = true;
         }
 
         Element currentDetection = colorSensor.getDetectedColor();

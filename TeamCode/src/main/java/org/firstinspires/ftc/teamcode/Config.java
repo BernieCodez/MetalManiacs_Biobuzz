@@ -39,10 +39,10 @@ public class Config {
     public static final double HOOD_POLLEN = 0.25;
 
     //PIDF for flywheels
-    public static double FLYWHEEL_KP = 0.0;
+    public static double FLYWHEEL_KP = 0.5;
     public static double FLYWHEEL_KI = 0.0;
     public static double FLYWHEEL_KD = 0.0;
-    public static double FLYWHEEL_KF = 0.0;
+    public static double FLYWHEEL_KF = 15;
 
     public static double FLYWHEEL_VELOCITY_TOLERANCE = 20;
     //Slope calculator

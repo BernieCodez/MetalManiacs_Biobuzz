@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class LED {
 
     private final GoBildaPrismDriver prism;
+    private Color previous = Color.RED;
 
     public LED(HardwareMap hardwareMap) {
         prism = hardwareMap.get(
@@ -24,22 +25,13 @@ public class LED {
 
     public void update(boolean tVisible) {
 
-        Color color = tVisible
-                ? Color.GREEN
-                : Color.RED;
+        Color color = tVisible ? Color.GREEN : Color.RED;
 
-        PrismAnimations.Solid led =
-                new PrismAnimations.Solid(
-                        color,
-                        0,
-                        11
-                );
+        if (color != previous){
+            PrismAnimations.Solid led = new PrismAnimations.Solid(color, 0, 11);
+            led.setBrightness(50);
 
-        led.setBrightness(50);
-
-        prism.insertAndUpdateAnimation(
-                LayerHeight.LAYER_0,
-                led
-        );
+            prism.insertAndUpdateAnimation(LayerHeight.LAYER_0, led);
+        }
     }
 }

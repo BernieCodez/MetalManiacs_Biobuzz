@@ -38,7 +38,7 @@ public class AutoAimController {
         //april tag is visible
         if (limelight.tVisible) {
             //correct calculated localized target angle with limelight calculated angle
-            headingError = normalizeAngle(headingError + limelight.tx); //USE - IF THE ROBOT ENDS UP SPINNING THE OPPOSITE WAY WHEN IT SEES AN APRIL TAG
+            headingError = normalizeAngle(headingError - limelight.tx); //USE + IF THE ROBOT ENDS UP SPINNING THE OPPOSITE WAY WHEN IT SEES AN APRIL TAG
         }
 
         //tell the robot body where to go

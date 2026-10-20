@@ -113,12 +113,26 @@ public class CompetitionDriveCode extends OpMode {
         //OUTTAKE
         outtake.update(activeHive, robot);
 
-        if (driver.isDown(RumbleGamepad.Trigger.RIGHT_TRIGGER)){
+        if (driver.isDown(user.FIRE)){
             outtake.fire();
         }
-        if (driver.wasJustReleased(RumbleGamepad.Trigger.RIGHT_TRIGGER)){
+        if (driver.wasJustReleased(user.FIRE)){
             outtake.close();
         }
+
+        //INTAKE & TRANSFER
+        if (driver.wasJustPressed(user.INTAKE_ON)){
+            intakeTransfer.setPower(1);
+        }
+        if (driver.wasJustPressed(user.REVERSE_INTAKE)) {
+            intakeTransfer.setPower(-1);
+        }
+
+        //FLOWER INTAKE
+        if (driver.wasJustPressed(user.INTAKE_FLOWER_TOGGLE)){
+            intakeTransfer.toggleFlowerIntake();
+        }
+
 
         //DRIVE TRAIN
         DrivePowers powers;
@@ -151,6 +165,9 @@ public class CompetitionDriveCode extends OpMode {
         telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
         telemetry.addData("Auto Aim", shouldAutoAim);
         telemetry.addData("Field Centric", fieldCentric);
+        telemetry.addData("Flywheel Velocity", outtake.flywheel.getVelocity());
+        telemetry.addData("Flywheels On", outtake.useFlywheel);
+        telemetry.addData("Distance", outtake.distance);
         telemetry.addLine("");
         telemetry.addLine("Limelight");
         telemetry.addData("TVisible", autoAim.limelight.ty);

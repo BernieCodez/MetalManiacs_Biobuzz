@@ -64,7 +64,7 @@ public class BlueAuto4 extends LinearOpMode {
     public Command autoRoutine() {
         return sequential(
                 instant(() -> {
-                    intakeTransferController.runIntake();
+                    intakeTransferController.setPower(1);
                     outtakeController.close();
                 }),
                 waitMs(WAIT_BEFORE_PRELOAD_MS),

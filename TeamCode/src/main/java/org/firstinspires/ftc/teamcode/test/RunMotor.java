@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.Config;
 
 //v uncommenting this will hide it on the driver station
 //@Disabled
-@TeleOp(name = "Run Motor", group = "Z - Test")
+@TeleOp(name = "Run Motor", group = "A - Test")
 public class RunMotor extends LinearOpMode {
 
     private int selected = 0;

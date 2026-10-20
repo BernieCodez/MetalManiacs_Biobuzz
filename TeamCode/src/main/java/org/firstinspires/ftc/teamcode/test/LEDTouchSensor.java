@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.test;
 
 import org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver.LayerHeight;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.TouchSensor;
@@ -10,6 +12,7 @@ import org.firstinspires.ftc.teamcode.prism.PrismAnimations;
 import java.util.ArrayList;
 
 @TeleOp(name = "LED Touch Sensor - Multi Pattern", group = "Test")
+@Disabled
 public class LEDTouchSensor extends LinearOpMode {
 
     public GoBildaPrismDriver prism;

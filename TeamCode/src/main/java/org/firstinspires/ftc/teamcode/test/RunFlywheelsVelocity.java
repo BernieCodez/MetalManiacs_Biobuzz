@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.test;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Config;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
 //v uncommenting this will hide it on the driver station
-//@Disabled
+@Disabled
 @TeleOp(name = "Run Flywheels With Velocity", group = "A - Test")
 public class RunFlywheelsVelocity extends LinearOpMode {
     DcMotorEx leftFlywheel;

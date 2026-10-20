@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
 //v uncommenting this will hide it on the driver station
 //@Disabled
-@TeleOp(name = "Move Flywheel Servo Test", group = "A - Test")
+@TeleOp(name = "Move Flywheel Servo Test", group = "Z - Test")
 public class MovingFlywheelServoTest extends LinearOpMode {
     CRServo leftServo;
     CRServo rightServo;

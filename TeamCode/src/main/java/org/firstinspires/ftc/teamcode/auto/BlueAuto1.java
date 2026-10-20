@@ -70,7 +70,7 @@ public class BlueAuto1 extends LinearOpMode {
     public Command autoRoutine() {
         return sequential(
                 instant(() -> {
-                    intakeTransferController.runIntake();
+                    intakeTransferController.setPower(1);
                     outtakeController.close();
                 }),
                 instant(() -> currentTargetHive = FRONT_CELL),
