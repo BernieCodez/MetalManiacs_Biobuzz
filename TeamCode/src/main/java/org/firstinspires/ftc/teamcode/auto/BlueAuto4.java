@@ -35,9 +35,9 @@ public class BlueAuto4 extends LinearOpMode {
     private static final long SHOT_GAP_MS = 250;
     private static final long SHOT_FINISH_MS = 750;
 
-    private static final long WAIT_BEFORE_PRELOAD_MS = 3000;
-    private static final long WAIT_BEFORE_WALL_FLOWER_MS = 2000;
-    private static final long WAIT_BEFORE_PARK_MS = 1000;
+    private static final long WAIT_BEFORE_PRELOAD_MS = 3250;
+    private static final long WAIT_BEFORE_WALL_FLOWER_MS = 1750;
+    private static final long WAIT_BEFORE_PARK_MS = 0;
 
     private Follower follower;
 
@@ -54,10 +54,12 @@ public class BlueAuto4 extends LinearOpMode {
 
     private final Pose start = poseFactory.of(82.6925, 2.8478, 90);
     private final Pose waitThenShootPreloadsBackCell = poseFactory.of(82.4503, 10.1408, 85.9277);
+    private final Pose holdForPartner = poseFactory.of(134, 22, 85.3);
     private final Pose waitForUsThenWallFlower = poseFactory.of(129.1718, 93.9493, 5.5424);
     private final Pose waitForUsThenWallFlowerSegment1Target = poseFactory.of(140, 95, 0);
     private final Pose shootFrontCell = poseFactory.of(83.3799, 131.9607, -86.5892);
-    private final Pose waitForUsThenPark = poseFactory.of(131.7774, 44.9689, -85.5024);
+    private final Pose clearFrontCell = poseFactory.of(132, 134, -88.7);
+    private final Pose waitForUsThenPark = poseFactory.of(133.6, 26, -86.4);
     private final Pose waitForUsThenParkSegment1Target = poseFactory.of(135, 4, 0);
 
     // Autonomous routine
@@ -71,12 +73,14 @@ public class BlueAuto4 extends LinearOpMode {
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, waitThenShootPreloadsBackCell()),
                 aimAndShoot(4),
+                follow(follower, holdForPartner()),
                 waitMs(WAIT_BEFORE_WALL_FLOWER_MS),
                 follow(follower, waitForUsThenWallFlower()),
                 waitMs(1500),
                 instant(() -> currentTargetHive = FRONT_CELL),
                 follow(follower, shootFrontCell()),
                 aimAndShoot(4),
+                follow(follower, clearFrontCell()),
                 waitMs(WAIT_BEFORE_PARK_MS),
                 follow(follower, waitForUsThenPark())
         );
@@ -155,15 +159,23 @@ public class BlueAuto4 extends LinearOpMode {
         return line(start, waitThenShootPreloadsBackCell).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose)));
     }
 
+    public Path holdForPartner() {
+        return line(waitThenShootPreloadsBackCell, holdForPartner).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(waitForUsThenWallFlowerSegment1Target)));
+    }
+
     public Path waitForUsThenWallFlower() {
-        return line(waitThenShootPreloadsBackCell, waitForUsThenWallFlower).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(waitForUsThenWallFlowerSegment1Target)));
+        return line(holdForPartner, waitForUsThenWallFlower).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(waitForUsThenWallFlowerSegment1Target)));
     }
 
     public Path shootFrontCell() {
         return line(waitForUsThenWallFlower, shootFrontCell).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose)));
     }
 
+    public Path clearFrontCell() {
+        return line(shootFrontCell, clearFrontCell).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(waitForUsThenParkSegment1Target)));
+    }
+
     public Path waitForUsThenPark() {
-        return line(shootFrontCell, waitForUsThenPark).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(waitForUsThenParkSegment1Target)));
+        return line(clearFrontCell, waitForUsThenPark).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(waitForUsThenParkSegment1Target)));
     }
 }

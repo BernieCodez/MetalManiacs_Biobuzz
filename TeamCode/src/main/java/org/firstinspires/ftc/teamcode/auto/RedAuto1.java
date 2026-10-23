@@ -48,23 +48,23 @@ public class RedAuto1 extends LinearOpMode {
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
-    private final Pose start = poseFactory.of(87.289, 140.3444, 270);
-    private final Pose shootOne = poseFactory.of(87.1548, 133.3804, -91.4577);
-    private final Pose pickUpPollen = poseFactory.of(135.1522, 126.0691, 80.9757);
-    private final Pose pickUpPollenControl1 = poseFactory.of(131.9595, 88.2177, 0);
-    private final Pose pickUpPollenSegment1Target = poseFactory.of(138, 144, 0);
-    private final Pose pickUpPollen2 = poseFactory.of(135.0549, 140.0645, 90.3164);
-    private final Pose pickUpPollen2Segment1Target = poseFactory.of(135, 150, 0);
-    private final Pose shootTwo = poseFactory.of(84.435, 31.0886, 86.9016);
-    private final Pose shootTwoControl1 = poseFactory.of(90.8954, 112.0252, 0);
-    private final Pose shootTwoControl2 = poseFactory.of(140.0766, 21.794, 0);
-    private final Pose pickUpFlowerPollen = poseFactory.of(94.0631, 12.5743, -92.425);
-    private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(93.7, 4, 0);
-    private final Pose shootThree = poseFactory.of(84.237, 30.8644, 86.5373);
-    private final Pose pickUpFlowerPollen2 = poseFactory.of(131.3923, 98.6594, 5.8787);
-    private final Pose pickUpFlowerPollen2Control1 = poseFactory.of(114.0538, 25.2474, 0);
-    private final Pose pickUpFlowerPollen2Segment1Target = poseFactory.of(134.7, 99, 0);
-    private final Pose parkAtEnd = poseFactory.of(131.589, 21.4783, -89.854);
+    private final Pose start = poseFactory.of(56.711, 3.6556, 90);
+    private final Pose shootOne = poseFactory.of(56.8452, 10.6196, 88.5423);
+    private final Pose pickUpPollen = poseFactory.of(8.8478, 17.9309, -99.0243);
+    private final Pose pickUpPollenControl1 = poseFactory.of(12.0405, 55.7823, 0);
+    private final Pose pickUpPollenSegment1Target = poseFactory.of(6, 0, 0);
+    private final Pose pickUpPollen2 = poseFactory.of(8.9451, 3.9355, -89.6836);
+    private final Pose pickUpPollen2Segment1Target = poseFactory.of(9, -6, 0);
+    private final Pose shootTwo = poseFactory.of(59.565, 112.9114, -93.0984);
+    private final Pose shootTwoControl1 = poseFactory.of(53.1046, 31.9748, 0);
+    private final Pose shootTwoControl2 = poseFactory.of(3.9234, 122.206, 0);
+    private final Pose pickUpFlowerPollen = poseFactory.of(49.9369, 131.4257, 87.575);
+    private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(50.3, 140, 0);
+    private final Pose shootThree = poseFactory.of(59.763, 113.1356, -93.4627);
+    private final Pose pickUpFlowerPollen2 = poseFactory.of(12.6077, 45.3406, -174.1213);
+    private final Pose pickUpFlowerPollen2Control1 = poseFactory.of(29.9462, 118.7526, 0);
+    private final Pose pickUpFlowerPollen2Segment1Target = poseFactory.of(9.3, 45, 0);
+    private final Pose parkAtEnd = poseFactory.of(12.411, 122.5217, 90.146);
 
     // Autonomous routine
     public Command autoRoutine() {

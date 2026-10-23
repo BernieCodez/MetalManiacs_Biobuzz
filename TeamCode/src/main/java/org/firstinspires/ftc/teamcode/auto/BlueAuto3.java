@@ -59,7 +59,7 @@ public class BlueAuto3 extends LinearOpMode {
     private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(97, 4, 0);
     private final Pose shootThree = poseFactory.of(86.5064, 133.4041, -90.639);
     private final Pose shootThreeControl1 = poseFactory.of(129.5497, 83.5041, 0);
-    private final Pose parkAtEnd = poseFactory.of(133.6398, 29.0952, -65.6835);
+    private final Pose parkAtEnd = poseFactory.of(134.4141, 47.3126, -60.9);
 
     // Autonomous routine
     public Command autoRoutine() {

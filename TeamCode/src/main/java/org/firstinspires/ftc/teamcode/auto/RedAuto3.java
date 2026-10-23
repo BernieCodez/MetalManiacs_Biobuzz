@@ -59,7 +59,7 @@ public class RedAuto3 extends LinearOpMode {
     private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(47, 140, 0);
     private final Pose shootThree = poseFactory.of(57.4936, 10.5959, 89.361);
     private final Pose shootThreeControl1 = poseFactory.of(14.4503, 60.4959, 0);
-    private final Pose parkAtEnd = poseFactory.of(10.3602, 114.9048, 114.3165);
+    private final Pose parkAtEnd = poseFactory.of(9.5859, 96.6874, 119.1);
 
     // Autonomous routine
     public Command autoRoutine() {
@@ -78,7 +78,7 @@ public class RedAuto3 extends LinearOpMode {
                 aimAndShoot(4),
                 follow(follower, pickUpFlowerPollen()),
                 waitMs(1500),
-                instant(() -> currentTargetHive = REAR_CELL),
+                instant(() -> currentTargetHive = FRONT_CELL),
                 follow(follower, shootThree()),
                 aimAndShoot(4),
                 follow(follower, parkAtEnd())
@@ -171,7 +171,7 @@ public class RedAuto3 extends LinearOpMode {
     }
 
     public Path shootThree() {
-        return curve(pickUpFlowerPollen, shootThreeControl1, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose)));
+        return curve(pickUpFlowerPollen, shootThreeControl1, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose)));
     }
 
     public Path parkAtEnd() {
