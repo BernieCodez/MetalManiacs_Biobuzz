@@ -15,7 +15,7 @@ public class AutoAimController {
     private double targetHeading;
     private double headingError;
     public double rotation = 0;
-    private boolean REAR_SHOOTER = true; //auto aim with the butt
+    private boolean REAR_SHOOTER = true; //true for auto aim with the butt, false for aiming with face
 
     public AutoAimController(HardwareMap hardwareMap) {
         limelight = new Limelight(hardwareMap);
