@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.test;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.hardware.Flywheel;
+import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
 @TeleOp(name = "Flywheel PID/Velocity", group = "A - Test")
@@ -11,11 +12,13 @@ public class RunFlywheelsPID extends LinearOpMode {
     public static double MAX_VELOCITY = 2500;
     public static double VELOCITY_STEP = 100;
     public Flywheel flywheel;
+    public IntakeTransfer intakeTransfer;
     RumbleGamepad driver;
     public double tps;
     @Override
     public void runOpMode() {
         flywheel = new Flywheel(hardwareMap);
+        intakeTransfer = new IntakeTransfer(hardwareMap);
         driver = new RumbleGamepad(gamepad1);
         tps = 1000;
 
@@ -34,6 +37,7 @@ public class RunFlywheelsPID extends LinearOpMode {
             tps = Math.max(MIN_VELOCITY, Math.min(tps, MAX_VELOCITY));
 
             flywheel.setVelocity(tps);
+            intakeTransfer.setPower(1);
 
             telemetry.addLine("Use bumpers to control motor velocity");
             telemetry.addData("Target velocity", tps);

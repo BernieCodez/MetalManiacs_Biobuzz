@@ -15,6 +15,7 @@ public class AutoAimController {
     private double targetHeading;
     private double headingError;
     public double rotation = 0;
+    private boolean REAR_SHOOTER = true; //auto aim with the butt
 
     public AutoAimController(HardwareMap hardwareMap) {
         limelight = new Limelight(hardwareMap);
@@ -50,7 +51,13 @@ public class AutoAimController {
         double deltaX = activeHive.pose.x() - robot.x();
         double deltaY = activeHive.pose.y() - robot.y();
 
-        return Math.toDegrees(Math.atan2(deltaY, deltaX));
+        double heading = Math.toDegrees(Math.atan2(deltaY, deltaX));
+
+        if (REAR_SHOOTER){
+            heading += 180;
+        }
+
+        return normalizeAngle(heading);
     }
 
     private double normalizeAngle(double angle) {//normalizes from -180 to 180
