@@ -31,28 +31,23 @@ public class CheckRobot extends LinearOpMode {
     // SETTINGS - change these to adjust the tests
     // how hard and how long each motor and servo runs
     private static final double DRIVE_POWER = 0.3;
-    private static final double DRIVE_INCHES = 48;
-    private static final double STRAFE_INCHES = 24;
+    private static final double DRIVE_SPIN_SECONDS = 1.5;
+    private static final double PUSH_INCHES = 24;
     private static final double TURN_DEGREES = 90;
-    private static final double DRIVE_TIMEOUT_SECONDS = 4.0;
-    private static final double DRIVE_SETTLE_SECONDS = 0.5;
-    private static final double INTAKE_POWER = 0.5;
+    private static final double INTAKE_POWER = -0.5;
     private static final double INTAKE_SPIN_SECONDS = 1.0;
     private static final double FLYWHEEL_POWER = -0.5;
     private static final double FLYWHEEL_SPIN_SECONDS = 1.5;
+    private static final double LEFT_FLYWHEEL_ENCODER_SIGN = 1;
+    private static final double RIGHT_FLYWHEEL_ENCODER_SIGN = -1;
     private static final double SERVO_MOVE_SECONDS = 0.7;
 
     // pass/fail limits
     private static final double LOW_BATTERY_VOLTS = 11.4;
     private static final double MIN_MOTOR_AMPS = 0.1;
     private static final double MIN_FLYWHEEL_TICKS_PER_SECOND = 200;
-    private static final double DRIVE_TOLERANCE_INCHES = 6;
-    private static final double DRIVE_SIDEWAYS_TOLERANCE_INCHES = 6;
-    private static final double DRIVE_MAX_TURN_DEGREES = 20;
     private static final double POD_MIN_MOVE_INCHES = 2;
-    private static final double TURN_TOLERANCE_DEGREES = 15;
     private static final double TURN_MIN_DEGREES = 10;
-    private static final double TURN_POSITION_TOLERANCE_INCHES = 4;
 
     // what the results say on the screen
     private static final String PASS = "✅ PASS";
@@ -61,14 +56,15 @@ public class CheckRobot extends LinearOpMode {
     private static final String WAITING = "⏳ waiting";
 
     // LIST OF TESTS - remove a name to remove a test, they run in this order
-    private final String[] tests = {"Battery", "Drive + Pinpoint", "Intake", "Flywheels", "Gate", "Hood",
+    private final String[] tests = {"Battery", "Drivetrain", "Pinpoint", "Intake", "Flywheels", "Gate", "Hood",
             "Wedges", "Color sensor", "Limelight"};
 
     // what each test in the list runs (the names must match the list above)
     private String runTest(String test) {
         switch (test) {
             case "Battery":          return testBattery();
-            case "Drive + Pinpoint": return testDriveAndPinpoint();
+            case "Drivetrain":       return testDrivetrain();
+            case "Pinpoint":         return testPinpoint();
             case "Intake":           return testIntake();
             case "Flywheels":        return testFlywheels();
             case "Gate":             return testServos("gate", GATE_OPEN, GATE_CLOSE, GATE);
@@ -92,8 +88,6 @@ public class CheckRobot extends LinearOpMode {
     private boolean limelightSawTag = false;
 
     private GoBildaPinpointDriver pinpoint;
-    private DcMotorEx[] driveMotors;
-    private double[] driveAmps;
     private double forwardInches, leftInches, turnedDegrees;
 
     // SCREEN FLOW - pick tests, run them, show the summary
@@ -191,19 +185,20 @@ public class CheckRobot extends LinearOpMode {
         if (!pressAorB("Keep hands away from the intake", "A = start,  B = skip")) {
             return SKIPPED;
         }
-        return testMotors(INTAKE_POWER, INTAKE_SPIN_SECONDS, false, INTAKE_TRANSFER);
+        return testMotors(INTAKE_POWER, INTAKE_SPIN_SECONDS, null, INTAKE_TRANSFER);
     }
 
     private String testFlywheels() {
         if (!pressAorB("Keep hands away from the flywheels", "A = start,  B = skip")) {
             return SKIPPED;
         }
-        // true = also check the flywheels reach speed and spin forwards (they have encoder wires)
-        return testMotors(FLYWHEEL_POWER, FLYWHEEL_SPIN_SECONDS, true, LEFT_FLYWHEEL, RIGHT_FLYWHEEL);
+        double[] encoderSigns = {LEFT_FLYWHEEL_ENCODER_SIGN, RIGHT_FLYWHEEL_ENCODER_SIGN};
+        return testMotors(FLYWHEEL_POWER, FLYWHEEL_SPIN_SECONDS, encoderSigns, LEFT_FLYWHEEL, RIGHT_FLYWHEEL);
     }
 
     // spins motors and checks each one gets power (and for flywheels, spins the right way)
-    private String testMotors(double power, double seconds, boolean checkSpinSpeed, String... motorNames) {
+    private String testMotors(double power, double seconds, double[] encoderSigns, String... motorNames) {
+        boolean checkSpinSpeed = encoderSigns != null;
         DcMotorEx[] motors = new DcMotorEx[motorNames.length];
         double[] highestAmps = new double[motorNames.length];
 
@@ -229,7 +224,8 @@ public class CheckRobot extends LinearOpMode {
         // stop each motor and write down anything that went wrong
         String problems = "";
         for (int i = 0; i < motorNames.length; i++) {
-            double speed = motors[i].getVelocity(); // read the speed BEFORE stopping it
+            double speed = motors[i].getVelocity() * Math.signum(power); // read the speed BEFORE stopping it
+            if (checkSpinSpeed) speed *= encoderSigns[i];
             motors[i].setPower(0);
             // getConnectionInfo says which hub and port it's plugged into, e.g. "Control Hub port 2"
             String motor = motorNames[i] + " (" + motors[i].getConnectionInfo() + ")";
@@ -296,29 +292,55 @@ public class CheckRobot extends LinearOpMode {
         return FAIL + " - never saw a tag. Check the lens is clean and the tag is in view";
     }
 
-    // DRIVE + PINPOINT TEST - the robot drives itself forward, back, left, right, then turns both ways, and the pinpoint checks each move
-    private String testDriveAndPinpoint() {
-        pinpoint = hardwareMap.tryGet(GoBildaPinpointDriver.class, PINPOINT);
-        if (pinpoint == null) return notInConfig(PINPOINT);
-
+    private String testDrivetrain() {
         String[] motorNames = {FRONT_LEFT_WHEEL, FRONT_RIGHT_WHEEL, BACK_LEFT_WHEEL, BACK_RIGHT_WHEEL};
         DcMotorSimple.Direction[] directions = {
                 Constants.drivetrainConfig.frontLeftDirection.get(),
                 Constants.drivetrainConfig.frontRightDirection.get(),
                 Constants.drivetrainConfig.backLeftDirection.get(),
                 Constants.drivetrainConfig.backRightDirection.get()};
-        driveMotors = new DcMotorEx[4];
-        driveAmps = new double[4];
+        DcMotorEx[] motors = new DcMotorEx[4];
         for (int i = 0; i < 4; i++) {
-            driveMotors[i] = hardwareMap.tryGet(DcMotorEx.class, motorNames[i]);
-            if (driveMotors[i] == null) return notInConfig(motorNames[i]);
-            driveMotors[i].setDirection(directions[i]);
-            driveMotors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            driveMotors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            motors[i] = hardwareMap.tryGet(DcMotorEx.class, motorNames[i]);
+            if (motors[i] == null) return notInConfig(motorNames[i]);
+            motors[i].setDirection(directions[i]);
+            motors[i].setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
-        if (!pressAorB("Put the robot ON THE FLOOR on a tile line", "CLEAR 5 FT IN FRONT and 3 FT ON EACH SIDE",
-                "It will drive forward, back, left, right, then turn left and right BY ITSELF", "A = start,  B = skip")) {
+        if (!pressAorB("Put the robot ON A BOX so the wheels are OFF THE FLOOR", "Each wheel will spin forward one at a time", "A = start,  B = skip")) {
+            return SKIPPED;
+        }
+
+        String problems = "";
+        for (int i = 0; i < 4; i++) {
+            String motor = motorNames[i] + " (" + motors[i].getConnectionInfo() + ")";
+            double highestAmps = 0;
+            motors[i].setPower(DRIVE_POWER);
+            ElapsedTime timer = new ElapsedTime();
+            while (opModeIsActive() && timer.seconds() < DRIVE_SPIN_SECONDS) {
+                highestAmps = Math.max(highestAmps, motors[i].getCurrent(CurrentUnit.AMPS));
+                show("Wheel " + (i + 1) + "/4: watch " + motorNames[i] + "...");
+            }
+            motors[i].setPower(0);
+
+            if (highestAmps < MIN_MOTOR_AMPS) {
+                problems += motor + " got no power. Check its power wire is plugged in. ";
+            } else if (!pressAorB("Did " + motorNames[i] + " spin FORWARD (top of the wheel moving toward the front)?", "A = yes,  B = no")) {
+                problems += motor + " spins backwards. Flip its direction in Constants. ";
+            }
+        }
+
+        if (problems.isEmpty()) return PASS;
+        return FAIL + " - " + problems;
+    }
+
+    // PINPOINT TEST - you push and turn the robot by hand, and the pinpoint checks each move
+    private String testPinpoint() {
+        pinpoint = hardwareMap.tryGet(GoBildaPinpointDriver.class, PINPOINT);
+        if (pinpoint == null) return notInConfig(PINPOINT);
+
+        if (!pressAorB("Put the robot ON THE FLOOR on a tile line", "You will push and turn it BY HAND", "A = start,  B = skip")) {
             return SKIPPED;
         }
 
@@ -333,73 +355,28 @@ public class CheckRobot extends LinearOpMode {
 
         String problems = "";
 
-        if (!drive("Step 1/6: Driving FORWARD", 1, 0, 0, DRIVE_INCHES)) return FAIL + " - stopped with B. " + problems;
-        problems += checkMove("Forward", forwardInches, leftInches, DRIVE_INCHES, "x");
+        if (!moveByHand("Step 1/3: Push the robot FORWARD about " + (int) PUSH_INCHES + " in")) return SKIPPED;
+        problems += checkMove("Forward", forwardInches, leftInches, "x");
 
-        if (!drive("Step 2/6: Driving BACKWARD", -1, 0, 0, DRIVE_INCHES)) return FAIL + " - stopped with B. " + problems;
-        problems += checkMove("Backward", -forwardInches, leftInches, DRIVE_INCHES, "x");
+        if (!moveByHand("Step 2/3: Push the robot LEFT about " + (int) PUSH_INCHES + " in")) return SKIPPED;
+        problems += checkMove("Left", leftInches, forwardInches, "y");
 
-        if (!drive("Step 3/6: Driving LEFT", 0, 1, 0, STRAFE_INCHES)) return FAIL + " - stopped with B. " + problems;
-        problems += checkMove("Left", leftInches, forwardInches, STRAFE_INCHES, "y");
-
-        if (!drive("Step 4/6: Driving RIGHT", 0, -1, 0, STRAFE_INCHES)) return FAIL + " - stopped with B. " + problems;
-        problems += checkMove("Right", -leftInches, forwardInches, STRAFE_INCHES, "y");
-
-        if (!drive("Step 5/6: Turning LEFT", 0, 0, 1, TURN_DEGREES)) return FAIL + " - stopped with B. " + problems;
+        if (!moveByHand("Step 3/3: Turn the robot LEFT (counterclockwise) about " + (int) TURN_DEGREES + " deg")) return SKIPPED;
         problems += checkTurn("Turn left", turnedDegrees);
-
-        if (!drive("Step 6/6: Turning RIGHT", 0, 0, -1, TURN_DEGREES)) return FAIL + " - stopped with B. " + problems;
-        problems += checkTurn("Turn right", -turnedDegrees);
-
-        for (int i = 0; i < 4; i++) {
-            if (driveAmps[i] < MIN_MOTOR_AMPS) {
-                problems = motorNames[i] + " (" + driveMotors[i].getConnectionInfo() + ") got no power. Check its power wire is plugged in. " + problems;
-            }
-        }
 
         if (problems.isEmpty()) return PASS;
         return FAIL + " - " + problems;
     }
 
-    private boolean drive(String step, double forward, double left, double turn, double target) {
+    private boolean moveByHand(String step) {
         pinpoint.setPosition(new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0));
-        forwardInches = 0;
-        leftInches = 0;
-        turnedDegrees = 0;
-
-        driveMotors[0].setPower((forward - left - turn) * DRIVE_POWER);
-        driveMotors[1].setPower((forward + left + turn) * DRIVE_POWER);
-        driveMotors[2].setPower((forward + left - turn) * DRIVE_POWER);
-        driveMotors[3].setPower((forward - left + turn) * DRIVE_POWER);
-
-        boolean pressedB = false;
-        double moved = 0;
-        ElapsedTime timer = new ElapsedTime();
-        while (opModeIsActive() && timer.seconds() < DRIVE_TIMEOUT_SECONDS && moved < target) {
+        while (opModeIsActive()) {
             readPinpoint();
-            if (turn != 0) moved = Math.abs(turnedDegrees);
-            else moved = Math.hypot(forwardInches, leftInches);
-
-            for (int i = 0; i < 4; i++) {
-                driveAmps[i] = Math.max(driveAmps[i], driveMotors[i].getCurrent(CurrentUnit.AMPS));
-            }
-            if (gamepad1.bWasPressed()) {
-                pressedB = true;
-                break;
-            }
-            show(step + "...", pinpointLine(), "B = EMERGENCY STOP");
+            if (gamepad1.aWasPressed()) return true;
+            if (gamepad1.bWasPressed()) return false;
+            show(step, "Then press A  (B = skip)", pinpointLine());
         }
-
-        for (int i = 0; i < 4; i++) {
-            driveMotors[i].setPower(0);
-        }
-
-        timer.reset();
-        while (opModeIsActive() && timer.seconds() < DRIVE_SETTLE_SECONDS) {
-            readPinpoint();
-            show(step + ": stopping...", pinpointLine());
-        }
-        return !pressedB;
+        return false;
     }
 
     private void readPinpoint() {
@@ -413,41 +390,25 @@ public class CheckRobot extends LinearOpMode {
         return "Forward: " + round(forwardInches) + " in   Left: " + round(leftInches) + " in   Turned: " + round(turnedDegrees) + " deg";
     }
 
-    private String checkMove(String move, double movedInches, double sidewaysInches, double target, String pod) {
-        if (Math.abs(turnedDegrees) > DRIVE_MAX_TURN_DEGREES) {
-            return move + ": robot turned " + round(turnedDegrees) + " deg instead of going straight. A drive motor direction in Constants is wrong or a motor is unplugged. ";
-        }
+    private String checkMove(String move, double movedInches, double sidewaysInches, String pod) {
         if (Math.abs(movedInches) < POD_MIN_MOVE_INCHES && Math.abs(sidewaysInches) >= POD_MIN_MOVE_INCHES) {
-            return move + ": pinpoint saw it go the wrong way. If the robot moved the right way, the x and y pod wires are swapped. If not, a drive motor direction in Constants is wrong. ";
+            return move + ": pinpoint saw it go the wrong way. If you pushed it the right way, the x and y pod wires are swapped. ";
         }
         if (Math.abs(movedInches) < POD_MIN_MOVE_INCHES) {
-            return move + ": " + pod + " pod didn't count. If the robot moved, check the pod's wire and that its wheel touches the floor. If it didn't move, check the drive motors. ";
+            return move + ": " + pod + " pod didn't count. Check the pod's wire and that its wheel touches the floor. ";
         }
         if (movedInches < 0) {
-            return move + ": counted backwards. If the robot moved the right way, flip " + pod + "PodDirection. If not, a drive motor direction in Constants is wrong. ";
-        }
-        if (Math.abs(sidewaysInches) > DRIVE_SIDEWAYS_TOLERANCE_INCHES) {
-            return move + ": drifted " + round(sidewaysInches) + " in off course. A drive motor direction in Constants may be wrong or a wheel is slipping. ";
-        }
-        if (movedInches < target - DRIVE_TOLERANCE_INCHES) {
-            return move + ": only went " + round(movedInches) + " in. Check the drive motors and that nothing is dragging. ";
+            return move + ": counted backwards. Flip " + pod + "PodDirection. ";
         }
         return "";
     }
 
     private String checkTurn(String move, double turned) {
         if (Math.abs(turned) < TURN_MIN_DEGREES) {
-            return move + ": heading didn't change. If the robot turned, the pinpoint may be broken. If it didn't, check the drive motors. ";
+            return move + ": heading didn't change. The pinpoint may be broken. ";
         }
         if (turned < 0) {
-            return move + ": counted backwards. If the robot turned the right way, check the pinpoint is mounted right side up. If not, a drive motor direction in Constants is wrong. ";
-        }
-        if (Math.abs(turned - TURN_DEGREES) > TURN_TOLERANCE_DEGREES) {
-            return move + ": measured " + round(turned) + " deg instead of " + TURN_DEGREES + ". Check the drive motors and that nothing is dragging. ";
-        }
-        // Math.hypot = straight-line distance from where it started, should be about 0 after turning in place
-        if (Math.hypot(forwardInches, leftInches) > TURN_POSITION_TOLERANCE_INCHES) {
-            return move + ": position moved while turning. Tell programming to check the pod offsets. ";
+            return move + ": counted backwards. Check the pinpoint is mounted right side up. ";
         }
         return "";
     }
