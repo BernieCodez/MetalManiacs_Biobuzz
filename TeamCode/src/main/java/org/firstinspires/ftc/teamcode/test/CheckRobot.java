@@ -22,6 +22,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.deprecated.ColorSensor;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.prism.Color;
+import org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver;
+import org.firstinspires.ftc.teamcode.prism.PrismAnimations;
 
 import static org.firstinspires.ftc.teamcode.Config.*;
 
@@ -41,6 +44,11 @@ public class CheckRobot extends LinearOpMode {
     private static final double LEFT_FLYWHEEL_ENCODER_SIGN = 1;
     private static final double RIGHT_FLYWHEEL_ENCODER_SIGN = -1;
     private static final double SERVO_MOVE_SECONDS = 0.7;
+    private static final String PRISM = "prism";
+    private static final int LED_COUNT = 12;
+    private static final int LED_BRIGHTNESS = 50;
+    private static final double LED_COLOR_SECONDS = 1.0;
+    private static final int PRISM_WORKING_ID = 3;
 
     // pass/fail limits
     private static final double LOW_BATTERY_VOLTS = 11.4;
@@ -57,7 +65,7 @@ public class CheckRobot extends LinearOpMode {
 
     // LIST OF TESTS - remove a name to remove a test, they run in this order
     private final String[] tests = {"Battery", "Drivetrain", "Pinpoint", "Intake", "Flywheels", "Gate", "Hood",
-            "Wedges", "Color sensor", "Limelight"};
+            "Wedges", "Color sensor", "Limelight", "LEDs"};
 
     // what each test in the list runs (the names must match the list above)
     private String runTest(String test) {
@@ -72,6 +80,7 @@ public class CheckRobot extends LinearOpMode {
             case "Wedges":           return testServos("wedges", WEDGE_DOWN, WEDGE_UP, LEFT_WEDGE, RIGHT_WEDGE);
             case "Color sensor":     return testColorSensor();
             case "Limelight":        return testLimelight();
+            case "LEDs":             return testLEDs();
         }
         return FAIL + " - \"" + test + "\" is in the list but has no test in runTest()";
     }
@@ -117,8 +126,8 @@ public class CheckRobot extends LinearOpMode {
             if (gamepad1.yWasPressed()) setAll(true);
 
             telemetry.addLine("ROBOT CHECK - pick what to test");
-            telemetry.addLine("DPAD up/down = move,  A = check/uncheck");
-            telemetry.addLine("X = uncheck all,  Y = check all");
+            telemetry.addLine("DPAD up/down = move,  CROSS = check/uncheck");
+            telemetry.addLine("SQUARE = uncheck all,  TRIANGLE = check all");
             telemetry.addLine("Then press START (play button)");
             telemetry.addLine();
             for (int i = 0; i < tests.length; i++) {
@@ -167,7 +176,7 @@ public class CheckRobot extends LinearOpMode {
             return;
         }
 
-        show("Fix the problems below, then press A to test them again");
+        show("Fix the problems below, then press CROSS to test them again");
         if (gamepad1.aWasPressed()) runTests(true);
     }
 
@@ -182,14 +191,14 @@ public class CheckRobot extends LinearOpMode {
     }
 
     private String testIntake() {
-        if (!pressAorB("Keep hands away from the intake", "A = start,  B = skip")) {
+        if (!pressAorB("Keep hands away from the intake", "CROSS = start,  CIRCLE = skip")) {
             return SKIPPED;
         }
         return testMotors(INTAKE_POWER, INTAKE_SPIN_SECONDS, null, INTAKE_TRANSFER);
     }
 
     private String testFlywheels() {
-        if (!pressAorB("Keep hands away from the flywheels", "A = start,  B = skip")) {
+        if (!pressAorB("Keep hands away from the flywheels", "CROSS = start,  CIRCLE = skip")) {
             return SKIPPED;
         }
         double[] encoderSigns = {LEFT_FLYWHEEL_ENCODER_SIGN, RIGHT_FLYWHEEL_ENCODER_SIGN};
@@ -251,7 +260,7 @@ public class CheckRobot extends LinearOpMode {
             if (servos[i] == null) return notInConfig(servoNames[i]);
         }
 
-        if (!pressAorB("Watch the " + name + ", it will move back and forth", "A = start,  B = skip")) {
+        if (!pressAorB("Watch the " + name + ", it will move back and forth", "CROSS = start,  CIRCLE = skip")) {
             return SKIPPED;
         }
 
@@ -267,7 +276,7 @@ public class CheckRobot extends LinearOpMode {
             }
         }
 
-        if (pressAorB("Did the " + name + " move?", "A = yes,  B = no")) return PASS;
+        if (pressAorB("Did the " + name + " move?", "CROSS = yes,  CIRCLE = no")) return PASS;
         return FAIL + " - " + name + " didn't move (" + servos[0].getConnectionInfo() + "). Check the servo wire and that the servo port has power";
     }
 
@@ -275,7 +284,7 @@ public class CheckRobot extends LinearOpMode {
     // the color sensor and limelight are read all the time in showLiveSensors(), these tests just check if they ever saw something
     private String testColorSensor() {
         if (colorSensor == null) return notInConfig(COLOR_SENSOR);
-        if (!pressAorB("Hold a ball right in front of the color sensor", "Watch 'Live color sensor' at the bottom", "A = done,  B = skip")) {
+        if (!pressAorB("Hold a ball right in front of the color sensor", "Watch 'Live color sensor' at the bottom", "CROSS = done,  CIRCLE = skip")) {
             return SKIPPED;
         }
         if (colorSensorSawBall) return PASS;
@@ -284,12 +293,41 @@ public class CheckRobot extends LinearOpMode {
 
     private String testLimelight() {
         if (limelight == null) return notInConfig(LIMELIGHT);
-        if (!pressAorB("Point the limelight at an april tag", "Watch 'Live limelight' at the bottom", "A = done,  B = skip")) {
+        if (!pressAorB("Point the limelight at an april tag", "Watch 'Live limelight' at the bottom", "CROSS = done,  CIRCLE = skip")) {
             return SKIPPED;
         }
         if (!limelight.isConnected()) return FAIL + " - limelight not connected. Check its USB cable and power";
         if (limelightSawTag) return PASS;
         return FAIL + " - never saw a tag. Check the lens is clean and the tag is in view";
+    }
+
+    private String testLEDs() {
+        GoBildaPrismDriver prism = hardwareMap.tryGet(GoBildaPrismDriver.class, PRISM);
+        if (prism == null) return notInConfig(PRISM);
+        if (prism.getDeviceID() != PRISM_WORKING_ID) {
+            return FAIL + " - LED driver not responding (" + prism.getConnectionInfo() + "). Check its I2C wire";
+        }
+
+        if (!pressAorB("Watch the LEDs, they will turn red, green, then blue", "CROSS = start,  CIRCLE = skip")) {
+            return SKIPPED;
+        }
+
+        prism.setStripLength(LED_COUNT);
+        Color[] colors = {Color.RED, Color.GREEN, Color.BLUE};
+        String[] colorNames = {"RED", "GREEN", "BLUE"};
+        for (int i = 0; i < colors.length; i++) {
+            PrismAnimations.Solid solid = new PrismAnimations.Solid(colors[i], 0, LED_COUNT - 1);
+            solid.setBrightness(LED_BRIGHTNESS);
+            prism.insertAndUpdateAnimation(GoBildaPrismDriver.LayerHeight.LAYER_0, solid);
+            ElapsedTime timer = new ElapsedTime();
+            while (opModeIsActive() && timer.seconds() < LED_COLOR_SECONDS) {
+                show("LEDs should be " + colorNames[i] + "...");
+            }
+        }
+        prism.clearAllAnimations();
+
+        if (pressAorB("Did ALL " + LED_COUNT + " LEDs turn red, green, then blue?", "CROSS = yes,  CIRCLE = no")) return PASS;
+        return FAIL + " - LEDs didn't light up right (" + prism.getConnectionInfo() + "). Check the LED strip's wire and that it has " + LED_COUNT + " LEDs";
     }
 
     private String testDrivetrain() {
@@ -308,7 +346,7 @@ public class CheckRobot extends LinearOpMode {
             motors[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
-        if (!pressAorB("Put the robot ON A BOX so the wheels are OFF THE FLOOR", "Each wheel will spin forward one at a time", "A = start,  B = skip")) {
+        if (!pressAorB("Put the robot ON A BOX so the wheels are OFF THE FLOOR", "Each wheel will spin forward one at a time", "CROSS = start,  CIRCLE = skip")) {
             return SKIPPED;
         }
 
@@ -326,7 +364,7 @@ public class CheckRobot extends LinearOpMode {
 
             if (highestAmps < MIN_MOTOR_AMPS) {
                 problems += motor + " got no power. Check its power wire is plugged in. ";
-            } else if (!pressAorB("Did " + motorNames[i] + " spin FORWARD (top of the wheel moving toward the front)?", "A = yes,  B = no")) {
+            } else if (!pressAorB("Did " + motorNames[i] + " spin FORWARD (top of the wheel moving toward the front)?", "CROSS = yes,  CIRCLE = no")) {
                 problems += motor + " spins backwards. Flip its direction in Constants. ";
             }
         }
@@ -340,7 +378,7 @@ public class CheckRobot extends LinearOpMode {
         pinpoint = hardwareMap.tryGet(GoBildaPinpointDriver.class, PINPOINT);
         if (pinpoint == null) return notInConfig(PINPOINT);
 
-        if (!pressAorB("Put the robot ON THE FLOOR on a tile line", "You will push and turn it BY HAND", "A = start,  B = skip")) {
+        if (!pressAorB("Put the robot ON THE FLOOR on a tile line", "You will push and turn it BY HAND", "CROSS = start,  CIRCLE = skip")) {
             return SKIPPED;
         }
 
@@ -374,7 +412,7 @@ public class CheckRobot extends LinearOpMode {
             readPinpoint();
             if (gamepad1.aWasPressed()) return true;
             if (gamepad1.bWasPressed()) return false;
-            show(step, "Then press A  (B = skip)", pinpointLine());
+            show(step, "Then press CROSS  (CIRCLE = skip)", pinpointLine());
         }
         return false;
     }
