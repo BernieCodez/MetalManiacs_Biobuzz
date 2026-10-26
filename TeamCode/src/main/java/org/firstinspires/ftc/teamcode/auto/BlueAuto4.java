@@ -156,7 +156,7 @@ public class BlueAuto4 extends LinearOpMode {
     }
 
     public Path waitThenShootPreloadsBackCell() {
-        return line(start, waitThenShootPreloadsBackCell).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose)));
+        return line(start, waitThenShootPreloadsBackCell).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose).reverse()));
     }
 
     public Path holdForPartner() {
@@ -168,7 +168,7 @@ public class BlueAuto4 extends LinearOpMode {
     }
 
     public Path shootFrontCell() {
-        return line(waitForUsThenWallFlower, shootFrontCell).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose)));
+        return line(waitForUsThenWallFlower, shootFrontCell).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose).reverse()));
     }
 
     public Path clearFrontCell() {

@@ -163,7 +163,7 @@ public class RedAuto1 extends LinearOpMode {
     }
 
     public Path shootOne() {
-        return line(start, shootOne).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose)));
+        return line(start, shootOne).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose).reverse()));
     }
 
     public Path pickUpPollen() {
@@ -175,7 +175,7 @@ public class RedAuto1 extends LinearOpMode {
     }
 
     public Path shootTwo() {
-        return curve(pickUpPollen2, shootTwoControl1, shootTwoControl2, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose)));
+        return curve(pickUpPollen2, shootTwoControl1, shootTwoControl2, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose).reverse()));
     }
 
     public Path pickUpFlowerPollen() {
@@ -183,7 +183,7 @@ public class RedAuto1 extends LinearOpMode {
     }
 
     public Path shootThree() {
-        return line(pickUpFlowerPollen, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose)));
+        return line(pickUpFlowerPollen, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose).reverse()));
     }
 
     public Path pickUpFlowerPollen2() {
