@@ -22,6 +22,7 @@ public class Config {
 //                                     INTAKE/TRANSFER                                            //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String INTAKE_TRANSFER = "intakeTransfer";
+    public static final String TRANSFER = "transfer";
     public static final String GATE = "gate";
     public static double GATE_OPEN = 0.5;
     public static double GATE_CLOSE = 0;
@@ -153,6 +154,7 @@ public class Config {
     public static final String PUSHBOT_ARM = "pushbotArm";
     public static final String[] MOTORS = {
             INTAKE_TRANSFER,
+            TRANSFER,
             RIGHT_FLYWHEEL,
             LEFT_FLYWHEEL,
             FRONT_LEFT_WHEEL,

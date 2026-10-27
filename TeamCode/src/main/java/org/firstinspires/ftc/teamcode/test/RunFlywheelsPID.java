@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 public class RunFlywheelsPID extends LinearOpMode {
     public static double MIN_VELOCITY = 700;
     public static double MAX_VELOCITY = 2500;
-    public static double VELOCITY_STEP = 100;
+    public static double VELOCITY_STEP = 50;
     public Flywheel flywheel;
     public IntakeTransfer intakeTransfer;
     RumbleGamepad driver;
