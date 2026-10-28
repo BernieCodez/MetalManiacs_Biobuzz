@@ -8,6 +8,8 @@ import com.pedropathing.tuning.autotune.Procedure;
 import com.pedropathing.tuning.autotune.TuningOpMode;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import java.util.*;
 
@@ -201,6 +203,7 @@ class PinpointOffsets extends TuningOpMode<List<Double>> {
     OptionalDouble customPodScalar =  OptionalDouble.empty();
     boolean forwardPodReversed, strafePodReversed;
     private Pose previous = Pose.zero();
+    private static final double ROTATION_SPEED = 0.2;
 
     public PinpointOffsets(String name, PinpointTuner.PodType podType, OptionalDouble customPodScalar, Boolean forwardPodReversed, Boolean strafePodReversed) {
         super("Offsets Identification",
@@ -243,26 +246,58 @@ class PinpointOffsets extends TuningOpMode<List<Double>> {
 
 
         Thread.sleep(1000);
+
         waitForStart();
+
         localizer.setPose(Pose.zero());
         localizer.update();
 
-        localizer.setPose(Pose.zero());
+        DcMotor frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        DcMotor frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        DcMotor backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        DcMotor backRight = hardwareMap.get(DcMotor.class, "backRight");
 
-        while (!isStopRequested()) {
-            previous = localizer.pose();
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        try {
+            localizer.setPose(Pose.zero());
             localizer.update();
 
-            telemetry.addData("heading", localizer.pose().heading());
-            telemetry.addData("pose", localizer.pose());
-            telemetry.addData("previous", previous);
-            telemetry.update();
+            frontLeft.setPower(-ROTATION_SPEED);
+            backLeft.setPower(-ROTATION_SPEED);
+            frontRight.setPower(ROTATION_SPEED);
+            backRight.setPower(ROTATION_SPEED);
+
+            while (!isStopRequested()) {
+                localizer.update();
+
+                telemetry.addData("Heading (degrees)", Math.toDegrees(localizer.pose().heading()));
+                telemetry.addData("Rotation Speed", ROTATION_SPEED);
+                telemetry.addLine("Press STOP at 180 degrees!");
+                telemetry.update();
+            }
+        } finally {
+            frontLeft.setPower(0);
+            frontRight.setPower(0);
+            backLeft.setPower(0);
+            backRight.setPower(0);
         }
 
-        if (localizer.pose().x() != Pose.zero().x() || localizer.pose().y() != Pose.zero().y()) {
-            previous =  localizer.pose();
-        }
+        localizer.update();
+        previous = localizer.pose();
 
-        return List.of(((-previous.y()) / 2.0), ((-previous.x()) / 2.0));
+        return List.of(
+                -previous.y() / 2.0,
+                -previous.x() / 2.0
+        );
+
     }
 }
