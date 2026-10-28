@@ -4,8 +4,9 @@ package org.firstinspires.ftc.teamcode.util;
 import com.pedropathing.math.Pose;
 
 public class OpModeStorage {
-    public static Pose autonomousEndPose = new Pose(130, 12, 90);
+    public static Pose autonomousEndPose = new Pose(130, 12, 90); // default pose to avoid null errors
+    public static Pose testStartPose = autonomousEndPose;
+
 //    public static Pose autonomousEndPose = new Pose(0,0,0);
-    // default pose to avoid null errors
 //    public static Pose
 }
