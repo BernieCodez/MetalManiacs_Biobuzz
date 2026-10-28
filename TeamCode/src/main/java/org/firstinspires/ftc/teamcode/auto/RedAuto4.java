@@ -67,6 +67,7 @@ public class RedAuto4 extends LinearOpMode {
         return sequential(
                 instant(() -> {
                     intakeTransferController.setPower(1);
+                    intakeTransferController.flowerIntakeUp();
                     outtakeController.close();
                 }),
                 waitMs(WAIT_BEFORE_PRELOAD_MS),
@@ -75,8 +76,10 @@ public class RedAuto4 extends LinearOpMode {
                 aimAndShoot(4),
                 follow(follower, holdForPartner()),
                 waitMs(WAIT_BEFORE_WALL_FLOWER_MS),
+                instant(() -> intakeTransferController.flowerIntakeDown()),
                 follow(follower, waitForUsThenWallFlower()),
                 waitMs(1500),
+                instant(() -> intakeTransferController.flowerIntakeUp()),
                 instant(() -> currentTargetHive = FRONT_CELL),
                 follow(follower, shootFrontCell()),
                 aimAndShoot(4),

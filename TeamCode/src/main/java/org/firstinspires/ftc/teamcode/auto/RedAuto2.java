@@ -41,6 +41,7 @@ public class RedAuto2 extends LinearOpMode {
         return sequential(
                 instant(() -> {
                     intakeTransferController.setPower(1);
+                    intakeTransferController.flowerIntakeUp();
                     outtakeController.close();
                 }),
                 follow(follower, goForward()),

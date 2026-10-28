@@ -71,6 +71,7 @@ public class RedAuto1 extends LinearOpMode {
         return sequential(
                 instant(() -> {
                     intakeTransferController.setPower(1);
+                    intakeTransferController.flowerIntakeUp();
                     outtakeController.close();
                 }),
                 instant(() -> currentTargetHive = FRONT_CELL),
@@ -82,13 +83,17 @@ public class RedAuto1 extends LinearOpMode {
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, shootTwo()),
                 aimAndShoot(4),
+                instant(() -> intakeTransferController.flowerIntakeDown()),
                 follow(follower, pickUpFlowerPollen()),
                 waitMs(1500),
+                instant(() -> intakeTransferController.flowerIntakeUp()),
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, shootThree()),
                 aimAndShoot(4),
+                instant(() -> intakeTransferController.flowerIntakeDown()),
                 follow(follower, pickUpFlowerPollen2()),
                 waitMs(1500),
+                instant(() -> intakeTransferController.flowerIntakeUp()),
                 follow(follower, parkAtEnd())
         );
     }

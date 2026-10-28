@@ -19,4 +19,12 @@ public class IntakeTransferController {
     public void toggleFlowerIntake(){
         flowerIntake.toggle();
     }
+
+    public void flowerIntakeDown(){
+        flowerIntake.down();
+    }
+
+    public void flowerIntakeUp(){
+        flowerIntake.up();
+    }
 }
