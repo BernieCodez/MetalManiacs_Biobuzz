@@ -1,12 +1,18 @@
 package org.firstinspires.ftc.teamcode.test;
 
 import com.bylazar.configurables.annotations.Configurable;
+import com.bylazar.panels.Panels;
+import com.bylazar.telemetry.Plugin;
+import com.bylazar.telemetry.TelemetryManager;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import static org.firstinspires.ftc.teamcode.Config.*;
+
+import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
 
 //v uncommenting this will hide it on the driver station
 //@Disabled
@@ -25,12 +31,18 @@ public class FlywheelPIDFTuner extends LinearOpMode {
     public static final double VELOCITY_TOLERANCE = 10;
 
     public static boolean RUN_FLYWHEEL = false; //enable to run
+    private final TelemetryManager panelsTelemetry =
+            Plugin.INSTANCE.getManager();
+    public IntakeTransfer intakeTransfer;
 
     @Override
     public void runOpMode() {
 
         DcMotorEx rightFlywheel = hardwareMap.get(DcMotorEx.class, RIGHT_FLYWHEEL);
         DcMotorEx leftFlywheel = hardwareMap.get(DcMotorEx.class, LEFT_FLYWHEEL);
+        rightFlywheel.setDirection(DcMotorEx.Direction.REVERSE);
+
+        intakeTransfer = new IntakeTransfer(hardwareMap);
 
         rightFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -56,27 +68,12 @@ public class FlywheelPIDFTuner extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            if (TUNING_ENABLED){
-                rightFlywheel.setVelocityPIDFCoefficients(
-                        FLYWHEEL_KP,
-                        FLYWHEEL_KI,
-                        FLYWHEEL_KD,
-                        FLYWHEEL_KF
-                );
-                leftFlywheel.setVelocityPIDFCoefficients(
-                        FLYWHEEL_KP,
-                        FLYWHEEL_KI,
-                        FLYWHEEL_KD,
-                        FLYWHEEL_KF
-                );
-            }else{
-                rightFlywheel.setVelocityPIDFCoefficients(
-                        KP,
-                        KI,
-                        KD,
-                        KF
-                );
-            }
+            rightFlywheel.setVelocityPIDFCoefficients(
+                    KP,
+                    KI,
+                    KD,
+                    KF
+            );
             leftFlywheel.setVelocityPIDFCoefficients(
                     KP,
                     KI,
@@ -84,18 +81,21 @@ public class FlywheelPIDFTuner extends LinearOpMode {
                     KF
             );
 
+            rightFlywheel.setVelocity(TARGET_VELOCITY);
+            leftFlywheel.setVelocity(TARGET_VELOCITY);
 
-            if (RUN_FLYWHEEL) {
-                rightFlywheel.setVelocity(TARGET_VELOCITY);
-                leftFlywheel.setVelocity(TARGET_VELOCITY);
-            } else {
-                rightFlywheel.setVelocity(0);
-                leftFlywheel.setVelocity(0);
-            }
 
             double currentVelocity = rightFlywheel.getVelocity();
 
             double error = TARGET_VELOCITY - currentVelocity;
+
+            intakeTransfer.setPower(1);
+
+            panelsTelemetry.debug(
+                    "current: " + currentVelocity,
+                    "target: " + TARGET_VELOCITY,
+                    "error: " + error
+                    );
 
             //telemetry
             telemetry.addData("Target Velocity", "%.2f ticks/s", TARGET_VELOCITY);
@@ -110,7 +110,7 @@ public class FlywheelPIDFTuner extends LinearOpMode {
             telemetry.addLine("");
             telemetry.addData("Running", RUN_FLYWHEEL);
 
-            telemetry.update();
+            panelsTelemetry.update(telemetry);
         }
 
         rightFlywheel.setVelocity(0);
