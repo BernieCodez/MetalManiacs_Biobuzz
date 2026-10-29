@@ -63,7 +63,7 @@ public class CheckRobot extends LinearOpMode {
     private static final String WAITING = "⏳ waiting";
 
     // LIST OF TESTS - remove a name to remove a test, they run in this order
-    private final String[] tests = {"Battery", "Drivetrain", "Pinpoint", "Intake", "Flywheels", "Gate", "Hood",
+    private final String[] tests = {"Battery", "Drivetrain", "Pinpoint", "Intake", "Flywheels", "Pollen gate", "Nectar gate",
             "Wedges", "Color sensor", "Limelight", "LEDs"};
 
     // what each test in the list runs (the names must match the list above)
@@ -74,8 +74,8 @@ public class CheckRobot extends LinearOpMode {
             case "Pinpoint":         return testPinpoint();
             case "Intake":           return testIntake();
             case "Flywheels":        return testFlywheels();
-            case "Gate":             return testServos("gate", GATE_OPEN, GATE_CLOSE, GATE);
-            case "Hood":             return testServos("hood", HOOD_NECTAR, HOOD_POLLEN, HOOD);
+            case "Pollen gate":      return testServos("pollen gate", POLLEN_GATE_OPEN, POLLEN_GATE_CLOSE, POLLEN_GATE);
+            case "Nectar gate":      return testServos("nectar gate", NECTAR_GATE_OPEN, NECTAR_GATE_CLOSE, NECTAR_GATE);
             case "Wedges":           return testServos("wedges", WEDGE_DOWN, WEDGE_UP, LEFT_WEDGE, RIGHT_WEDGE);
             case "Color sensor":     return testColorSensor();
             case "Limelight":        return testLimelight();

@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.controllers;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.hardware.FlowerIntake;
-import org.firstinspires.ftc.teamcode.hardware.Gate;
 import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
 public class IntakeTransferController {
     IntakeTransfer intakeTransfer;
