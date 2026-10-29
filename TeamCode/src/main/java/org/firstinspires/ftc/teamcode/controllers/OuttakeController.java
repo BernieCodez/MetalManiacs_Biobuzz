@@ -8,14 +8,12 @@ import static org.firstinspires.ftc.teamcode.Config.*;
 
 import org.firstinspires.ftc.teamcode.deprecated.ColorSensor;
 import org.firstinspires.ftc.teamcode.hardware.Flywheel;
-import org.firstinspires.ftc.teamcode.hardware.NectarGate;
-import org.firstinspires.ftc.teamcode.hardware.PollenGate;
+import org.firstinspires.ftc.teamcode.hardware.Gate;
 
 import java.util.ArrayList;
 public class OuttakeController {
     public Flywheel flywheel;
-    private PollenGate pollenGate;
-    private NectarGate nectarGate;
+    private Gate gate;
     private ColorSensor colorSensor;
 
     public ArrayList<Element> elementList = new ArrayList<>();
@@ -29,8 +27,7 @@ public class OuttakeController {
 
     public OuttakeController(HardwareMap hardwareMap){
         flywheel = new Flywheel(hardwareMap);
-        pollenGate = new PollenGate(hardwareMap);
-        nectarGate = new NectarGate(hardwareMap);
+        gate = new Gate(hardwareMap);
         colorSensor = new ColorSensor(hardwareMap);
     }
 
@@ -63,14 +60,14 @@ public class OuttakeController {
     }
 
     public void fire(){
-        pollenGate.open();
+        gate.open();
         if (!elementList.isEmpty()) {
             elementList.remove(0);
         }
     }
 
     public void fireNectar(){
-        nectarGate.open();
+        gate.openNectar();
         if (!elementList.isEmpty()) {
             elementList.remove(0);
         }
@@ -83,13 +80,11 @@ public class OuttakeController {
     }
 
     public void close(){
-        pollenGate.close();
-        nectarGate.close();
+        gate.close();
     }
 
     public void stop(){
         flywheel.stop();
-        pollenGate.open();
-        nectarGate.open();
+        gate.open();
     }
 }

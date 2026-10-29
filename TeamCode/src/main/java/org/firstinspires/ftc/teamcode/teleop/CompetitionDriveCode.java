@@ -57,15 +57,6 @@ public class CompetitionDriveCode extends OpMode {
     public Profile user;
     private double fieldCentricHeadingOffset = 0;
 
-    /////////////////////////////////////
-    private boolean showYawDebug = false;
-
-    private double beforePinpointX, beforePinpointY, beforePinpointHeading;
-    private double beforePedroX, beforePedroY, beforePedroHeading;
-
-    private double afterPinpointX, afterPinpointY, afterPinpointHeading;
-    private double afterPedroX, afterPedroY, afterPedroHeading;
-
     @Override
     public void init() {
         follower = Constants.create(hardwareMap);
@@ -89,7 +80,8 @@ public class CompetitionDriveCode extends OpMode {
     public void loop() {
         driver.update();
 
-        if (driver.wasJustPressed(user.ALLIANCE_COLOR)){ //toggle team colors with start button
+        //toggle team colors with start button
+        if (driver.wasJustPressed(user.ALLIANCE_COLOR)) {
             alliance = alliance == Alliance.RED ? Alliance.BLUE : Alliance.RED;
         }
 
@@ -174,6 +166,7 @@ public class CompetitionDriveCode extends OpMode {
         //TELEMETRY
         telemetry.addData("Robot X", robot.x());
         telemetry.addData("Robot Y", robot.y());
+        telemetry.addData("Target Heading", autoAim.calculateLocalizedHeading(activeHive, robot));
         telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
         telemetry.addData("Auto Aim", shouldAutoAim);
         telemetry.addData("Field Centric", fieldCentric);
@@ -188,31 +181,6 @@ public class CompetitionDriveCode extends OpMode {
         telemetry.addLine("Active Hive");
         telemetry.addData("Active Hive", activeHive.name);
 
-        // Persistent yaw reset diagnostics
-        if (showYawDebug) {
-            telemetry.addLine("=== YAW RESET DEBUG ===");
-
-            telemetry.addLine("--- BEFORE ---");
-            telemetry.addData("Pinpoint X", beforePinpointX);
-            telemetry.addData("Pinpoint Y", beforePinpointY);
-            telemetry.addData("Pinpoint Heading", beforePinpointHeading);
-
-            telemetry.addData("Pedro X", beforePedroX);
-            telemetry.addData("Pedro Y", beforePedroY);
-            telemetry.addData("Pedro Heading", beforePedroHeading);
-
-            telemetry.addLine("--- AFTER ---");
-            telemetry.addData("Pinpoint X", afterPinpointX);
-            telemetry.addData("Pinpoint Y", afterPinpointY);
-            telemetry.addData("Pinpoint Heading", afterPinpointHeading);
-
-            telemetry.addData("Pedro X", afterPedroX);
-            telemetry.addData("Pedro Y", afterPedroY);
-            telemetry.addData("Pedro Heading", afterPedroHeading);
-        }
-
-//        telemetry.addData("")
-
         //DRIVER FEEDBACK
         rumble.update(intakeTransfer.isOn());
     }
@@ -223,8 +191,5 @@ public class CompetitionDriveCode extends OpMode {
     }
 
     private Alliance.Hive getTargetHive(Alliance alliance, Pose robot) {return robot.y() > HIVE_BOUNDARY ? alliance.TOP : alliance.BOTTOM;}
-    public void resetYaw() {
-        // Make the robot's current physical direction the new field-centric forward.
-        fieldCentricHeadingOffset = follower.pose().heading();
-    }
+    public void resetYaw() {fieldCentricHeadingOffset = follower.pose().heading();}
 }
