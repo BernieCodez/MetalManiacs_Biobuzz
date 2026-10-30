@@ -1,0 +1,192 @@
+package org.firstinspires.ftc.teamcode.auto;
+
+import static com.pedropathing.api.Paths.*;
+
+import com.pedropathing.api.PoseFactory;
+import com.pedropathing.drivetrain.DrivePowers;
+import com.pedropathing.follower.Follower;
+import com.pedropathing.follower.ManualDrive;
+import com.pedropathing.math.Pose;
+import com.pedropathing.paths.Path;
+import com.pedropathing.ivy.Command;
+import com.pedropathing.ivy.Scheduler;
+import static com.pedropathing.ivy.Scheduler.schedule;
+import static com.pedropathing.ivy.commands.Commands.*;
+import static com.pedropathing.ivy.groups.Groups.*;
+import static com.pedropathing.ivy.pedro.PedroCommands.follow;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
+import com.pedropathing.paths.interpolator.Interpolator;
+
+import org.firstinspires.ftc.teamcode.pedro.Constants;
+import org.firstinspires.ftc.teamcode.util.OpModeStorage;
+
+import org.firstinspires.ftc.teamcode.controllers.IntakeTransferController;
+import static org.firstinspires.ftc.teamcode.Config.*;
+import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
+import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
+
+@Autonomous(name = "Auto3", group = "Autonomous")
+public class Auto3 extends LinearOpMode {
+
+    private static final long AIM_MS = 700;
+    private static final long SHOT_OPEN_MS = 250;
+    private static final long SHOT_GAP_MS = 250;
+    private static final long SHOT_FINISH_MS = 750;
+
+    private Follower follower;
+
+    private IntakeTransferController intakeTransferController;
+    private OuttakeController outtakeController;
+    private AutoAimController autoAimController;
+    private Alliance.Hive currentTargetHive = null;
+    private boolean shouldAutoAim = false;
+
+    private final Alliance alliance = currentAlliance;
+
+    private final Alliance.Hive FRONT_CELL = alliance.TOP;
+    private final Alliance.Hive REAR_CELL = alliance.BOTTOM;
+
+    private final PoseFactory poseFactory = PoseFactory.degrees();
+
+    private Pose pose(double x, double y, double heading) {
+        if (alliance == Alliance.RED) {
+            return poseFactory.of(x, y, heading);
+        }
+        return poseFactory.of(144 - x, 144 - y, heading + 180);
+    }
+
+    private final Pose start = pose(56.711, 3.6556, 90);
+    private final Pose shootOne = pose(56.8452, 10.6196, 88.5424);
+    private final Pose pickUpPollen = pose(9.4337, 9.728, -109.4413);
+    private final Pose pickUpPollenControl1 = pose(5.3024, 48.7512, 0);
+    private final Pose pickUpPollenSegment1Target = pose(6, 0, 0);
+    private final Pose shootTwo = pose(57.2213, 126.3876, -88.9476);
+    private final Pose shootTwoControl1 = pose(20, 68.009, 0);
+    private final Pose pickUpFlowerPollen = pose(47.5932, 129.6679, 93.2861);
+    private final Pose pickUpFlowerPollenSegment1Target = pose(47, 140, 0);
+    private final Pose shootThree = pose(57.4936, 10.5959, 89.361);
+    private final Pose shootThreeControl1 = pose(14.4503, 60.4959, 0);
+    private final Pose parkAtEnd = pose(9.5859, 96.6874, 119.1);
+
+    // Autonomous routine
+    public Command autoRoutine() {
+        return sequential(
+                instant(() -> {
+                    intakeTransferController.setPower(1);
+                    intakeTransferController.flowerIntakeUp();
+                    outtakeController.close();
+                }),
+                instant(() -> currentTargetHive = FRONT_CELL),
+                follow(follower, shootOne()),
+                aimAndShoot(4),
+                follow(follower, pickUpPollen()),
+                waitMs(1500),
+                instant(() -> currentTargetHive = REAR_CELL),
+                follow(follower, shootTwo()),
+                aimAndShoot(4),
+                instant(() -> intakeTransferController.flowerIntakeDown()),
+                follow(follower, pickUpFlowerPollen()),
+                waitMs(1500),
+                instant(() -> intakeTransferController.flowerIntakeUp()),
+                instant(() -> currentTargetHive = FRONT_CELL),
+                follow(follower, shootThree()),
+                aimAndShoot(4),
+                follow(follower, parkAtEnd())
+        );
+    }
+
+    private Command aimAndShoot(int pollen) {
+        return sequential(
+                instant(() -> shouldAutoAim = true),
+                waitMs(AIM_MS),
+                repeat(sequential(
+                        instant(() -> outtakeController.fire()),
+                        waitMs(SHOT_OPEN_MS),
+                        instant(() -> outtakeController.close()),
+                        waitMs(SHOT_GAP_MS)
+                ), pollen),
+                waitMs(SHOT_FINISH_MS),
+                instant(() -> {
+                    shouldAutoAim = false;
+                    currentTargetHive = null;
+                })
+        );
+    }
+
+    @Override
+    public void runOpMode() {
+        Scheduler.reset();
+        follower = Constants.create(hardwareMap);
+        intakeTransferController = new IntakeTransferController(hardwareMap);
+        outtakeController = new OuttakeController(hardwareMap);
+        autoAimController = new AutoAimController(hardwareMap);
+        follower.setPose(start);
+        follower.update();
+
+        ElapsedTime autoTimer = new ElapsedTime();
+
+        try {
+            waitForStart();
+            autoTimer.reset();
+            schedule(autoRoutine());
+
+            while (opModeIsActive()) {
+                follower.update();
+                Scheduler.execute();
+
+                Pose robot = follower.pose();
+                if (currentTargetHive != null) {
+                    autoAimController.update(currentTargetHive, robot);
+                }
+                outtakeController.update(currentTargetHive, robot);
+
+                if (shouldAutoAim) {
+                    ManualDrive.driveOrHold(follower, new DrivePowers(0, 0, autoAimController.rotation));
+                }
+
+                telemetry.addData("auto time", autoTimer.seconds());
+                telemetry.addData("auto aim rotation", autoAimController.rotation);
+                telemetry.addData("x", robot.x());
+                telemetry.addData("y", robot.y());
+                telemetry.addData("heading", robot.heading());
+
+                if (follower.currentPath() != null) {
+                    telemetry.addData("Current path distance remaining", follower.distanceToEndpoint());
+                    telemetry.addData("Path number", follower.pathIndex());
+                }
+
+                telemetry.update();
+            }
+
+        } finally {
+            //robots stopping position carries over to teleop!
+            OpModeStorage.autonomousEndPose = follower.pose();
+        }
+    }
+
+    public Path shootOne() {
+        return line(start, shootOne).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose).reverse()));
+    }
+
+    public Path pickUpPollen() {
+        return curve(shootOne, pickUpPollenControl1, pickUpPollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpPollenSegment1Target)));
+    }
+
+    public Path shootTwo() {
+        return curve(pickUpPollen, shootTwoControl1, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose).reverse()));
+    }
+
+    public Path pickUpFlowerPollen() {
+        return line(shootTwo, pickUpFlowerPollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpFlowerPollenSegment1Target)));
+    }
+
+    public Path shootThree() {
+        return curve(pickUpFlowerPollen, shootThreeControl1, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose).reverse()));
+    }
+
+    public Path parkAtEnd() {
+        return line(shootThree, parkAtEnd).tangent();
+    }
+}
