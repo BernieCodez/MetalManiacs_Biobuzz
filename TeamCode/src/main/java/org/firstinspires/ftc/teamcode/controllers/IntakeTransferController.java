@@ -16,6 +16,9 @@ public class IntakeTransferController {
     }
 
     public void update(){
+        if (intakeTransfer.isJamming()){
+            stop();
+        }
         intakeTransfer.setPower(power);
     }
 
@@ -34,6 +37,8 @@ public class IntakeTransferController {
             power = -MAX_INTAKE_TRANSFER_POWER;
         }
     }
+
+    public void stop(){power = 0;}
     public void setPower(double power){
         this.power = power;
         }
