@@ -163,22 +163,24 @@ public class CompetitionDriveCode extends OpMode {
         ManualDrive.driveOrHold(follower, powers);
 
         //TELEMETRY
-        telemetry.addData("Robot X", robot.x());
-        telemetry.addData("Robot Y", robot.y());
-        telemetry.addData("Target Heading", autoAim.calculateLocalizedHeading(activeHive, robot));
-        telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
-        telemetry.addData("Auto Aim", shouldAutoAim);
-        telemetry.addData("Field Centric", fieldCentric);
-        telemetry.addData("Flywheel Velocity", outtake.flywheel.getVelocity());
-        telemetry.addData("Flywheels On", outtake.useFlywheel);
-        telemetry.addData("Distance", outtake.distance);
-        telemetry.addLine("");
-        telemetry.addLine("Limelight");
-        telemetry.addData("TVisible", autoAim.limelight.ty);
-        telemetry.addData("TX", autoAim.limelight.tx);
-        telemetry.addLine("");
-        telemetry.addLine("Active Hive");
-        telemetry.addData("Active Hive", activeHive.name);
+        if (DEBUG){
+            telemetry.addData("Robot X", robot.x());
+            telemetry.addData("Robot Y", robot.y());
+            telemetry.addData("Target Heading", autoAim.calculateLocalizedHeading(activeHive, robot));
+            telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
+            telemetry.addData("Auto Aim", shouldAutoAim);
+            telemetry.addData("Field Centric", fieldCentric);
+            telemetry.addData("Flywheel Velocity", outtake.flywheel.getVelocity());
+            telemetry.addData("Flywheels On", outtake.useFlywheel);
+            telemetry.addData("Distance", outtake.distance);
+            telemetry.addLine("");
+            telemetry.addLine("Limelight");
+            telemetry.addData("TVisible", autoAim.limelight.ty);
+            telemetry.addData("TX", autoAim.limelight.tx);
+            telemetry.addLine("");
+            telemetry.addLine("Active Hive");
+            telemetry.addData("Active Hive", activeHive.name);
+        }
 
         //DRIVER FEEDBACK
         rumble.update(intakeTransfer.isOn());

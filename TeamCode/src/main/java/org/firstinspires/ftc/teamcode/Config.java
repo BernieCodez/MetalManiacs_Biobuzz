@@ -8,6 +8,7 @@ import java.util.Set;
 
 @Configurable
 public class Config {
+    public static final boolean DEBUG = true; //set to false during comp for faster loop times
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                       DRIVE TRAIN                                              //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +23,7 @@ public class Config {
 //                                     INTAKE/TRANSFER                                            //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String INTAKE_TRANSFER = "intakeTransfer";
-    public static final double MAX_INTAKE_TRANSFER_POWER = 1;
+    public static final double MAX_INTAKE_TRANSFER_POWER = 0.75;
     public static final String POLLEN_GATE = "pollenGate";
     public static double POLLEN_GATE_OPEN = 0;
     public static double POLLEN_GATE_CLOSE = 0.45;

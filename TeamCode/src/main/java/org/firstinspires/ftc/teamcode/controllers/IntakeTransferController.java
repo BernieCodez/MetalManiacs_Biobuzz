@@ -37,7 +37,7 @@ public class IntakeTransferController {
     public void setPower(double power){
         this.power = power;
         }
-    public boolean isOn(){return Math.abs(intakeTransfer.getPower())>0.05;}
+    public boolean isOn(){return Math.abs(intakeTransfer.getPower())>0;}
 
     public void toggleFlowerIntake(){
         flowerIntake.toggle();
