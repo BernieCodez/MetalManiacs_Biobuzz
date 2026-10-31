@@ -16,11 +16,13 @@ public class IntakeTransferController {
     }
 
     public void update(){
-        if (intakeTransfer.isJamming()){
+        if (intakeTransfer.isJamming()){ //stop the motor if jams
             stop();
         }
         intakeTransfer.setPower(power);
     }
+
+    public double getCurrent(){return intakeTransfer.getCurrent();}
 
     public void toggleForward(){
         if (isOn()){
@@ -41,7 +43,7 @@ public class IntakeTransferController {
     public void stop(){power = 0;}
     public void setPower(double power){
         this.power = power;
-        }
+    }
     public boolean isOn(){return Math.abs(intakeTransfer.getPower())>0;}
 
     public void toggleFlowerIntake(){

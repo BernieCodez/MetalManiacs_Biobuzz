@@ -170,6 +170,7 @@ public class CompetitionDriveCode extends OpMode {
             telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
             telemetry.addData("Auto Aim", shouldAutoAim);
             telemetry.addData("Field Centric", fieldCentric);
+            telemetry.addData("Intake Transfer Current", intakeTransfer.getCurrent());
             telemetry.addData("Flywheel Velocity", outtake.flywheel.getVelocity());
             telemetry.addData("Flywheels On", outtake.useFlywheel);
             telemetry.addData("Distance", outtake.distance);

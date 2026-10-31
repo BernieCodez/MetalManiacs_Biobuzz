@@ -32,4 +32,8 @@ public class IntakeTransfer {
     public boolean isJamming(){
         return intakeTransfer.isOverCurrent();
     }
+
+    public double getCurrent(){
+        return intakeTransfer.getCurrent(CurrentUnit.AMPS);
+    }
 }
