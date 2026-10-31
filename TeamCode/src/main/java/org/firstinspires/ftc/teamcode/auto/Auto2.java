@@ -33,24 +33,19 @@ public class Auto2 extends LinearOpMode {
 
     private final Alliance alliance = currentAlliance;
 
-    private final PoseFactory poseFactory = PoseFactory.degrees();
+    private final PoseFactory poseFactory = alliance == Alliance.BLUE
+            ? PoseFactory.degrees()
+            : PoseFactory.degrees().mirrorX(72).mirrorY(72);
 
-    private Pose pose(double x, double y, double heading) {
-        if (alliance == Alliance.RED) {
-            return poseFactory.of(x, y, heading);
-        }
-        return poseFactory.of(144 - x, 144 - y, heading + 180);
-    }
-
-    private final Pose start = pose(3.9781, 71.3295, 90);
-    private final Pose goForward = pose(10.5575, 71.2624, -17.8332);
-    private final Pose parkAtEnd = pose(9.7743, 121.3499, 90.8958);
+    private final Pose start = poseFactory.of(140.0219, 72.6705, -90);
+    private final Pose goForward = poseFactory.of(133.4425, 72.7376, 162.1668);
+    private final Pose parkAtEnd = poseFactory.of(134.2257, 22.6501, -89.1042);
 
     // Autonomous routine
     public Command autoRoutine() {
         return sequential(
                 instant(() -> {
-                    intakeTransferController.setPower(1);
+                    intakeTransferController.toggleForward();
                     intakeTransferController.flowerIntakeUp();
                     outtakeController.close();
                 }),
@@ -80,6 +75,8 @@ public class Auto2 extends LinearOpMode {
                 Scheduler.execute();
 
                 Pose robot = follower.pose();
+                outtakeController.update(alliance.TOP, robot);
+                intakeTransferController.update();
 
                 telemetry.addData("auto time", autoTimer.seconds());
                 telemetry.addData("x", robot.x());

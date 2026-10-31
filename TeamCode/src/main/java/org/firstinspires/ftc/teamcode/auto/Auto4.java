@@ -34,6 +34,9 @@ public class Auto4 extends LinearOpMode {
     private static final long SHOT_OPEN_MS = 250;
     private static final long SHOT_GAP_MS = 250;
     private static final long SHOT_FINISH_MS = 750;
+    private static final double SETTLE_DISTANCE_IN = 1.5;
+    private static final long SETTLE_TIMEOUT_MS = 1500;
+    private final ElapsedTime settleTimer = new ElapsedTime();
 
     private static final long WAIT_BEFORE_PRELOAD_MS = 3250;
     private final long WAIT_BEFORE_WALL_FLOWER_MS = currentAlliance == Alliance.RED ? 2000 : 1750;
@@ -52,30 +55,25 @@ public class Auto4 extends LinearOpMode {
     private final Alliance.Hive FRONT_CELL = alliance.TOP;
     private final Alliance.Hive REAR_CELL = alliance.BOTTOM;
 
-    private final PoseFactory poseFactory = PoseFactory.degrees();
+    private final PoseFactory poseFactory = alliance == Alliance.BLUE
+            ? PoseFactory.degrees()
+            : PoseFactory.degrees().mirrorX(72).mirrorY(72);
 
-    private Pose pose(double x, double y, double heading) {
-        if (alliance == Alliance.RED) {
-            return poseFactory.of(x, y, heading);
-        }
-        return poseFactory.of(144 - x, 144 - y, heading + 180);
-    }
-
-    private final Pose start = pose(58.6708, 138.8085, 270);
-    private final Pose waitThenShootPreloadsBackCell = pose(58.913, 132.1014, -91.0874);
-    private final Pose holdForPartner = pose(12, 116, -96.7);
-    private final Pose waitForUsThenWallFlower = pose(10.7267, 47.4141, 175.0219);
-    private final Pose waitForUsThenWallFlowerSegment1Target = pose(4, 48, 0);
-    private final Pose shootFrontCell = pose(57.6905, 10.2816, 89.6121);
-    private final Pose clearFrontCell = pose(16, 10, 93.1);
-    private final Pose waitForUsThenPark = pose(10.4, 118, 93.6);
-    private final Pose waitForUsThenParkSegment1Target = pose(9, 140, 0);
+    private final Pose start = poseFactory.of(85.3292, 5.1915, 90);
+    private final Pose waitThenShootPreloadsBackCell = poseFactory.of(85.087, 11.8986, 88.9126);
+    private final Pose holdForPartner = poseFactory.of(132, 28, 83.3);
+    private final Pose waitForUsThenWallFlower = poseFactory.of(115.4, 96.5859, -4.9781);
+    private final Pose waitForUsThenWallFlowerSegment1Target = poseFactory.of(140, 96, 0);
+    private final Pose shootFrontCell = poseFactory.of(86.3095, 133.7184, -90.3879);
+    private final Pose clearFrontCell = poseFactory.of(128, 134, -86.9);
+    private final Pose waitForUsThenPark = poseFactory.of(133.6, 26, -86.4);
+    private final Pose waitForUsThenParkSegment1Target = poseFactory.of(135, 4, 0);
 
     // Autonomous routine
     public Command autoRoutine() {
         return sequential(
                 instant(() -> {
-                    intakeTransferController.setPower(1);
+                    intakeTransferController.toggleForward();
                     intakeTransferController.flowerIntakeUp();
                     outtakeController.close();
                 }),
@@ -100,6 +98,8 @@ public class Auto4 extends LinearOpMode {
 
     private Command aimAndShoot(int pollen) {
         return sequential(
+                instant(settleTimer::reset),
+                waitUntil(() -> follower.distanceToEndpoint() < SETTLE_DISTANCE_IN || settleTimer.milliseconds() > SETTLE_TIMEOUT_MS),
                 instant(() -> shouldAutoAim = true),
                 waitMs(AIM_MS),
                 repeat(sequential(
@@ -141,7 +141,8 @@ public class Auto4 extends LinearOpMode {
                 if (currentTargetHive != null) {
                     autoAimController.update(currentTargetHive, robot);
                 }
-                outtakeController.update(currentTargetHive, robot);
+                outtakeController.update(currentTargetHive != null ? currentTargetHive : FRONT_CELL, robot);
+                intakeTransferController.update();
 
                 if (shouldAutoAim) {
                     ManualDrive.driveOrHold(follower, new DrivePowers(0, 0, autoAimController.rotation));

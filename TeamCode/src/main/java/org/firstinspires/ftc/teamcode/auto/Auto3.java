@@ -34,6 +34,9 @@ public class Auto3 extends LinearOpMode {
     private static final long SHOT_OPEN_MS = 250;
     private static final long SHOT_GAP_MS = 250;
     private static final long SHOT_FINISH_MS = 750;
+    private static final double SETTLE_DISTANCE_IN = 1.5;
+    private static final long SETTLE_TIMEOUT_MS = 1500;
+    private final ElapsedTime settleTimer = new ElapsedTime();
 
     private Follower follower;
 
@@ -48,33 +51,31 @@ public class Auto3 extends LinearOpMode {
     private final Alliance.Hive FRONT_CELL = alliance.TOP;
     private final Alliance.Hive REAR_CELL = alliance.BOTTOM;
 
-    private final PoseFactory poseFactory = PoseFactory.degrees();
+    private final PoseFactory poseFactory = alliance == Alliance.BLUE
+            ? PoseFactory.degrees()
+            : PoseFactory.degrees().mirrorX(72).mirrorY(72);
 
-    private Pose pose(double x, double y, double heading) {
-        if (alliance == Alliance.RED) {
-            return poseFactory.of(x, y, heading);
-        }
-        return poseFactory.of(144 - x, 144 - y, heading + 180);
-    }
-
-    private final Pose start = pose(56.711, 3.6556, 90);
-    private final Pose shootOne = pose(56.8452, 10.6196, 88.5424);
-    private final Pose pickUpPollen = pose(9.4337, 9.728, -109.4413);
-    private final Pose pickUpPollenControl1 = pose(5.3024, 48.7512, 0);
-    private final Pose pickUpPollenSegment1Target = pose(6, 0, 0);
-    private final Pose shootTwo = pose(57.2213, 126.3876, -88.9476);
-    private final Pose shootTwoControl1 = pose(20, 68.009, 0);
-    private final Pose pickUpFlowerPollen = pose(47.5932, 129.6679, 93.2861);
-    private final Pose pickUpFlowerPollenSegment1Target = pose(47, 140, 0);
-    private final Pose shootThree = pose(57.4936, 10.5959, 89.361);
-    private final Pose shootThreeControl1 = pose(14.4503, 60.4959, 0);
-    private final Pose parkAtEnd = pose(9.5859, 96.6874, 119.1);
+    private final Pose start = poseFactory.of(87.289, 140.3444, -90);
+    private final Pose shootOne = poseFactory.of(87.1548, 133.3804, -91.4576);
+    private final Pose pickUpPollen = poseFactory.of(139.5348, 126.8552, 95.1153);
+    private final Pose pickUpPollenControl1 = poseFactory.of(131.9595, 88.2177, 0);
+    private final Pose pickUpPollenSegment1Target = poseFactory.of(138, 144, 0);
+    private final Pose pickUpPollen2 = poseFactory.of(139.5347, 141.5, 93.5996);
+    private final Pose pickUpPollen2Segment1Target = poseFactory.of(139, 150, 0);
+    private final Pose shootTwo = poseFactory.of(84.435, 31.0886, -95.6534);
+    private final Pose shootTwoControl1 = poseFactory.of(90.8954, 112.0252, 0);
+    private final Pose shootTwoControl2 = poseFactory.of(140.0766, 21.794, 0);
+    private final Pose pickUpFlowerPollen = poseFactory.of(95.0457, 30.4583, -92.9117);
+    private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(93.7, 4, 0);
+    private final Pose shootThree = poseFactory.of(86.5064, 133.4041, -90.639);
+    private final Pose shootThreeControl1 = poseFactory.of(129.5497, 83.5041, 0);
+    private final Pose parkAtEnd = poseFactory.of(134.4141, 47.3126, -60.9);
 
     // Autonomous routine
     public Command autoRoutine() {
         return sequential(
                 instant(() -> {
-                    intakeTransferController.setPower(1);
+                    intakeTransferController.toggleForward();
                     intakeTransferController.flowerIntakeUp();
                     outtakeController.close();
                 }),
@@ -82,7 +83,8 @@ public class Auto3 extends LinearOpMode {
                 follow(follower, shootOne()),
                 aimAndShoot(4),
                 follow(follower, pickUpPollen()),
-                waitMs(1500),
+                follow(follower, pickUpPollen2()),
+                waitMs(2000),
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, shootTwo()),
                 aimAndShoot(4),
@@ -99,6 +101,8 @@ public class Auto3 extends LinearOpMode {
 
     private Command aimAndShoot(int pollen) {
         return sequential(
+                instant(settleTimer::reset),
+                waitUntil(() -> follower.distanceToEndpoint() < SETTLE_DISTANCE_IN || settleTimer.milliseconds() > SETTLE_TIMEOUT_MS),
                 instant(() -> shouldAutoAim = true),
                 waitMs(AIM_MS),
                 repeat(sequential(
@@ -140,7 +144,8 @@ public class Auto3 extends LinearOpMode {
                 if (currentTargetHive != null) {
                     autoAimController.update(currentTargetHive, robot);
                 }
-                outtakeController.update(currentTargetHive, robot);
+                outtakeController.update(currentTargetHive != null ? currentTargetHive : FRONT_CELL, robot);
+                intakeTransferController.update();
 
                 if (shouldAutoAim) {
                     ManualDrive.driveOrHold(follower, new DrivePowers(0, 0, autoAimController.rotation));
@@ -174,8 +179,12 @@ public class Auto3 extends LinearOpMode {
         return curve(shootOne, pickUpPollenControl1, pickUpPollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpPollenSegment1Target)));
     }
 
+    public Path pickUpPollen2() {
+        return line(pickUpPollen, pickUpPollen2).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpPollen2Segment1Target)));
+    }
+
     public Path shootTwo() {
-        return curve(pickUpPollen, shootTwoControl1, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose).reverse()));
+        return curve(pickUpPollen2, shootTwoControl1, shootTwoControl2, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose).reverse()));
     }
 
     public Path pickUpFlowerPollen() {
