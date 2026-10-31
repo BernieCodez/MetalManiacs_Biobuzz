@@ -22,13 +22,13 @@ public class Config {
 //                                     INTAKE/TRANSFER                                            //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String INTAKE_TRANSFER = "intakeTransfer";
-    public static final String TRANSFER = "transfer";
+    public static final double MAX_INTAKE_TRANSFER_POWER = 1;
     public static final String POLLEN_GATE = "pollenGate";
-    public static double POLLEN_GATE_OPEN = 0.5;
-    public static double POLLEN_GATE_CLOSE = 0;
+    public static double POLLEN_GATE_OPEN = 0;
+    public static double POLLEN_GATE_CLOSE = 0.4;
     public static final String NECTAR_GATE = "nectarGate";
-    public static double NECTAR_GATE_OPEN = 0.5;
-    public static double NECTAR_GATE_CLOSE = 0;
+    public static double NECTAR_GATE_OPEN = 0.95;
+    public static double NECTAR_GATE_CLOSE = 0.75;
     public static final String COLOR_SENSOR = "sensorColor";
     public enum Element{RED_NECTAR, BLUE_NECTAR, POLLEN, NONE};
 
@@ -40,10 +40,10 @@ public class Config {
     public static final String RIGHT_FLYWHEEL = "rightFlywheel";
 
     //PIDF for flywheels
-    public static double FLYWHEEL_KP = 0.5;
+    public static double FLYWHEEL_KP = 75;
     public static double FLYWHEEL_KI = 0.0;
-    public static double FLYWHEEL_KD = 0.0;
-    public static double FLYWHEEL_KF = 15;
+    public static double FLYWHEEL_KD = 1;
+    public static double FLYWHEEL_KF = 14.5;
 
     public static double FLYWHEEL_VELOCITY_TOLERANCE = 20;
     //Slope calculator
@@ -68,8 +68,8 @@ public class Config {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static String RIGHT_WEDGE = "rightWedge";
     public static String LEFT_WEDGE = "leftWedge";
-    public static double WEDGE_UP = 1;
-    public static double WEDGE_DOWN = 0;
+    public static double WEDGE_UP = .6;
+    public static double WEDGE_DOWN = 0.0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                      LOCALIZATION                                              //
@@ -153,7 +153,6 @@ public class Config {
     public static final String PUSHBOT_ARM = "pushbotArm";
     public static final String[] MOTORS = {
             INTAKE_TRANSFER,
-            TRANSFER,
             RIGHT_FLYWHEEL,
             LEFT_FLYWHEEL,
             FRONT_LEFT_WHEEL,
@@ -166,7 +165,9 @@ public class Config {
 
     public static final String[] SERVOS = {
             POLLEN_GATE,
-            NECTAR_GATE
+            NECTAR_GATE,
+            RIGHT_WEDGE,
+            LEFT_WEDGE
     };
 
     public class Hive {

@@ -44,7 +44,7 @@ public class CompetitionDriveCode extends OpMode {
     IntakeTransferController intakeTransfer;
     private Follower follower;
     RumbleGamepad driver;
-    public boolean shouldAutoAim = true;
+    public boolean shouldAutoAim = false;
 
     public boolean fieldCentric = true; //false - robot centric | true - field centric
 
@@ -95,7 +95,7 @@ public class CompetitionDriveCode extends OpMode {
         Pose robot = follower.pose(); // gets robot pose
 
         //reset yaw
-        if (driver.wasJustPressed(RumbleGamepad.Button.Y)) {
+        if (driver.wasJustPressed(user.RESET_YAW)) {
             resetYaw();
         }
 
@@ -124,18 +124,18 @@ public class CompetitionDriveCode extends OpMode {
         }
 
         //INTAKE & TRANSFER
-        if (driver.wasJustPressed(user.INTAKE_ON)){
-            intakeTransfer.setPower(1);
+        if (driver.wasJustPressed(user.INTAKE_FORWARD)){
+            intakeTransfer.toggleForward();
         }
-        if (driver.wasJustPressed(user.REVERSE_INTAKE)) {
-            intakeTransfer.setPower(-1);
+        if (driver.wasJustPressed(user.INTAKE_REVERSE)) {
+            intakeTransfer.toggleReverse();
         }
+        intakeTransfer.update();
 
         //FLOWER INTAKE
         if (driver.wasJustPressed(user.INTAKE_FLOWER_TOGGLE)){
             intakeTransfer.toggleFlowerIntake();
         }
-
 
         //DRIVE TRAIN
         DrivePowers powers;
@@ -161,7 +161,6 @@ public class CompetitionDriveCode extends OpMode {
             );
         }
         ManualDrive.driveOrHold(follower, powers);
-//        follower.manual(powers);
 
         //TELEMETRY
         telemetry.addData("Robot X", robot.x());
