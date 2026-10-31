@@ -25,10 +25,10 @@ public class Config {
     public static final double MAX_INTAKE_TRANSFER_POWER = 1;
     public static final String POLLEN_GATE = "pollenGate";
     public static double POLLEN_GATE_OPEN = 0;
-    public static double POLLEN_GATE_CLOSE = 0.4;
+    public static double POLLEN_GATE_CLOSE = 0.45;
     public static final String NECTAR_GATE = "nectarGate";
-    public static double NECTAR_GATE_OPEN = 0.95;
-    public static double NECTAR_GATE_CLOSE = 0.75;
+    public static double NECTAR_GATE_OPEN = 0.825;
+    public static double NECTAR_GATE_CLOSE = 0.65;
     public static final String COLOR_SENSOR = "sensorColor";
     public enum Element{RED_NECTAR, BLUE_NECTAR, POLLEN, NONE};
 
@@ -68,7 +68,7 @@ public class Config {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static String RIGHT_WEDGE = "rightWedge";
     public static String LEFT_WEDGE = "leftWedge";
-    public static double WEDGE_UP = .6;
+    public static double WEDGE_UP = .5;
     public static double WEDGE_DOWN = 0.0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
