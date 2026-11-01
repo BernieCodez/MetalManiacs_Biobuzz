@@ -3,9 +3,11 @@ package org.firstinspires.ftc.teamcode.deprecated;
 import android.graphics.Color;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @Deprecated
+@Disabled
 @Autonomous(name = "AhmedColorTest", group = "Autonomous")
 public class AhmedColorTest extends LinearOpMode {
 

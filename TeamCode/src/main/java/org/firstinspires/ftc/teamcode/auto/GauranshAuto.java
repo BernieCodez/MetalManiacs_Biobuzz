@@ -23,7 +23,9 @@ import org.firstinspires.ftc.teamcode.deprecated.AutoAimController;
 import org.firstinspires.ftc.teamcode.controllers.IntakeTransferController;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+@Disabled
 @Autonomous(name = "GauranshAuto", group = "Autonomous")
 public class GauranshAuto extends LinearOpMode {
 

@@ -7,8 +7,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-
+@Disabled
 @TeleOp(name = "OLD Competition Drive Code", group = "B - Competition")
 public class OldCompetitionDriveCode extends OpMode {
     private DcMotor frontLeft, frontRight, backLeft, backRight;

@@ -12,7 +12,9 @@ import org.firstinspires.ftc.teamcode.prism.Direction;
 import org.firstinspires.ftc.teamcode.prism.GoBildaPrismDriver;
 import org.firstinspires.ftc.teamcode.prism.PrismAnimations;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+@Disabled
 @TeleOp(name = "LED Example", group = "Test")
 public class LEDExample extends LinearOpMode {
 

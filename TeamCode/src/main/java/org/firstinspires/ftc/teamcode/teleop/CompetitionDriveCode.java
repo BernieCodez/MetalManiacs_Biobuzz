@@ -162,14 +162,17 @@ public class CompetitionDriveCode extends OpMode {
         }
         ManualDrive.driveOrHold(follower, powers);
 
+        telemetry.addData("Auto Aim", shouldAutoAim);
+        telemetry.addData("Field Centric", fieldCentric);
+        String allianceName = alliance == Alliance.BLUE ? "Blue" : "Red";
+        telemetry.addData("Alliance", allianceName);
+
         //TELEMETRY
         if (DEBUG){
             telemetry.addData("Robot X", robot.x());
             telemetry.addData("Robot Y", robot.y());
             telemetry.addData("Target Heading", autoAim.calculateLocalizedHeading(activeHive, robot));
             telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
-            telemetry.addData("Auto Aim", shouldAutoAim);
-            telemetry.addData("Field Centric", fieldCentric);
             telemetry.addData("Intake Transfer Current", intakeTransfer.getCurrent());
             telemetry.addData("Flywheel Velocity", outtake.flywheel.getVelocity());
             telemetry.addData("Flywheels On", outtake.useFlywheel);

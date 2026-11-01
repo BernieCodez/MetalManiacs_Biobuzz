@@ -26,7 +26,9 @@ import org.firstinspires.ftc.teamcode.controllers.IntakeTransferController;
 import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+@Disabled
 @Autonomous(name = "RedAuto1", group = "Autonomous")
 public class RedAuto1 extends LinearOpMode {
 

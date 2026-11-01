@@ -5,6 +5,7 @@ import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.Plugin;
 import com.bylazar.telemetry.TelemetryManager;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -15,7 +16,7 @@ import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
 
 //v uncommenting this will hide it on the driver station
-//@Disabled
+@Disabled
 @Configurable
 @TeleOp(name = "Flywheel PIDF Tuner", group = "A - Test")
 public class FlywheelPIDFTuner extends LinearOpMode {

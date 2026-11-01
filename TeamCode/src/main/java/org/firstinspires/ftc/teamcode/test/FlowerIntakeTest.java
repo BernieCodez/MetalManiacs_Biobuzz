@@ -8,7 +8,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+@Disabled
 @TeleOp(name = "Flower INTAKE TEST", group = "Test")
 public class FlowerIntakeTest extends LinearOpMode {
 

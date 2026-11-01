@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.Config;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
 // @Disabled
-@TeleOp(name = "Run Motor Pair", group = "A - Test")
+@TeleOp(name = "Run Motor Pair", group = "Z - Test")
 public class RunMotorPair extends LinearOpMode {
 
     private int selected1 = 0;

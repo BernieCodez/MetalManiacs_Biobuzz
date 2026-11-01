@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.test;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -11,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Config;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
 //v uncommenting this will hide it on the driver station
-//@Disabled
+@Disabled
 @TeleOp(name = "Move Flywheel Servo Test", group = "Z - Test")
 public class MovingFlywheelServoTest extends LinearOpMode {
     CRServo leftServo;
