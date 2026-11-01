@@ -57,7 +57,7 @@ public class Auto6 extends LinearOpMode {
 
     private final Pose start = poseFactory.of(87.289, 3.6556, -89.69);
     private final Pose shootOne = poseFactory.of(87, 5, 90);
-    private final Pose parkAtEnd = poseFactory.of(127.4619, 24.4262, 25.6462);
+    private final Pose parkAtEnd = poseFactory.of(131.7856, 24.8193, 23.8712);
 
     // Autonomous routine
     public Command autoRoutine() {
