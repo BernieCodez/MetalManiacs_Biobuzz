@@ -31,7 +31,7 @@ import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 public class Auto1 extends LinearOpMode {
 
     private static final long AIM_MS = 700;
-    private static final long SHOT_OPEN_MS = 400;
+    private static final long SHOT_OPEN_MS = 2000;
     private static final long SHOT_GAP_MS = 250;
     private static final long SHOT_FINISH_MS = 750;
     private static final double SETTLE_DISTANCE_IN = 1.5;
@@ -55,18 +55,17 @@ public class Auto1 extends LinearOpMode {
             ? PoseFactory.degrees()
             : PoseFactory.degrees().mirrorX(72).mirrorY(72);
 
-    private final Pose start = poseFactory.of(87.289, 140.3444, 270);
-    private final Pose point1 = poseFactory.of(87.4184, 135.7815, -88.3752);
-    private final Pose shootOne = poseFactory.of(87.5479, 131.2186, -90.7099);
-    private final Pose pickUpPollen = poseFactory.of(139.7313, 126.8552, 95.7663);
+    private final Pose start = poseFactory.of(87.289, 140.3444, 89.69);
+    private final Pose shootOne = poseFactory.of(87.5479, 139.2186, 89.31);
+    private final Pose pickUpPollen = poseFactory.of(136.1938, 126.6587, 84.0537);
     private final Pose pickUpPollenControl1 = poseFactory.of(131.9595, 88.2177, 0);
     private final Pose pickUpPollenSegment1Target = poseFactory.of(138, 144, 0);
-    private final Pose pickUpPollen2 = poseFactory.of(139.7312, 141.5, 90.0083);
-    private final Pose pickUpPollen2Segment1Target = poseFactory.of(139.73, 150, 0);
+    private final Pose pickUpPollen2 = poseFactory.of(136.1937, 139.1417, 90.0196);
+    private final Pose pickUpPollen2Segment1Target = poseFactory.of(136.19, 150, 0);
     private final Pose shootTwo = poseFactory.of(84.435, 31.0886, 84.3466);
     private final Pose shootTwoControl1 = poseFactory.of(90.8954, 112.0252, 0);
     private final Pose shootTwoControl2 = poseFactory.of(140.0766, 21.794, 0);
-    private final Pose pickUpFlowerPollen = poseFactory.of(95.6353, 30.6548, -94.1527);
+    private final Pose pickUpFlowerPollen = poseFactory.of(96.2249, 22.4006, -97.8131);
     private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(93.7, 4, 0);
     private final Pose shootThree = poseFactory.of(84.237, 30.8644, 83.9652);
     private final Pose pickUpFlowerPollen2 = poseFactory.of(124.8986, 98.8559, 0.8421);
@@ -83,15 +82,15 @@ public class Auto1 extends LinearOpMode {
                     outtakeController.close();
                 }),
                 instant(() -> currentTargetHive = FRONT_CELL),
-                follow(follower, path1()),
+                waitMs(1000),
                 follow(follower, shootOne()),
-                aimAndShoot(5),
+                aimAndShoot(1),
                 follow(follower, pickUpPollen()),
                 follow(follower, pickUpPollen2()),
                 waitMs(2000),
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, shootTwo()),
-                aimAndShoot(5),
+                aimAndShoot(1),
                 waitMs(2000),
                 instant(() -> intakeTransferController.flowerIntakeDown()),
                 follow(follower, pickUpFlowerPollen()),
@@ -99,7 +98,7 @@ public class Auto1 extends LinearOpMode {
                 instant(() -> intakeTransferController.flowerIntakeUp()),
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, shootThree()),
-                aimAndShoot(5),
+                aimAndShoot(1),
                 waitMs(2000),
                 instant(() -> intakeTransferController.flowerIntakeDown()),
                 follow(follower, pickUpFlowerPollen2()),
@@ -181,12 +180,8 @@ public class Auto1 extends LinearOpMode {
         }
     }
 
-    public Path path1() {
-        return line(start, point1).tangent();
-    }
-
     public Path shootOne() {
-        return line(point1, shootOne).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose).reverse()));
+        return line(start, shootOne).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose).reverse()));
     }
 
     public Path pickUpPollen() {
