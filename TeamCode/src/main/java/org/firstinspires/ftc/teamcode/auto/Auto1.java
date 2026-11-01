@@ -31,8 +31,8 @@ import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 public class Auto1 extends LinearOpMode {
 
     private static final long AIM_MS = 700;
-    private static final long SHOT_OPEN_MS = 2000;
-    private static final long SHOT_GAP_MS = 250;
+    private static final long SHOT_OPEN_MS = 325;
+    private static final long SHOT_GAP_MS = 400;
     private static final long SHOT_FINISH_MS = 750;
     private static final double SETTLE_DISTANCE_IN = 1.5;
     private static final long SETTLE_TIMEOUT_MS = 1500;
@@ -56,7 +56,7 @@ public class Auto1 extends LinearOpMode {
             : PoseFactory.degrees().mirrorX(72).mirrorY(72);
 
     private final Pose start = poseFactory.of(87.289, 140.3444, 89.69);
-    private final Pose shootOne = poseFactory.of(87.5479, 139.2186, 89.31);
+    private final Pose shootOne = poseFactory.of(87, 139, -90);
     private final Pose pickUpPollen = poseFactory.of(136.1938, 126.6587, 84.0537);
     private final Pose pickUpPollenControl1 = poseFactory.of(131.9595, 88.2177, 0);
     private final Pose pickUpPollenSegment1Target = poseFactory.of(138, 144, 0);
@@ -82,9 +82,9 @@ public class Auto1 extends LinearOpMode {
                     outtakeController.close();
                 }),
                 instant(() -> currentTargetHive = FRONT_CELL),
-                waitMs(1000),
+                waitMs(5000),
                 follow(follower, shootOne()),
-                aimAndShoot(1),
+                aimAndShoot(7),
                 follow(follower, pickUpPollen()),
                 follow(follower, pickUpPollen2()),
                 waitMs(2000),
