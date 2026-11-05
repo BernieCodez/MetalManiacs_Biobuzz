@@ -8,16 +8,16 @@ public class ConfigKeybinds extends LinearOpMode {
 
     private String getButtonPress() {
         if (gamepad1.a) {
-            return "a";
+            return "X button";
         }
         if (gamepad1.b) {
-            return "b";
+            return "O button";
         }
         if (gamepad1.x) {
-            return "x";
+            return "square button";
         }
         if (gamepad1.y) {
-            return "y";
+            return "triangle button";
         }
 
         if (gamepad1.dpad_up) {
