@@ -17,17 +17,17 @@ public class FlowerIntake {
     }
 
     public void down(){
-        rightWedge.setPosition(WEDGE_DOWN);
+//        rightWedge.setPosition(WEDGE_DOWN);
         leftWedge.setPosition(WEDGE_DOWN);
     }
 
     public void up(){
-        rightWedge.setPosition(WEDGE_UP);
+//        rightWedge.setPosition(WEDGE_UP);
         leftWedge.setPosition(WEDGE_UP);
     }
 
     public void toggle(){
-        rightWedge.setPosition(rightWedge.getPosition() == WEDGE_DOWN ? WEDGE_UP : WEDGE_DOWN);
+//        rightWedge.setPosition(rightWedge.getPosition() == WEDGE_DOWN ? WEDGE_UP : WEDGE_DOWN);
         leftWedge.setPosition(leftWedge.getPosition() == WEDGE_DOWN ? WEDGE_UP : WEDGE_DOWN);
     }
 }

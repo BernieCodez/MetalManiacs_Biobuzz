@@ -13,7 +13,9 @@ import org.firstinspires.ftc.teamcode.hardware.Limelight;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 import static org.firstinspires.ftc.teamcode.Config.*;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+@Disabled
 @TeleOp(name = "Limelight Correction Test", group = "A - Test")
 public class LimelightTest extends OpMode {
 

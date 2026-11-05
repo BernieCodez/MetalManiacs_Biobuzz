@@ -9,13 +9,11 @@ import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.deprecated.ColorSensor;
 import org.firstinspires.ftc.teamcode.hardware.Flywheel;
 import org.firstinspires.ftc.teamcode.hardware.Gate;
-import org.firstinspires.ftc.teamcode.hardware.Hood;
 
 import java.util.ArrayList;
 public class OuttakeController {
     public Flywheel flywheel;
     private Gate gate;
-    private Hood hood;
     private ColorSensor colorSensor;
 
     public ArrayList<Element> elementList = new ArrayList<>();
@@ -30,7 +28,6 @@ public class OuttakeController {
     public OuttakeController(HardwareMap hardwareMap){
         flywheel = new Flywheel(hardwareMap);
         gate = new Gate(hardwareMap);
-        hood = new Hood(hardwareMap);
         colorSensor = new ColorSensor(hardwareMap);
     }
 
@@ -44,7 +41,8 @@ public class OuttakeController {
             useFlywheel = false;
         } else {
             distance = Math.hypot(robot.x() - activeHive.pose.x(), robot.y() - activeHive.pose.y());
-            flywheel.setVelocityByDistance(distance);
+//            flywheel.setVelocityByDistance(distance);
+            flywheel.setVelocity(1125);
             useFlywheel = true;
         }
 
@@ -64,6 +62,13 @@ public class OuttakeController {
 
     public void fire(){
         gate.open();
+        if (!elementList.isEmpty()) {
+            elementList.remove(0);
+        }
+    }
+
+    public void fireNectar(){
+        gate.openNectar();
         if (!elementList.isEmpty()) {
             elementList.remove(0);
         }

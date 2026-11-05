@@ -5,7 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.hardware.Flywheel;
 import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+@Disabled
 @TeleOp(name = "Flywheel PID/Velocity", group = "A - Test")
 public class RunFlywheelsPID extends LinearOpMode {
     public static double MIN_VELOCITY = 700;

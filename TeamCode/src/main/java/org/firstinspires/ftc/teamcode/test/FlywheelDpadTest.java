@@ -7,7 +7,9 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.Config;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+@Disabled
 @TeleOp(name = "Flywheel Dpad Test", group = "A - Test")
 public class FlywheelDpadTest extends LinearOpMode {
     DcMotor leftFlywheel;

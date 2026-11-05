@@ -23,9 +23,12 @@ public class Config {
 //                                     INTAKE/TRANSFER                                            //
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String INTAKE_TRANSFER = "intakeTransfer";
-    public static final String GATE = "gate";
-    public static double GATE_OPEN = 0.5;
-    public static double GATE_CLOSE = 0;
+    public static final String POLLEN_GATE = "pollenGate";
+    public static double POLLEN_GATE_OPEN = 0.5;
+    public static double POLLEN_GATE_CLOSE = 0;
+    public static final String NECTAR_GATE = "nectarGate";
+    public static double NECTAR_GATE_OPEN = 0.5;
+    public static double NECTAR_GATE_CLOSE = 0;
     public static final String COLOR_SENSOR = "sensorColor";
     public enum Element{RED_NECTAR, BLUE_NECTAR, POLLEN, NONE};
 
@@ -35,9 +38,6 @@ public class Config {
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String LEFT_FLYWHEEL = "leftFlywheel";
     public static final String RIGHT_FLYWHEEL = "rightFlywheel";
-    public static final String HOOD = "hood";
-    public static final double HOOD_NECTAR = 0.5;
-    public static final double HOOD_POLLEN = 0.25;
 
     //PIDF for flywheels
     public static double FLYWHEEL_KP = 0.0;
@@ -166,8 +166,8 @@ public class Config {
     };
 
     public static final String[] SERVOS = {
-            HOOD,
-            GATE
+            POLLEN_GATE,
+            NECTAR_GATE
     };
 
     public class Hive {

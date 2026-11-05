@@ -44,7 +44,7 @@ public class CompetitionDriveCode extends OpMode {
     IntakeTransferController intakeTransfer;
     private Follower follower;
     RumbleGamepad driver;
-    public boolean shouldAutoAim = true;
+    public boolean shouldAutoAim = false;
 
     public boolean fieldCentric = true; //false - robot centric | true - field centric
 
@@ -56,15 +56,6 @@ public class CompetitionDriveCode extends OpMode {
 
     public Profile user;
     private double fieldCentricHeadingOffset = 0;
-
-    /////////////////////////////////////
-    private boolean showYawDebug = false;
-
-    private double beforePinpointX, beforePinpointY, beforePinpointHeading;
-    private double beforePedroX, beforePedroY, beforePedroHeading;
-
-    private double afterPinpointX, afterPinpointY, afterPinpointHeading;
-    private double afterPedroX, afterPedroY, afterPedroHeading;
 
     @Override
     public void init() {
@@ -89,7 +80,8 @@ public class CompetitionDriveCode extends OpMode {
     public void loop() {
         driver.update();
 
-        if (driver.wasJustPressed(user.ALLIANCE_COLOR)){ //toggle team colors with start button
+        //toggle team colors with start button
+        if (driver.wasJustPressed(user.ALLIANCE_COLOR)) {
             alliance = alliance == Alliance.RED ? Alliance.BLUE : Alliance.RED;
         }
 
@@ -103,7 +95,7 @@ public class CompetitionDriveCode extends OpMode {
         Pose robot = follower.pose(); // gets robot pose
 
         //reset yaw
-        if (driver.wasJustPressed(RumbleGamepad.Button.Y)) {
+        if (driver.wasJustPressed(user.RESET_YAW)) {
             resetYaw();
         }
 
@@ -132,18 +124,18 @@ public class CompetitionDriveCode extends OpMode {
         }
 
         //INTAKE & TRANSFER
-        if (driver.wasJustPressed(user.INTAKE_ON)){
-            intakeTransfer.setPower(1);
+        if (driver.wasJustPressed(user.INTAKE_FORWARD)){
+            intakeTransfer.toggleForward();
         }
-        if (driver.wasJustPressed(user.REVERSE_INTAKE)) {
-            intakeTransfer.setPower(-1);
+        if (driver.wasJustPressed(user.INTAKE_REVERSE)) {
+            intakeTransfer.toggleReverse();
         }
+        intakeTransfer.update();
 
         //FLOWER INTAKE
         if (driver.wasJustPressed(user.INTAKE_FLOWER_TOGGLE)){
             intakeTransfer.toggleFlowerIntake();
         }
-
 
         //DRIVE TRAIN
         DrivePowers powers;
@@ -169,49 +161,30 @@ public class CompetitionDriveCode extends OpMode {
             );
         }
         ManualDrive.driveOrHold(follower, powers);
-//        follower.manual(powers);
 
-        //TELEMETRY
-        telemetry.addData("Robot X", robot.x());
-        telemetry.addData("Robot Y", robot.y());
-        telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
         telemetry.addData("Auto Aim", shouldAutoAim);
         telemetry.addData("Field Centric", fieldCentric);
-        telemetry.addData("Flywheel Velocity", outtake.flywheel.getVelocity());
-        telemetry.addData("Flywheels On", outtake.useFlywheel);
-        telemetry.addData("Distance", outtake.distance);
-        telemetry.addLine("");
-        telemetry.addLine("Limelight");
-        telemetry.addData("TVisible", autoAim.limelight.ty);
-        telemetry.addData("TX", autoAim.limelight.tx);
-        telemetry.addLine("");
-        telemetry.addLine("Active Hive");
-        telemetry.addData("Active Hive", activeHive.name);
+        String allianceName = alliance == Alliance.BLUE ? "Blue" : "Red";
+        telemetry.addData("Alliance", allianceName);
 
-        // Persistent yaw reset diagnostics
-        if (showYawDebug) {
-            telemetry.addLine("=== YAW RESET DEBUG ===");
-
-            telemetry.addLine("--- BEFORE ---");
-            telemetry.addData("Pinpoint X", beforePinpointX);
-            telemetry.addData("Pinpoint Y", beforePinpointY);
-            telemetry.addData("Pinpoint Heading", beforePinpointHeading);
-
-            telemetry.addData("Pedro X", beforePedroX);
-            telemetry.addData("Pedro Y", beforePedroY);
-            telemetry.addData("Pedro Heading", beforePedroHeading);
-
-            telemetry.addLine("--- AFTER ---");
-            telemetry.addData("Pinpoint X", afterPinpointX);
-            telemetry.addData("Pinpoint Y", afterPinpointY);
-            telemetry.addData("Pinpoint Heading", afterPinpointHeading);
-
-            telemetry.addData("Pedro X", afterPedroX);
-            telemetry.addData("Pedro Y", afterPedroY);
-            telemetry.addData("Pedro Heading", afterPedroHeading);
+        //TELEMETRY
+        if (DEBUG){
+            telemetry.addData("Robot X", robot.x());
+            telemetry.addData("Robot Y", robot.y());
+            telemetry.addData("Target Heading", autoAim.calculateLocalizedHeading(activeHive, robot));
+            telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
+            telemetry.addData("Intake Transfer Current", intakeTransfer.getCurrent());
+            telemetry.addData("Flywheel Velocity", outtake.flywheel.getVelocity());
+            telemetry.addData("Flywheels On", outtake.useFlywheel);
+            telemetry.addData("Distance", outtake.distance);
+            telemetry.addLine("");
+            telemetry.addLine("Limelight");
+            telemetry.addData("TVisible", autoAim.limelight.ty);
+            telemetry.addData("TX", autoAim.limelight.tx);
+            telemetry.addLine("");
+            telemetry.addLine("Active Hive");
+            telemetry.addData("Active Hive", activeHive.name);
         }
-
-//        telemetry.addData("")
 
         //DRIVER FEEDBACK
         rumble.update(intakeTransfer.isOn());
@@ -223,8 +196,5 @@ public class CompetitionDriveCode extends OpMode {
     }
 
     private Alliance.Hive getTargetHive(Alliance alliance, Pose robot) {return robot.y() > HIVE_BOUNDARY ? alliance.TOP : alliance.BOTTOM;}
-    public void resetYaw() {
-        // Make the robot's current physical direction the new field-centric forward.
-        fieldCentricHeadingOffset = follower.pose().heading();
-    }
+    public void resetYaw() {fieldCentricHeadingOffset = follower.pose().heading();}
 }

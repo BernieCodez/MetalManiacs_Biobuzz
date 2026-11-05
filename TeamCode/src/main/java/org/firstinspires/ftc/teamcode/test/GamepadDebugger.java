@@ -4,6 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+
+@Disabled
 @TeleOp(name = "Gamepad Debugger", group = "Z - Test")
 public class GamepadDebugger extends LinearOpMode {
     RumbleGamepad gp;

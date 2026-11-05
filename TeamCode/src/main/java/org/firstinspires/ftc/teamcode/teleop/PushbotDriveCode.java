@@ -39,7 +39,9 @@ import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+@Disabled
 @TeleOp(name = "Pushbot Code", group = "C - Outreach")
 public class PushbotDriveCode extends OpMode {
     public RumbleGamepad driver;

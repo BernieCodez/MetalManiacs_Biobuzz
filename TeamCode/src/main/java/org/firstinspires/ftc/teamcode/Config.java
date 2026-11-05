@@ -8,6 +8,7 @@ import java.util.Set;
 
 @Configurable
 public class Config {
+    public static final boolean DEBUG = false; //set to false during comp for faster loop times
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                       DRIVE TRAIN                                              //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,10 +23,13 @@ public class Config {
 //                                     INTAKE/TRANSFER                                            //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String INTAKE_TRANSFER = "intakeTransfer";
-    public static final String TRANSFER = "transfer";
-    public static final String GATE = "gate";
-    public static double GATE_OPEN = 0.5;
-    public static double GATE_CLOSE = 0;
+    public static final double MAX_INTAKE_TRANSFER_POWER = 1;
+    public static final String POLLEN_GATE = "pollenGate";
+    public static double POLLEN_GATE_OPEN = 0;
+    public static double POLLEN_GATE_CLOSE = 0.45;
+    public static final String NECTAR_GATE = "nectarGate";
+    public static double NECTAR_GATE_OPEN = 0.825;
+    public static double NECTAR_GATE_CLOSE = 0.65;
     public static final String COLOR_SENSOR = "sensorColor";
     public enum Element{RED_NECTAR, BLUE_NECTAR, POLLEN, NONE};
 
@@ -35,15 +39,12 @@ public class Config {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String LEFT_FLYWHEEL = "leftFlywheel";
     public static final String RIGHT_FLYWHEEL = "rightFlywheel";
-    public static final String HOOD = "hood";
-    public static final double HOOD_NECTAR = 0.5;
-    public static final double HOOD_POLLEN = 0.25;
 
     //PIDF for flywheels
-    public static double FLYWHEEL_KP = 0.5;
+    public static double FLYWHEEL_KP = 75;
     public static double FLYWHEEL_KI = 0.0;
-    public static double FLYWHEEL_KD = 0.0;
-    public static double FLYWHEEL_KF = 15;
+    public static double FLYWHEEL_KD = 1;
+    public static double FLYWHEEL_KF = 14.5;
 
     public static double FLYWHEEL_VELOCITY_TOLERANCE = 20;
     //Slope calculator
@@ -68,8 +69,8 @@ public class Config {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static String RIGHT_WEDGE = "rightWedge";
     public static String LEFT_WEDGE = "leftWedge";
-    public static double WEDGE_UP = 1;
-    public static double WEDGE_DOWN = 0;
+    public static double WEDGE_UP = .5;
+    public static double WEDGE_DOWN = 0.0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                      LOCALIZATION                                              //
@@ -86,41 +87,40 @@ public class Config {
     //GOAL POSITIONS FOR AUTO AIM
 
     public static final double HIVE_BOUNDARY = 72;
-    public static Alliance currentAlliance = Alliance.RED;//default to an alliance to avoid null exception errors
+    public static Alliance currentAlliance = Alliance.BLUE;//default to an alliance to avoid null exception errors
 
     public enum Alliance {
         RED(
-                new Hive(//audience side
+                new Hive(//opposite audience side
                         "RED TOP",
-                        new Pose(57, 57),
-                        Set.of(34, 35, 36, 37),
-                        Set.of(35, 36)
-
-                ),
-                new Hive(//opposite audience
-                        "RED BOTTOM",
                         new Pose(57, 87),
                         Set.of(30, 31, 32, 33),
                         Set.of(31, 32)
 
+                ),
+                new Hive(//audience side
+                        "RED BOTTOM",
+                        new Pose(57, 57),
+                        Set.of(34, 35, 36, 37),
+                        Set.of(35, 36)
+
                 )
+
 
         ),
 
         BLUE(
-                new Hive(//audience side
+                new Hive(//opposite audience side
                         "BLUE TOP",
                         new Pose(87, 87),
-                        Set.of(38, 39, 40, 41),
-                        Set.of(39, 40)
-
-                ),
-                new Hive(//opposite audience
-                        "BLUE BOTTOM",
-                        new Pose(87, 57),
                         Set.of(42, 43, 44, 45),
                         Set.of(43, 44)
-
+                ),
+                new Hive(//audience side
+                        "BLUE BOTTOM",
+                        new Pose(87, 57),
+                        Set.of(38, 39, 40, 41),
+                        Set.of(39, 40)
                 )
         );
 
@@ -154,7 +154,6 @@ public class Config {
     public static final String PUSHBOT_ARM = "pushbotArm";
     public static final String[] MOTORS = {
             INTAKE_TRANSFER,
-            TRANSFER,
             RIGHT_FLYWHEEL,
             LEFT_FLYWHEEL,
             FRONT_LEFT_WHEEL,
@@ -166,8 +165,10 @@ public class Config {
     };
 
     public static final String[] SERVOS = {
-            HOOD,
-            GATE
+            POLLEN_GATE,
+            NECTAR_GATE,
+            RIGHT_WEDGE,
+            LEFT_WEDGE
     };
 
     public class Hive {

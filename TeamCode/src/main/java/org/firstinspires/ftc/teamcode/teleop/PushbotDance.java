@@ -31,7 +31,9 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
 import java.util.List;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
+@Disabled
 @TeleOp(name = "PushbotDance", group = "A - TeleOP")
 public class PushbotDance extends OpMode {
 
