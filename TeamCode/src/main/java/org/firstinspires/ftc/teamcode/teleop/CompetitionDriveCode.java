@@ -46,7 +46,7 @@ public class CompetitionDriveCode extends OpMode {
     RumbleGamepad driver;
     public boolean shouldAutoAim = false;
 
-    public boolean fieldCentric = true; //false - robot centric | true - field centric
+    public boolean fieldCentric = false; //false - robot centric | true - field centric
 
     private AutoAimController autoAim;
     private OuttakeController outtake;
@@ -56,6 +56,7 @@ public class CompetitionDriveCode extends OpMode {
 
     public Profile user;
     private double fieldCentricHeadingOffset = 0;
+    public double speedMultiplier = 0.5;
 
     @Override
     public void init() {
@@ -101,8 +102,9 @@ public class CompetitionDriveCode extends OpMode {
 
         // relocalise button (SHOULD BE IMMEDIATELY AFTER POSE IS UPDATED)
         if (driver.wasJustPressed(user.REMOVE_DRIFT)) {
+            follower.setPose(LOCALIZATION_RESET_POSITION); // overrides our pose with that ^
             robot = LOCALIZATION_RESET_POSITION;
-            follower.setPose(robot); // overrides our pose with that ^
+            follower.hold(robot);//fixes hold issue
         }
 
         //AUTO AIM
@@ -142,10 +144,13 @@ public class CompetitionDriveCode extends OpMode {
         if (driver.wasJustPressed(user.FIELD_CENTRIC)){
             fieldCentric = !fieldCentric;
         }
+        if (driver.wasJustPressed(user.TOGGLE_SPEED)){
+            speedMultiplier = speedMultiplier == 1 ? 0.5 : 1;
+        }
         double exponent = 3;
-        double rotation = shouldAutoAim ? autoAim.rotation : RumbleGamepad.exponentialInput(-driver.rightX(), exponent);
-        double strafe = RumbleGamepad.exponentialInput(-driver.leftX(), exponent);
-        double throttle = RumbleGamepad.exponentialInput(driver.leftY(), exponent);
+        double rotation = shouldAutoAim ? autoAim.rotation : RumbleGamepad.exponentialInput(-driver.rightX(), exponent) * speedMultiplier;
+        double strafe = RumbleGamepad.exponentialInput(-driver.leftX(), exponent) * speedMultiplier;
+        double throttle = RumbleGamepad.exponentialInput(driver.leftY(), exponent) * speedMultiplier;
         if (fieldCentric){
             powers = ManualDrive.fieldCentric(
                     throttle,
@@ -166,6 +171,12 @@ public class CompetitionDriveCode extends OpMode {
         telemetry.addData("Field Centric", fieldCentric);
         String allianceName = alliance == Alliance.BLUE ? "Blue" : "Red";
         telemetry.addData("Alliance", allianceName);
+        String speedMode = speedMultiplier == 1 ? "Fast" : "Slow";
+        telemetry.addData("Speed",speedMode);
+
+        telemetry.addData("Robot X", robot.x());
+        telemetry.addData("Robot Y", robot.y());
+        telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
 
         //TELEMETRY
         if (DEBUG){
@@ -177,6 +188,7 @@ public class CompetitionDriveCode extends OpMode {
             telemetry.addData("Flywheel Velocity", outtake.flywheel.getVelocity());
             telemetry.addData("Flywheels On", outtake.useFlywheel);
             telemetry.addData("Distance", outtake.distance);
+            telemetry.addData("Intake Speed", intakeTransfer.getPower());
             telemetry.addLine("");
             telemetry.addLine("Limelight");
             telemetry.addData("TVisible", autoAim.limelight.ty);

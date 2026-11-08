@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 @TeleOp(name = "Run Chassis Full Power", group = "A - Test")
 public class RunChassisFullPower extends LinearOpMode {
     private DcMotor frontLeft, frontRight, backLeft, backRight;
+    private double power = 0.1;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -24,10 +25,10 @@ public class RunChassisFullPower extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            frontLeft.setPower(1.0);
-            frontRight.setPower(1.0);
-            backLeft.setPower(1.0);
-            backRight.setPower(1.0);
+            frontLeft.setPower(power);
+            frontRight.setPower(power);
+            backLeft.setPower(power);
+            backRight.setPower(power);
         }
     }
 }

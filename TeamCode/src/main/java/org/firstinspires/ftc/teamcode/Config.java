@@ -24,6 +24,7 @@ public class Config {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String INTAKE_TRANSFER = "intakeTransfer";
     public static final double MAX_INTAKE_TRANSFER_POWER = 1;
+    public static final double RAMP_RATE = 3; //how agressive intake should ramp: higher val = more agro | lower val = less agro
     public static final String POLLEN_GATE = "pollenGate";
     public static double POLLEN_GATE_OPEN = 0.75;
     public static double POLLEN_GATE_CLOSE = 1;
@@ -79,7 +80,7 @@ public class Config {
     public static final String LIMELIGHT = "limelight";
     public static final double RESULT_TIMEOUT_MS = 500;//for limelight
 
-    public static final Pose LOCALIZATION_RESET_POSITION = new Pose(10.5, 10.5, Math.toRadians(90));
+    public static final Pose LOCALIZATION_RESET_POSITION = new Pose(128, 13, Math.toRadians(90));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                       HIVE POSES                                               //
