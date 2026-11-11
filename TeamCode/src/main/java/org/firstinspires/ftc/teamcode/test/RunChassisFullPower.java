@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-@Disabled
+//@Disabled
 @TeleOp(name = "Run Chassis Full Power", group = "A - Test")
 public class RunChassisFullPower extends LinearOpMode {
     private DcMotor frontLeft, frontRight, backLeft, backRight;
