@@ -12,5 +12,5 @@ public class Drivers {
             AHMED,
             SPARSH,
     };
-    public static Profile activeDriver = DRIVERS[0]; // defaults to using top most driver as active!
+    public static Profile activeDriver = PrematchSetup.loadDriver(DRIVERS); // defaults to using top most driver as active!
 }

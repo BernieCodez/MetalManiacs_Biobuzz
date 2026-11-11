@@ -11,7 +11,7 @@ public class Config {
     public static final boolean DEBUG = false; //set to false during comp for faster loop times
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                       DRIVE TRAIN                                              //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
     public static final String FRONT_LEFT_WHEEL = "frontLeft";
     public static final String FRONT_RIGHT_WHEEL = "frontRight";
     public static final String BACK_LEFT_WHEEL = "backLeft";
@@ -92,7 +92,7 @@ public class Config {
     //GOAL POSITIONS FOR AUTO AIM
 
     public static final double HIVE_BOUNDARY = 72;
-    public static Alliance currentAlliance = Alliance.BLUE;//default to an alliance to avoid null exception errors
+    public static Alliance currentAlliance = org.firstinspires.ftc.teamcode.util.PrematchSetup.loadAlliance();//default to an alliance to avoid null exception errors
 
     public enum Alliance {
         RED(
