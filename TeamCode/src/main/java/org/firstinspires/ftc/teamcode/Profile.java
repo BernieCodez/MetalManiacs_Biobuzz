@@ -11,6 +11,7 @@ public class Profile {
     public Button TOGGLE_AUTOAIM = Button.A; //cross
     public Button INTAKE_FLOWER_TOGGLE = Button.B; //circle
     public Button TOGGLE_SPEED = Button.DPAD_LEFT;
+    public Button TO_CLOSEST_RADIUS = Button.DPAD_DOWN;
 
     public String name;
 

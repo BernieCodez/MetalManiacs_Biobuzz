@@ -76,7 +76,7 @@ public class CheckRobot extends LinearOpMode {
             case "Flywheels":        return testFlywheels();
             case "Pollen gate":      return testServos("pollen gate", POLLEN_GATE_OPEN, POLLEN_GATE_CLOSE, POLLEN_GATE);
             case "Nectar gate":      return testServos("nectar gate", NECTAR_GATE_OPEN, NECTAR_GATE_CLOSE, NECTAR_GATE);
-            case "Wedges":           return testServos("wedges", WEDGE_DOWN, WEDGE_UP, LEFT_WEDGE, RIGHT_WEDGE);
+            case "Wedges":           return testServos("wedges", RIGHT_WEDGE_UP, RIGHT_WEDGE_UP, LEFT_WEDGE, RIGHT_WEDGE);
             case "Color sensor":     return testColorSensor();
             case "Limelight":        return testLimelight();
             case "LEDs":             return testLEDs();

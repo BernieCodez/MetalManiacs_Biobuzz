@@ -20,16 +20,31 @@ import static org.firstinspires.ftc.teamcode.Config.*;
 public class Constants {
     public static GoBildaPinpointDriver pinpoint;
 
+//    public static Follower create(HardwareMap h) {
+//        pinpoint = h.get(GoBildaPinpointDriver.class, PINPOINT);
+//
+//        return new Follower(
+//                new PinpointLocalizer(h, localizerConfig),
+//                new Mecanum(h, drivetrainConfig),
+//                new Foresight(foresightConfig)
+//        );
+//    }
+
     public static Follower create(HardwareMap h) {
         pinpoint = h.get(GoBildaPinpointDriver.class, PINPOINT);
 
-        return new Follower(
+        Follower follower = new Follower(
                 new PinpointLocalizer(h, localizerConfig),
                 new Mecanum(h, drivetrainConfig),
                 new Foresight(foresightConfig)
         );
-    }
 
+        // Custom odometry calibration
+        pinpoint.setEncoderResolution(16.5783, DistanceUnit.MM);
+
+        return follower;
+    }
+    
     public static MecanumConfig drivetrainConfig = new MecanumConfig(c -> {
         c.frontLeftName.set(FRONT_LEFT_WHEEL);
         c.frontRightName.set(FRONT_RIGHT_WHEEL);

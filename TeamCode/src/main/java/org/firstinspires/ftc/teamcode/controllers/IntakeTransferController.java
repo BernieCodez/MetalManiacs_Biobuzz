@@ -37,6 +37,9 @@ public class IntakeTransferController {
             currentPower += Math.signum(difference) * maxChange; //ramp if not there
         }
         intakeTransfer.setPower(currentPower);
+
+        //update flower wedge
+        flowerIntake.update();
     }
 
     public double getCurrent(){return intakeTransfer.getCurrent();}

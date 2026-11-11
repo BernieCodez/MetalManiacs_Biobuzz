@@ -43,7 +43,7 @@ public class OuttakeController {
             distance = Math.hypot(robot.x() - activeHive.pose.x(), robot.y() - activeHive.pose.y());
 //            flywheel.setVelocityByDistance(distance);
 //            flywheel.setVelocity(1127); //was 1125
-            flywheel.setVelocity(FLYWHEEL_DISTANCE_INTERCEPT + FLYWHEEL_DISTANCE_SLOPE * distance);
+            flywheel.setVelocity(Math.min(1300, FLYWHEEL_DISTANCE_INTERCEPT + FLYWHEEL_DISTANCE_SLOPE * distance));
             useFlywheel = true;
         }
 

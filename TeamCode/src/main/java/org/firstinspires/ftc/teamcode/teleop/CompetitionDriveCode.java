@@ -10,8 +10,11 @@
  */
 
 package org.firstinspires.ftc.teamcode.teleop;
+
+import com.pedropathing.api.Paths;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
+import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.pedropathing.drivetrain.DrivePowers;
@@ -39,8 +42,6 @@ import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 @TeleOp(name = "Competition Drive Code", group = "B - Competition")
 public class CompetitionDriveCode extends OpMode {
 
-    IntakeTransferController intake;
-
     RumbleController rumble;
     IntakeTransferController intakeTransfer;
     private Follower follower;
@@ -58,6 +59,9 @@ public class CompetitionDriveCode extends OpMode {
     public Profile user;
     private double fieldCentricHeadingOffset = 0;
     public double speedMultiplier = 0.5;
+    public boolean overrideDriver = false;
+
+    public double odometryMultiplier = 1.152;
 
     @Override
     public void init() {
@@ -76,6 +80,7 @@ public class CompetitionDriveCode extends OpMode {
         follower.setPose(OpModeStorage.autonomousEndPose);
         follower.update();
         outtake.close();
+        intakeTransfer.flowerIntakeUp();
         resetYaw();
     }
 
@@ -96,6 +101,7 @@ public class CompetitionDriveCode extends OpMode {
 
         follower.update();
         Pose robot = follower.pose(); // gets robot pose
+//        Pose robot = new Pose(follower.pose().x() * odometryMultiplier, follower.pose().y() * odometryMultiplier, follower.pose().heading());
 
         //reset yaw
         if (driver.wasJustPressed(user.RESET_YAW)) {
@@ -146,6 +152,10 @@ public class CompetitionDriveCode extends OpMode {
         if (driver.wasJustPressed(user.FIELD_CENTRIC)){
             fieldCentric = !fieldCentric;
         }
+        if(driver.wasJustPressed(user.TO_CLOSEST_RADIUS)){
+            driveToHiveRadius(robot, activeHive.pose, 50);
+            overrideDriver = true;
+        }
         if (driver.wasJustPressed(user.TOGGLE_SPEED)){
             speedMultiplier = speedMultiplier == 1 ? 0.5 : 1;
         }
@@ -167,7 +177,13 @@ public class CompetitionDriveCode extends OpMode {
                     rotation
             );
         }
-        ManualDrive.driveOrHold(follower, powers);
+        if(overrideDriver){
+            if (!follower.following()) {
+                overrideDriver = false;
+            }
+        }else{
+            ManualDrive.driveOrHold(follower, powers);
+        }
 
         telemetry.addData("Auto Aim", shouldAutoAim);
         telemetry.addData("Field Centric", fieldCentric);
@@ -177,8 +193,14 @@ public class CompetitionDriveCode extends OpMode {
         telemetry.addData("Speed",speedMode);
 
         telemetry.addData("Distance", outtake.distance);
-        telemetry.addData("Flywheel Velocity", outtake.flywheel.getVelocity());
+        telemetry.addData("Active Hive", activeHive.name);
 
+        telemetry.addData("Flywheel Velocity", outtake.flywheel.getVelocity());
+        telemetry.addData("Override Driver", overrideDriver);
+
+        telemetry.addData("Robot X", robot.x());
+        telemetry.addData("Robot Y", robot.y());
+        telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
 
         //TELEMETRY
         if (DEBUG){
@@ -211,6 +233,32 @@ public class CompetitionDriveCode extends OpMode {
     public void stop(){
         outtake.stop();
         prism.turnOff();
+    }
+
+    public static Pose getClosestPointOnRadius(Pose robot, Pose hive, double radius) {
+        double dx = robot.x() - hive.x();
+        double dy = robot.y() - hive.y();
+
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        //make sure distance is not 0
+        if (distance < 0.001) {
+            return new Pose(hive.x() + radius, hive.y(), robot.heading());
+        }
+
+        double x = hive.x() + (dx / distance) * radius;
+        double y = hive.y() + (dy / distance) * radius;
+
+        return new Pose(x, y, robot.heading());
+    }
+
+    private void driveToHiveRadius(Pose robot, Pose hive, double radius) {
+        Pose target = getClosestPointOnRadius(robot, hive, radius);
+
+        Path path = Paths.line(robot, target)
+                .constant(robot.heading());
+
+        follower.follow(path);
     }
 
     private Alliance.Hive getTargetHive(Alliance alliance, Pose robot) {return robot.y() > HIVE_BOUNDARY ? alliance.TOP : alliance.BOTTOM;}

@@ -11,23 +11,21 @@ public class FlowerIntake {
 
     private Servo rightWedge;
     private Servo leftWedge;
+    private boolean wedgeUp = true;
     public FlowerIntake(HardwareMap hardwareMap) {
         rightWedge = hardwareMap.get(Servo.class, RIGHT_WEDGE);
         leftWedge = hardwareMap.get(Servo.class, LEFT_WEDGE);
     }
 
-    public void down(){
-//        rightWedge.setPosition(WEDGE_DOWN);
-        leftWedge.setPosition(WEDGE_DOWN);
-    }
+    public void down(){wedgeUp = false;}
 
-    public void up(){
-//        rightWedge.setPosition(WEDGE_UP);
-        leftWedge.setPosition(WEDGE_UP);
-    }
+    public void up(){wedgeUp = true;}
 
     public void toggle(){
-//        rightWedge.setPosition(rightWedge.getPosition() == WEDGE_DOWN ? WEDGE_UP : WEDGE_DOWN);
-        leftWedge.setPosition(leftWedge.getPosition() == WEDGE_DOWN ? WEDGE_UP : WEDGE_DOWN);
+        wedgeUp = !wedgeUp;
+    }
+    public void update(){
+        rightWedge.setPosition(wedgeUp ? RIGHT_WEDGE_UP : RIGHT_WEDGE_DOWN);
+        leftWedge.setPosition(wedgeUp ? LEFT_WEDGE_UP : LEFT_WEDGE_DOWN);
     }
 }
