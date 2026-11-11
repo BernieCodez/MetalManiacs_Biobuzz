@@ -26,11 +26,11 @@ public class Config {
     public static final double MAX_INTAKE_TRANSFER_POWER = 1;
     public static final double RAMP_RATE = 3; //how agressive intake should ramp: higher val = more agro | lower val = less agro
     public static final String POLLEN_GATE = "pollenGate";
-    public static double POLLEN_GATE_OPEN = 0.75;
+    public static double POLLEN_GATE_OPEN = 0.65;
     public static double POLLEN_GATE_CLOSE = 1;
     public static final String NECTAR_GATE = "nectarGate";
-    public static double NECTAR_GATE_OPEN = 0.37;
-    public static double NECTAR_GATE_CLOSE = 0.61;
+    public static double NECTAR_GATE_OPEN = 0;
+    public static double NECTAR_GATE_CLOSE = 0.35;
     public static final String COLOR_SENSOR = "sensorColor";
     public enum Element{RED_NECTAR, BLUE_NECTAR, POLLEN, NONE};
 

@@ -3,11 +3,12 @@ package org.firstinspires.ftc.teamcode.test;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.hardware.Flywheel;
+import org.firstinspires.ftc.teamcode.hardware.Gate;
 import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
 import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-@Disabled
+//@Disabled
 @TeleOp(name = "Flywheel PID/Velocity", group = "A - Test")
 public class RunFlywheelsPID extends LinearOpMode {
     public static double MIN_VELOCITY = 700;
@@ -15,12 +16,14 @@ public class RunFlywheelsPID extends LinearOpMode {
     public static double VELOCITY_STEP = 50;
     public Flywheel flywheel;
     public IntakeTransfer intakeTransfer;
+    public Gate gate;
     RumbleGamepad driver;
     public double tps;
     @Override
     public void runOpMode() {
         flywheel = new Flywheel(hardwareMap);
         intakeTransfer = new IntakeTransfer(hardwareMap);
+        gate = new Gate(hardwareMap);
         driver = new RumbleGamepad(gamepad1);
         tps = 1000;
 
@@ -35,6 +38,13 @@ public class RunFlywheelsPID extends LinearOpMode {
                 tps += VELOCITY_STEP;
             } else if (driver.wasJustPressed(RumbleGamepad.Button.LEFT_BUMPER)) {
                 tps-=VELOCITY_STEP;
+            }
+
+            if(driver.wasJustPressed(RumbleGamepad.Trigger.RIGHT_TRIGGER)){
+                gate.open();
+            }
+            if(driver.wasJustPressed(RumbleGamepad.Trigger.LEFT_TRIGGER)){
+                gate.close();
             }
             tps = Math.max(MIN_VELOCITY, Math.min(tps, MAX_VELOCITY));
 
