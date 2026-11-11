@@ -13,13 +13,20 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import static org.firstinspires.ftc.teamcode.Config.*;
 
+import org.firstinspires.ftc.teamcode.hardware.Gate;
 import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
+import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 
 //v uncommenting this will hide it on the driver station
-@Disabled
+
 @Configurable
 @TeleOp(name = "Flywheel PIDF Tuner", group = "A - Test")
 public class FlywheelPIDFTuner extends LinearOpMode {
+
+    RumbleGamepad driver;
+
+    Gate gate;
+
 
 
     public static double TARGET_VELOCITY = 0;
@@ -38,6 +45,8 @@ public class FlywheelPIDFTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        gate = new Gate(hardwareMap);
+        driver = new RumbleGamepad(gamepad1);
 
         DcMotorEx rightFlywheel = hardwareMap.get(DcMotorEx.class, RIGHT_FLYWHEEL);
         DcMotorEx leftFlywheel = hardwareMap.get(DcMotorEx.class, LEFT_FLYWHEEL);
@@ -97,6 +106,16 @@ public class FlywheelPIDFTuner extends LinearOpMode {
                     "target: " + TARGET_VELOCITY,
                     "error: " + error
                     );
+
+            driver.update();
+            if(driver.isDown(RumbleGamepad.Trigger.RIGHT_TRIGGER)) {
+                gate.open();
+            }
+            else{
+                gate.close();
+
+            }
+
 
             //telemetry
             telemetry.addData("Target Velocity", "%.2f ticks/s", TARGET_VELOCITY);
