@@ -10,30 +10,38 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 public class IntakeTransfer {
     public static DcMotorEx intakeTransfer;
+    public static DcMotorEx intakeTransfer2;
 
     public IntakeTransfer(HardwareMap hardwareMap){
         intakeTransfer = hardwareMap.get(DcMotorEx.class, INTAKE_TRANSFER);
         intakeTransfer.setDirection(DcMotorSimple.Direction.FORWARD);
-        intakeTransfer.setCurrentAlert(5,CurrentUnit.AMPS);
+        intakeTransfer.setCurrentAlert(10,CurrentUnit.AMPS);
+        intakeTransfer2 = hardwareMap.get(DcMotorEx.class, INTAKE_TRANSFER2);
+        intakeTransfer2.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeTransfer2.setCurrentAlert(10,CurrentUnit.AMPS);
     }
+
 
     public void setPower(double power){
         intakeTransfer.setPower(power);
+        intakeTransfer2.setPower(power);
     }
 
     public void stop(){
         intakeTransfer.setPower(0);
+        intakeTransfer2.setPower(0);
     }
 
     public double getPower(){
         return intakeTransfer.getPower();
+
     }
 
     public boolean isJamming(){
-        return intakeTransfer.isOverCurrent();
+        return intakeTransfer.isOverCurrent() || intakeTransfer2.isOverCurrent();
     }
 
     public double getCurrent(){
-        return intakeTransfer.getCurrent(CurrentUnit.AMPS);
+        return intakeTransfer.getCurrent(CurrentUnit.AMPS) + intakeTransfer2.getCurrent(CurrentUnit.AMPS);
     }
 }
