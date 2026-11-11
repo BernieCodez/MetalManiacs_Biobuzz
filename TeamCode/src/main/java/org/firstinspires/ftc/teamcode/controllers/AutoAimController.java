@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.hardware.LED;
 public class AutoAimController {
 
     public final Limelight limelight;
-    private final LED led;
     private double targetHeading;
     private double headingError;
     public double rotation = 0;
@@ -19,7 +18,6 @@ public class AutoAimController {
 
     public AutoAimController(HardwareMap hardwareMap) {
         limelight = new Limelight(hardwareMap);
-        led = new LED(hardwareMap);
 
     }
 
@@ -30,7 +28,6 @@ public class AutoAimController {
     public void update(Alliance.Hive activeHive, Pose robot) {
         //fetch limelight tag data
         limelight.update(activeHive);
-        led.update(limelight.tVisible);
 
         targetHeading = calculateLocalizedHeading(activeHive, robot); //calc using pedro pathing localization
 

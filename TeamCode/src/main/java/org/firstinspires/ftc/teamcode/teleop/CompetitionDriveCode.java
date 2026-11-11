@@ -10,13 +10,12 @@
  */
 
 package org.firstinspires.ftc.teamcode.teleop;
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.pedropathing.drivetrain.DrivePowers;
-import com.pedropathing.follower.ManualDrive;
+import com.pedropathing.follower.ManualDrive;;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.RADIANS;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
@@ -25,6 +24,8 @@ import static org.firstinspires.ftc.teamcode.Config.*;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.hardware.LED;
+import org.firstinspires.ftc.teamcode.prism.Color;
 import org.firstinspires.ftc.teamcode.util.Drivers;
 import org.firstinspires.ftc.teamcode.Profile;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
@@ -53,7 +54,7 @@ public class CompetitionDriveCode extends OpMode {
     public Alliance alliance = currentAlliance;
 
     public Alliance.Hive activeHive = alliance.TOP;//defaults top red
-
+    public LED prism;
     public Profile user;
     private double fieldCentricHeadingOffset = 0;
     public double speedMultiplier = 0.5;
@@ -67,6 +68,7 @@ public class CompetitionDriveCode extends OpMode {
         rumble = new RumbleController(driver);
         intakeTransfer = new IntakeTransferController(hardwareMap);
         user = Drivers.activeDriver;
+        prism = new LED(hardwareMap);
     }
 
     @Override
@@ -196,15 +198,19 @@ public class CompetitionDriveCode extends OpMode {
             telemetry.addLine("");
             telemetry.addLine("Active Hive");
             telemetry.addData("Active Hive", activeHive.name);
+            telemetry.addData("AprilTag Visible", autoAim.isAprilTag());
+            telemetry.addData("LED Alliance Color", allianceName);
         }
 
         //DRIVER FEEDBACK
         rumble.update(intakeTransfer.isOn());
+        prism.update(autoAim.isAprilTag(),allianceName);
     }
 
     @Override
     public void stop(){
         outtake.stop();
+        prism.turnOff();
     }
 
     private Alliance.Hive getTargetHive(Alliance alliance, Pose robot) {return robot.y() > HIVE_BOUNDARY ? alliance.TOP : alliance.BOTTOM;}
