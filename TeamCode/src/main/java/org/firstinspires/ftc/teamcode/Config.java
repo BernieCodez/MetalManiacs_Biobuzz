@@ -31,8 +31,8 @@ public class Config {
     public static double POLLEN_GATE_OPEN = 0.65;
     public static double POLLEN_GATE_CLOSE = 1;
     public static final String NECTAR_GATE = "nectarGate";
-    public static double NECTAR_GATE_OPEN = 0;
-    public static double NECTAR_GATE_CLOSE = 0.35;
+    public static double NECTAR_GATE_OPEN = 0.25;
+    public static double NECTAR_GATE_CLOSE = 0.5;
     public static final String COLOR_SENSOR = "sensorColor";
     public enum Element{RED_NECTAR, BLUE_NECTAR, POLLEN, NONE};
 
@@ -44,17 +44,19 @@ public class Config {
     public static final String RIGHT_FLYWHEEL = "rightFlywheel";
 
     //PIDF for flywheels
-    public static double FLYWHEEL_KP = 75;
+    public static double FLYWHEEL_SHOOTING_KP = 75;
+    public static double FLYWHEEL_STARTUP_KP = 1;
+
     public static double FLYWHEEL_KI = 0.0;
     public static double FLYWHEEL_KD = 1;
     public static double FLYWHEEL_KF = 14.5;
 
     public static double FLYWHEEL_VELOCITY_TOLERANCE = 20;
     //Slope calculator
-    public static double FLYWHEEL_DISTANCE_SLOPE = 5;
-    public static double FLYWHEEL_DISTANCE_INTERCEPT = 1000;
+    public static double FLYWHEEL_DISTANCE_SLOPE = 4.1;
+    public static double FLYWHEEL_DISTANCE_INTERCEPT = 926.886;
 
-
+    public static double FLYWHEEL_RAMP_RATE = 5000;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                        AUTOAIM                                                 //

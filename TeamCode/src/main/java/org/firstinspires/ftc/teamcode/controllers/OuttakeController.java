@@ -42,7 +42,8 @@ public class OuttakeController {
         } else {
             distance = Math.hypot(robot.x() - activeHive.pose.x(), robot.y() - activeHive.pose.y());
 //            flywheel.setVelocityByDistance(distance);
-            flywheel.setVelocity(1150); //was 1125
+//            flywheel.setVelocity(1127); //was 1125
+            flywheel.setVelocity(FLYWHEEL_DISTANCE_INTERCEPT + FLYWHEEL_DISTANCE_SLOPE * distance);
             useFlywheel = true;
         }
 
@@ -58,6 +59,8 @@ public class OuttakeController {
             elementList.add(currentDetection);
             hasAddedCurrentElement = true;
         }
+
+        flywheel.update();
     }
 
     public void fire(){

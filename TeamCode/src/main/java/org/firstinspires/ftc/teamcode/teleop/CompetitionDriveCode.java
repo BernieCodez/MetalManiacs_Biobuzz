@@ -174,9 +174,9 @@ public class CompetitionDriveCode extends OpMode {
         String speedMode = speedMultiplier == 1 ? "Fast" : "Slow";
         telemetry.addData("Speed",speedMode);
 
-        telemetry.addData("Robot X", robot.x());
-        telemetry.addData("Robot Y", robot.y());
-        telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
+        telemetry.addData("Distance", outtake.distance);
+        telemetry.addData("Flywheel Velocity", outtake.flywheel.getVelocity());
+
 
         //TELEMETRY
         if (DEBUG){

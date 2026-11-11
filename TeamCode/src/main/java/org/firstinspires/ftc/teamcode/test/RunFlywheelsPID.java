@@ -40,10 +40,9 @@ public class RunFlywheelsPID extends LinearOpMode {
                 tps-=VELOCITY_STEP;
             }
 
-            if(driver.wasJustPressed(RumbleGamepad.Trigger.RIGHT_TRIGGER)){
+            if(driver.wasJustPressed(RumbleGamepad.Trigger.RIGHT_TRIGGER)) {
                 gate.open();
-            }
-            if(driver.wasJustPressed(RumbleGamepad.Trigger.LEFT_TRIGGER)){
+            }else{
                 gate.close();
             }
             tps = Math.max(MIN_VELOCITY, Math.min(tps, MAX_VELOCITY));

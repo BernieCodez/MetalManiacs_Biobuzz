@@ -20,14 +20,12 @@ import org.firstinspires.ftc.teamcode.util.RumbleGamepad;
 //v uncommenting this will hide it on the driver station
 
 @Configurable
-@TeleOp(name = "Flywheel PIDF Tuner", group = "A - Test")
+@TeleOp(name = "Raw Flywheel PIDF Tuner", group = "A - Test")
 public class FlywheelPIDFTuner extends LinearOpMode {
 
     RumbleGamepad driver;
 
     Gate gate;
-
-
 
     public static double TARGET_VELOCITY = 0;
 
