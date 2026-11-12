@@ -58,17 +58,18 @@ public class Auto extends LinearOpMode {
     public static long GARDEN_INTAKE_MS = 1000;
     public static double STOP_BY_S = 26;
     public static double SIDE_LANE_X = 138;
+    public static boolean PARK_ENABLED = true;
 
     public static long AIM_MS = 700;
-    public static long SHOT_OPEN_MS = 2800;
+    public static long SHOT_OPEN_MS = 1400;
     public static long SHOT_GAP_MS = 400;
     public static int GATE_OPENS_PER_SHOOT = 1;
-    public static boolean NECTAR_GATE_ONLY = true;
-    public static double SHOT_FLYWHEEL_VELOCITY = 1121;
+    public static boolean NECTAR_GATE_ONLY = false;
+    public static double SHOT_FLYWHEEL_VELOCITY = 1126;
     public static boolean RAMP_ENABLED = true;
-    public static double RAMP_START_MS = 300;
-    public static double RAMP_DURATION_MS = 400;
-    public static double RAMP_AMOUNT = 15;
+    public static double RAMP_START_MS = 100;
+    public static double RAMP_DURATION_MS = 300;
+    public static double RAMP_AMOUNT = 29;
     public static long SHOT_FINISH_MS = 750;
     public static double SETTLE_DISTANCE_IN = 1.5;
     public static long SETTLE_TIMEOUT_MS = 1500;
@@ -85,6 +86,7 @@ public class Auto extends LinearOpMode {
         public final Pose audienceFlower, audienceFlowerLook, audienceFlowerShot;
         public final Pose wallFlower, wallFlowerLook, wallFlowerShot;
         public final Pose garden, gardenLook, garden2, garden2Look, gardenShot;
+        public final Pose park, parkLook;
         public final double laneX;
 
         public Field(Alliance alliance) {
@@ -117,6 +119,9 @@ public class Auto extends LinearOpMode {
             garden2Look = poses.of(137.57, 150, 0);
             gardenShot = poses.of(86.3095, 133.7184, -90.3879);
 
+            park = poses.of(133.6, 26, -86.4);
+            parkLook = poses.of(135, 4, 0);
+
             laneX = poses.of(SIDE_LANE_X, 0, 0).x();
         }
 
@@ -140,6 +145,16 @@ public class Auto extends LinearOpMode {
             boolean topToBottom = from.y() > 72 && to.y() < 72;
             boolean bottomToTop = from.y() < 72 && to.y() > 72;
             return topToBottom || bottomToTop;
+        }
+
+        public Path parkPath(Pose from) {
+            Path path;
+            if (crossesMiddle(from, park)) {
+                path = curve(from, new Pose(laneX, from.y(), 0), new Pose(laneX, park.y(), 0), park);
+            } else {
+                path = line(from, park);
+            }
+            return path.heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(parkLook)));
         }
     }
 
@@ -646,7 +661,9 @@ public class Auto extends LinearOpMode {
         if (partnerShootsFirst) {
             text = text + "hold fire until " + partnerShootWaitS + "s > ";
         }
-        return text + s.describe();
+        text = text + s.describe();
+        if (PARK_ENABLED) text = text + " > park";
+        return text;
     }
 
     private Follower follower;
@@ -667,6 +684,7 @@ public class Auto extends LinearOpMode {
     private int stepNumber = 0;
     private boolean stepStarted = false;
     private boolean autoDone = false;
+    private boolean parking = false;
     private int shootPart = 0;
     private int gateOpensDone = 0;
 
@@ -781,11 +799,24 @@ public class Auto extends LinearOpMode {
         stopShooting();
         closeGate();
         intake.flowerIntakeUp();
+        Pose robot = follower.pose();
+        if (PARK_ENABLED && distance(robot, field.park) > SETTLE_DISTANCE_IN) {
+            follower.follow(field.parkPath(robot));
+            parking = true;
+            return;
+        }
         autoDone = true;
     }
 
     private void runSteps() {
         if (autoDone) return;
+        if (parking) {
+            if (follower.atParametricEnd()) {
+                parking = false;
+                autoDone = true;
+            }
+            return;
+        }
         if (autoTimer.seconds() > STOP_BY_S) {
             finishAuto();
             return;
@@ -852,7 +883,6 @@ public class Auto extends LinearOpMode {
 
         autoTimer.reset();
         intake.toggleForward();
-        intake.flowerIntakeUp();
         outtake.close();
 
         while (opModeIsActive()) {
@@ -873,6 +903,7 @@ public class Auto extends LinearOpMode {
 
             telemetry.addData("plan", planName(plan));
             telemetry.addData("auto time", autoTimer.seconds());
+            telemetry.addData("parking", parking);
             if (targetHive == null) {
                 telemetry.addData("target", "none");
             } else {

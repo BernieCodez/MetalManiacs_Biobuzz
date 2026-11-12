@@ -210,6 +210,7 @@ public class GateTimingTuner extends LinearOpMode {
             telemetry.addLine("When happy, copy SHOT_OPEN_MS and SHOT_GAP_MS into Auto.java");
 
             panels.update(telemetry);
+            flywheel.update();
         }
 
         gate.close();
