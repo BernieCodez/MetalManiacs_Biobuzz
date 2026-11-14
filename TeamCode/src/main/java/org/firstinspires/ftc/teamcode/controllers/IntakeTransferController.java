@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.hardware.FlowerIntake;
 import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
 public class IntakeTransferController {
-    IntakeTransfer intakeTransfer;
-    FlowerIntake flowerIntake;
+    public IntakeTransfer intakeTransfer;
+    public FlowerIntake flowerIntake;
     public double targetPower = 0;
     public double currentPower = 0;
     private long lastUpdateTime = 0;

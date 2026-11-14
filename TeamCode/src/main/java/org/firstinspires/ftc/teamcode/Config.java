@@ -28,11 +28,11 @@ public class Config {
     public static final double MAX_INTAKE_TRANSFER_POWER = 1;
     public static final double RAMP_RATE = 3; //how agressive intake should ramp: higher val = more agro | lower val = less agro
     public static final String POLLEN_GATE = "pollenGate";
-    public static double POLLEN_GATE_OPEN = 0.65;
-    public static double POLLEN_GATE_CLOSE = 1;
+    public static final double POLLEN_GATE_OPEN = 0.65;
+    public static final double POLLEN_GATE_CLOSE = 1;
     public static final String NECTAR_GATE = "nectarGate";
-    public static double NECTAR_GATE_OPEN = 0.25;
-    public static double NECTAR_GATE_CLOSE = 0.55;
+    public static final double NECTAR_GATE_OPEN = 0.25;
+    public static final double NECTAR_GATE_CLOSE = 0.55;
     public static final String COLOR_SENSOR = "sensorColor";
     public enum Element{RED_NECTAR, BLUE_NECTAR, POLLEN, NONE};
 
@@ -44,40 +44,40 @@ public class Config {
     public static final String RIGHT_FLYWHEEL = "rightFlywheel";
 
     //PIDF for flywheels
-    public static double FLYWHEEL_SHOOTING_KP = 75;
-    public static double FLYWHEEL_STARTUP_KP = 1;
+    public static final double FLYWHEEL_SHOOTING_KP = 75;
+    public static final double FLYWHEEL_STARTUP_KP = 1;
 
-    public static double FLYWHEEL_KI = 0.0;
-    public static double FLYWHEEL_KD = 1;
-    public static double FLYWHEEL_KF = 14.5;
+    public static final double FLYWHEEL_KI = 0.0;
+    public static final double FLYWHEEL_KD = 1;
+    public static final double FLYWHEEL_KF = 14.5;
 
-    public static double FLYWHEEL_VELOCITY_TOLERANCE = 20;
+    public static final double FLYWHEEL_VELOCITY_TOLERANCE = 20;
     //Slope calculator
-    public static double FLYWHEEL_DISTANCE_SLOPE = 4.1;
-    public static double FLYWHEEL_DISTANCE_INTERCEPT = 926.886;
+    public static final double FLYWHEEL_DISTANCE_SLOPE = 4.1;
+    public static final double FLYWHEEL_DISTANCE_INTERCEPT = 926.886;
 
-    public static double FLYWHEEL_RAMP_RATE = 5000;
+    public static final double FLYWHEEL_RAMP_RATE = 5000;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                        AUTOAIM                                                 //
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public static boolean TUNING_ENABLED = true; //values from tuners get copied over
+    public static final boolean TUNING_ENABLED = true; //values from tuners get copied over
 
     //PIDF for position turret
-    public static double AUTOAIM_P = 0.015; //make lower if robot is not spinning fast enough, make higher if robot is spinning too fast and overshooting
-    public static double AUTOAIM_MAX_ROTATION_SPEED = 1; //0-1 1 is max
+    public static final double AUTOAIM_P = 0.015; //make lower if robot is not spinning fast enough, make higher if robot is spinning too fast and overshooting
+    public static final double AUTOAIM_MAX_ROTATION_SPEED = 1; //0-1 1 is max
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                      FLOWER WEDGE                                              //
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-    public static String RIGHT_WEDGE = "rightWedge";
-    public static String LEFT_WEDGE = "leftWedge";
-    public static double RIGHT_WEDGE_UP = 0;
-    public static double RIGHT_WEDGE_DOWN = 0.75;
-    public static double LEFT_WEDGE_UP = .75;
-    public static double LEFT_WEDGE_DOWN = 0;
+    public static final String RIGHT_WEDGE = "rightWedge";
+    public static final String LEFT_WEDGE = "leftWedge";
+    public static final double RIGHT_WEDGE_UP = 0;
+    public static final double RIGHT_WEDGE_DOWN = 0.75;
+    public static final double LEFT_WEDGE_UP = .75;
+    public static final double LEFT_WEDGE_DOWN = 0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                      LOCALIZATION                                              //
@@ -90,7 +90,7 @@ public class Config {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                       HIVE POSES                                               //
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
     //GOAL POSITIONS FOR AUTO AIM
 
     public static final double HIVE_BOUNDARY = 72;
@@ -178,7 +178,4 @@ public class Config {
             RIGHT_WEDGE,
             LEFT_WEDGE
     };
-
-    public class Hive {
-    }
 }

@@ -203,7 +203,7 @@ class PinpointOffsets extends TuningOpMode<List<Double>> {
     OptionalDouble customPodScalar =  OptionalDouble.empty();
     boolean forwardPodReversed, strafePodReversed;
     private Pose previous = Pose.zero();
-    private static final double ROTATION_SPEED = 0.2;
+    private static final double ROTATION_SPEED = 0.5;
 
     public PinpointOffsets(String name, PinpointTuner.PodType podType, OptionalDouble customPodScalar, Boolean forwardPodReversed, Boolean strafePodReversed) {
         super("Offsets Identification",

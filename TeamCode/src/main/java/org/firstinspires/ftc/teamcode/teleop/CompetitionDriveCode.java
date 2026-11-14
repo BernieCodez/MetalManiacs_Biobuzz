@@ -58,7 +58,7 @@ public class CompetitionDriveCode extends OpMode {
     public LED prism;
     public Profile user;
     private double fieldCentricHeadingOffset = 0;
-    public double speedMultiplier = 0.5;
+    public double speedMultiplier = 1;
     public boolean overrideDriver = false;
 
     public double odometryMultiplier = 1.152;
@@ -191,17 +191,23 @@ public class CompetitionDriveCode extends OpMode {
         telemetry.addData("Alliance", allianceName);
         String speedMode = speedMultiplier == 1 ? "Fast" : "Slow";
         telemetry.addData("Speed",speedMode);
-
-        telemetry.addData("Distance", outtake.distance);
-        telemetry.addData("Active Hive", activeHive.name);
-
-        telemetry.addData("Flywheel Velocity", outtake.flywheel.getVelocity());
-        telemetry.addData("Override Driver", overrideDriver);
+//        telemetry.addData("Right Wedge Positions", intakeTransfer.flowerIntake.getRightPosition());
+//        telemetry.addData("Left Wedge Positions", intakeTransfer.flowerIntake.getLeftPosition());
+//
+//        telemetry.addData("Distance", outtake.distance);
+//        telemetry.addData("Active Hive", activeHive.name);
+//
+//        telemetry.addData("Flywheel Velocity", outtake.flywheel.getVelocity());
+//        telemetry.addData("Override Driver", overrideDriver);
+//
+//        telemetry.addData("Robot X", robot.x());
+//        telemetry.addData("Robot Y", robot.y());
+//        telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
 
         telemetry.addData("Robot X", robot.x());
         telemetry.addData("Robot Y", robot.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
-
+        telemetry.addData("Using Limelight", autoAim.usingLimelight);
         //TELEMETRY
         if (DEBUG){
             telemetry.addData("Robot X", robot.x());
