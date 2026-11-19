@@ -124,14 +124,10 @@ public class CompetitionDriveCode extends OpMode {
         autoAim.update(activeHive, robot);//autoaim must update before outtake because it fetches limelight info!
 
         //OUTTAKE
-        outtake.update(activeHive, robot);
-
         if (driver.isDown(user.FIRE)){
-            outtake.fire();
+            outtake.startBurst();
         }
-        if (driver.wasJustReleased(user.FIRE)){
-            outtake.close();
-        }
+        outtake.updateTeleop(activeHive, robot);
 
         //INTAKE & TRANSFER
         if (driver.wasJustPressed(user.INTAKE_FORWARD)){
@@ -207,7 +203,9 @@ public class CompetitionDriveCode extends OpMode {
         telemetry.addData("Robot X", robot.x());
         telemetry.addData("Robot Y", robot.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
-        telemetry.addData("Using Limelight", autoAim.usingLimelight);
+        telemetry.addData("AprilTag Visible", autoAim.isAprilTag());
+        telemetry.addData("Shot Phase", outtake.shotPhase.name());
+        telemetry.addData("Target Velocity", "%.0f", outtake.targetVelocity);
         //TELEMETRY
         if (DEBUG){
             telemetry.addData("Robot X", robot.x());

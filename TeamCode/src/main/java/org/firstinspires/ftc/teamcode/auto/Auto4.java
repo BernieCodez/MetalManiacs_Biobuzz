@@ -31,8 +31,6 @@ import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 public class Auto4 extends LinearOpMode {
 
     private static final long AIM_MS = 700;
-    private static final long SHOT_OPEN_MS = 250;
-    private static final long SHOT_GAP_MS = 250;
     private static final long SHOT_FINISH_MS = 750;
     private static final double SETTLE_DISTANCE_IN = 1.5;
     private static final long SETTLE_TIMEOUT_MS = 1500;
@@ -46,6 +44,7 @@ public class Auto4 extends LinearOpMode {
 
     private IntakeTransferController intakeTransferController;
     private OuttakeController outtakeController;
+    private AutoShooter shooter;
     private AutoAimController autoAimController;
     private Alliance.Hive currentTargetHive = null;
     private boolean shouldAutoAim = false;
@@ -80,7 +79,7 @@ public class Auto4 extends LinearOpMode {
                 waitMs(WAIT_BEFORE_PRELOAD_MS),
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, waitThenShootPreloadsBackCell()),
-                aimAndShoot(4),
+                aimAndShoot(),
                 follow(follower, holdForPartner()),
                 waitMs(WAIT_BEFORE_WALL_FLOWER_MS),
                 instant(() -> intakeTransferController.flowerIntakeDown()),
@@ -89,25 +88,25 @@ public class Auto4 extends LinearOpMode {
                 instant(() -> intakeTransferController.flowerIntakeUp()),
                 instant(() -> currentTargetHive = FRONT_CELL),
                 follow(follower, shootFrontCell()),
-                aimAndShoot(4),
+                aimAndShoot(),
                 follow(follower, clearFrontCell()),
                 waitMs(WAIT_BEFORE_PARK_MS),
                 follow(follower, waitForUsThenPark())
         );
     }
 
-    private Command aimAndShoot(int pollen) {
+    private Command aimAndShoot() {
         return sequential(
                 instant(settleTimer::reset),
                 waitUntil(() -> follower.distanceToEndpoint() < SETTLE_DISTANCE_IN || settleTimer.milliseconds() > SETTLE_TIMEOUT_MS),
                 instant(() -> shouldAutoAim = true),
                 waitMs(AIM_MS),
                 repeat(sequential(
-                        instant(() -> outtakeController.fire()),
-                        waitMs(SHOT_OPEN_MS),
-                        instant(() -> outtakeController.close()),
-                        waitMs(SHOT_GAP_MS)
-                ), pollen),
+                        instant(shooter::openGate),
+                        waitMs(AutoShooter.SHOT_OPEN_MS),
+                        instant(shooter::closeGate),
+                        waitMs(AutoShooter.SHOT_GAP_MS)
+                ), Math.max(1, AutoShooter.GATE_OPENS_PER_SHOOT)),
                 waitMs(SHOT_FINISH_MS),
                 instant(() -> {
                     shouldAutoAim = false;
@@ -122,6 +121,7 @@ public class Auto4 extends LinearOpMode {
         follower = Constants.create(hardwareMap);
         intakeTransferController = new IntakeTransferController(hardwareMap);
         outtakeController = new OuttakeController(hardwareMap);
+        shooter = new AutoShooter(outtakeController);
         autoAimController = new AutoAimController(hardwareMap);
         follower.setPose(start);
         follower.update();
@@ -141,7 +141,7 @@ public class Auto4 extends LinearOpMode {
                 if (currentTargetHive != null) {
                     autoAimController.update(currentTargetHive, robot);
                 }
-                outtakeController.update(currentTargetHive != null ? currentTargetHive : FRONT_CELL, robot);
+                shooter.update();
                 intakeTransferController.update();
 
                 if (shouldAutoAim) {

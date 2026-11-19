@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.controllers;
 
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.math.Pose;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -11,7 +12,26 @@ import org.firstinspires.ftc.teamcode.hardware.Flywheel;
 import org.firstinspires.ftc.teamcode.hardware.Gate;
 
 import java.util.ArrayList;
+
+@Configurable
 public class OuttakeController {
+    public static double TELEOP_FLYWHEEL_VELOCITY = 1160;
+    public static double TELEOP_SHOT_OPEN_MS = 1400;
+    public static double TELEOP_SHOT_GAP_MS = 400;
+    public static int TELEOP_SHOTS_PER_PRESS = 1;
+    public static boolean TELEOP_NECTAR_GATE_ONLY = false;
+    public static boolean TELEOP_RAMP_ENABLED = true;
+    public static double TELEOP_RAMP_START_MS = 30;
+    public static double TELEOP_RAMP_DURATION_MS = 5000;
+    public static double TELEOP_RAMP_AMOUNT = 300;
+
+    public enum ShotPhase { IDLE, OPEN, GAP }
+
+    public ShotPhase shotPhase = ShotPhase.IDLE;
+    private int shotsLeft = 0;
+    private final ElapsedTime shotTimer = new ElapsedTime();
+    public double targetVelocity = 0;
+
     public Flywheel flywheel;
     private Gate gate;
     private ColorSensor colorSensor;
@@ -61,6 +81,59 @@ public class OuttakeController {
         }
 
         flywheel.update();
+    }
+
+    public void updateTeleop(Alliance.Hive activeHive, Pose robot){
+        if (activeHive != null) {
+            distance = Math.hypot(robot.x() - activeHive.pose.x(), robot.y() - activeHive.pose.y());
+        }
+        stepBurst();
+        targetVelocity = teleopTargetVelocity();
+        flywheel.setVelocity(targetVelocity);
+        useFlywheel = true;
+        flywheel.update();
+    }
+
+    public void startBurst(){
+        if (shotPhase != ShotPhase.IDLE) return;
+        shotsLeft = Math.max(1, TELEOP_SHOTS_PER_PRESS);
+        openBurstGate();
+    }
+
+    public void cancelBurst(){
+        gate.close();
+        shotPhase = ShotPhase.IDLE;
+        shotsLeft = 0;
+    }
+
+    public boolean isFiring(){return shotPhase != ShotPhase.IDLE;}
+
+    private void openBurstGate(){
+        if (TELEOP_NECTAR_GATE_ONLY) fireNectar();
+        else fire();
+        shotPhase = ShotPhase.OPEN;
+        shotTimer.reset();
+    }
+
+    private void stepBurst(){
+        if (shotPhase == ShotPhase.OPEN && shotTimer.milliseconds() >= TELEOP_SHOT_OPEN_MS) {
+            gate.close();
+            shotPhase = ShotPhase.GAP;
+            shotTimer.reset();
+        } else if (shotPhase == ShotPhase.GAP && shotTimer.milliseconds() >= TELEOP_SHOT_GAP_MS) {
+            shotsLeft--;
+            if (shotsLeft > 0) openBurstGate();
+            else shotPhase = ShotPhase.IDLE;
+        }
+    }
+
+    private double teleopTargetVelocity(){
+        if (!TELEOP_RAMP_ENABLED || shotPhase != ShotPhase.OPEN) return TELEOP_FLYWHEEL_VELOCITY;
+        double msIntoRamp = shotTimer.milliseconds() - TELEOP_RAMP_START_MS;
+        if (msIntoRamp <= 0) return TELEOP_FLYWHEEL_VELOCITY;
+        double fraction = 1;
+        if (TELEOP_RAMP_DURATION_MS > 0) fraction = Math.min(1, msIntoRamp / TELEOP_RAMP_DURATION_MS);
+        return TELEOP_FLYWHEEL_VELOCITY + TELEOP_RAMP_AMOUNT * fraction;
     }
 
     public void fire(){

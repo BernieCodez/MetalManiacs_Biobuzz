@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.auto.Auto;
+import org.firstinspires.ftc.teamcode.auto.AutoShooter;
 import org.firstinspires.ftc.teamcode.hardware.Flywheel;
 import org.firstinspires.ftc.teamcode.hardware.Gate;
 import org.firstinspires.ftc.teamcode.hardware.IntakeTransfer;
@@ -23,17 +23,17 @@ import java.util.List;
 public class GateTimingTuner extends LinearOpMode {
 
     public static boolean FIRE = false;
-    public static int SHOTS_PER_PRESS = Auto.GATE_OPENS_PER_SHOOT;
-    public static double SHOT_OPEN_MS = Auto.SHOT_OPEN_MS;
-    public static double SHOT_GAP_MS = Auto.SHOT_GAP_MS;
-    public static double FLYWHEEL_VELOCITY = Auto.SHOT_FLYWHEEL_VELOCITY;
+    public static int SHOTS_PER_PRESS = AutoShooter.GATE_OPENS_PER_SHOOT;
+    public static double SHOT_OPEN_MS = AutoShooter.SHOT_OPEN_MS;
+    public static double SHOT_GAP_MS = AutoShooter.SHOT_GAP_MS;
+    public static double FLYWHEEL_VELOCITY = AutoShooter.SHOT_FLYWHEEL_VELOCITY;
     public static double INTAKE_POWER = 1;
-    public static boolean NECTAR_GATE = Auto.NECTAR_GATE_ONLY;
+    public static boolean NECTAR_GATE = AutoShooter.NECTAR_GATE_ONLY;
 
-    public static boolean RAMP_ENABLED = Auto.RAMP_ENABLED;
-    public static double RAMP_START_MS = Auto.RAMP_START_MS;
-    public static double RAMP_DURATION_MS = Auto.RAMP_DURATION_MS;
-    public static double RAMP_AMOUNT = Auto.RAMP_AMOUNT;
+    public static boolean RAMP_ENABLED = AutoShooter.RAMP_ENABLED;
+    public static double RAMP_START_MS = AutoShooter.RAMP_START_MS;
+    public static double RAMP_DURATION_MS = AutoShooter.RAMP_DURATION_MS;
+    public static double RAMP_AMOUNT = AutoShooter.RAMP_AMOUNT;
 
     public static double OPEN_MS_STEP = 100;
 
@@ -207,7 +207,7 @@ public class GateTimingTuner extends LinearOpMode {
             }
             telemetry.addLine("");
             telemetry.addLine(verdict());
-            telemetry.addLine("When happy, copy SHOT_OPEN_MS and SHOT_GAP_MS into Auto.java");
+            telemetry.addLine("When happy, copy SHOT_OPEN_MS and SHOT_GAP_MS into AutoShooter.java");
 
             panels.update(telemetry);
             flywheel.update();

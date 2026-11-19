@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.Config;
 import org.firstinspires.ftc.teamcode.Config.Alliance;
 import org.firstinspires.ftc.teamcode.Profile;
-import org.firstinspires.ftc.teamcode.auto.Auto;
 
 import java.util.ArrayList;
 
@@ -71,12 +70,6 @@ public class PrematchSetup extends LinearOpMode {
             SharedPreferences.Editor editor = savedAnswers().edit();
             editor.putString("driver", Drivers.activeDriver.name);
             editor.putString("alliance", Config.currentAlliance.name());
-            editor.putInt("startSide", Auto.startSide);
-            editor.putBoolean("partnerShootsFirst", Auto.partnerShootsFirst);
-            editor.putFloat("partnerShootWait", (float) Auto.partnerShootWaitS);
-            editor.putInt("partnerFlowerChoice", Auto.partnerFlowers);
-            editor.putBoolean("partnerTakesGarden", Auto.partnerTakesGarden);
-            editor.putInt("planPick", Auto.planPick);
             return editor.commit();
         } catch (RuntimeException e) {
             return false;
@@ -93,33 +86,12 @@ public class PrematchSetup extends LinearOpMode {
         ArrayList<String> rows = new ArrayList<>();
         rows.add("Driver");
         rows.add("Alliance");
-        rows.add("We start");
-        rows.add("Shoots first");
-        if (Auto.partnerShootsFirst) rows.add("Partner shoot wait");
-        rows.add("Partner flowers");
-        rows.add("Partner garden");
-        rows.add("Plan");
         return rows;
     }
 
     private static String answer(String question) {
         if (question.equals("Driver")) return Drivers.activeDriver.name;
         if (question.equals("Alliance")) return Config.currentAlliance.name();
-        if (question.equals("We start")) return Auto.START_NAMES[Auto.startSide];
-        if (question.equals("Shoots first")) {
-            if (Auto.partnerShootsFirst) return "PARTNER";
-            return "US";
-        }
-        if (question.equals("Partner shoot wait")) return String.format("%.1f s", Auto.partnerShootWaitS);
-        if (question.equals("Partner flowers")) return Auto.FLOWER_NAMES[Auto.partnerFlowers];
-        if (question.equals("Partner garden")) {
-            if (Auto.partnerTakesGarden) return "YES";
-            return "NO";
-        }
-        if (question.equals("Plan")) {
-            if (Auto.pickedPlan() == Auto.AUTO_PICK) return "AUTO -> " + Auto.planName(Auto.bestPlan());
-            return Auto.planName(Auto.planPick);
-        }
         return "";
     }
 
@@ -138,31 +110,6 @@ public class PrematchSetup extends LinearOpMode {
             } else {
                 Config.currentAlliance = Alliance.BLUE;
             }
-        }
-        if (question.equals("We start")) {
-            Auto.startSide = wrap(Auto.startSide + direction, Auto.START_NAMES.length);
-        }
-        if (question.equals("Shoots first")) {
-            Auto.partnerShootsFirst = !Auto.partnerShootsFirst;
-        }
-        if (question.equals("Partner shoot wait")) {
-            double wait = Auto.partnerShootWaitS + 0.5 * direction;
-            if (wait < 0) wait = 0;
-            if (wait > 25) wait = 25;
-            Auto.partnerShootWaitS = wait;
-        }
-        if (question.equals("Partner flowers")) {
-            Auto.partnerFlowers = wrap(Auto.partnerFlowers + direction, Auto.FLOWER_NAMES.length);
-        }
-        if (question.equals("Partner garden")) {
-            Auto.partnerTakesGarden = !Auto.partnerTakesGarden;
-        }
-        if (question.equals("Plan")) {
-            ArrayList<Integer> choices = Auto.planChoices();
-            int index = choices.indexOf(Auto.planPick);
-            if (index < 0) index = 0;
-            index = wrap(index + direction, choices.size());
-            Auto.planPick = choices.get(index);
         }
     }
 
@@ -187,8 +134,6 @@ public class PrematchSetup extends LinearOpMode {
             if (direction != 0) {
                 changeAnswer(rows.get(selected), direction);
                 saveFailed = !saveAnswers();
-                rows = questions();
-                if (selected > rows.size() - 1) selected = rows.size() - 1;
             }
 
             telemetry.addLine("=== PREMATCH SETUP ===");
@@ -198,9 +143,6 @@ public class PrematchSetup extends LinearOpMode {
                 if (i == selected) arrow = "> ";
                 telemetry.addLine(arrow + rows.get(i) + ":  " + answer(rows.get(i)));
             }
-            telemetry.addLine("");
-            telemetry.addLine("PLAN: " + Auto.planSummary());
-            telemetry.addLine("Place robot: " + Auto.startText());
             telemetry.addLine("");
             telemetry.addLine("D-pad up/down: question   left/right: answer");
             telemetry.addLine("Answers save automatically");
