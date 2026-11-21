@@ -69,6 +69,7 @@ public class Auto5 extends LinearOpMode {
                 instant(() -> currentTargetHive = FRONT_CELL),
                 waitMs(5000),
                 follow(follower, shootOne()),
+                waitMs(1100),
                 aimAndShoot(),
                 follow(follower, parkAtEnd())
         );

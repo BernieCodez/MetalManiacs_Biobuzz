@@ -49,7 +49,7 @@ public class Config {
 
     public static final double FLYWHEEL_KI = 0.0;
     public static final double FLYWHEEL_KD = 1;
-    public static final double FLYWHEEL_KF = 14.5;
+    public static final double FLYWHEEL_KF = 16.5;//OG is 14.5
 
     public static final double FLYWHEEL_VELOCITY_TOLERANCE = 20;
     //Slope calculator
