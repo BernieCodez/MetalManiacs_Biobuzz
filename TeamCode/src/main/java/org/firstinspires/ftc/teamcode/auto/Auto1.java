@@ -1,3 +1,4 @@
+
 package org.firstinspires.ftc.teamcode.auto;
 
 import static com.pedropathing.api.Paths.*;
@@ -10,20 +11,23 @@ import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
+
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.*;
 import static com.pedropathing.ivy.groups.Groups.*;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import com.pedropathing.paths.interpolator.Interpolator;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 import org.firstinspires.ftc.teamcode.util.OpModeStorage;
-
 import org.firstinspires.ftc.teamcode.controllers.IntakeTransferController;
 import static org.firstinspires.ftc.teamcode.Config.*;
+
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 
@@ -34,6 +38,7 @@ public class Auto1 extends LinearOpMode {
     private static final long SHOT_FINISH_MS = 750;
     private static final double SETTLE_DISTANCE_IN = 1.5;
     private static final long SETTLE_TIMEOUT_MS = 1500;
+
     private final ElapsedTime settleTimer = new ElapsedTime();
 
     private Follower follower;
@@ -42,6 +47,7 @@ public class Auto1 extends LinearOpMode {
     private OuttakeController outtakeController;
     private AutoShooter shooter;
     private AutoAimController autoAimController;
+
     private Alliance.Hive currentTargetHive = null;
     private boolean shouldAutoAim = false;
 
@@ -50,29 +56,66 @@ public class Auto1 extends LinearOpMode {
     private final Alliance.Hive FRONT_CELL = alliance.TOP;
     private final Alliance.Hive REAR_CELL = alliance.BOTTOM;
 
-    private final PoseFactory poseFactory = alliance == Alliance.BLUE
-            ? PoseFactory.degrees()
-            : PoseFactory.degrees().mirrorX(72).mirrorY(72);
+    private final PoseFactory poseFactory =
+            alliance == Alliance.BLUE
+                    ? PoseFactory.degrees()
+                    : PoseFactory.degrees().mirrorX(72).mirrorY(72);
 
-    private final Pose start = poseFactory.of(87.289, 140.3444, 89.69);
-    private final Pose shootOne = poseFactory.of(87, 139, -90);
-    private final Pose pickUpPollen = poseFactory.of(136.1938, 126.6587, 84.0537);
-    private final Pose pickUpPollenControl1 = poseFactory.of(131.9595, 88.2177, 0);
-    private final Pose pickUpPollenSegment1Target = poseFactory.of(138, 144, 0);
-    private final Pose pickUpPollen2 = poseFactory.of(136.1937, 139.1417, 90.0196);
-    private final Pose pickUpPollen2Segment1Target = poseFactory.of(136.19, 150, 0);
-    private final Pose shootTwo = poseFactory.of(84.435, 31.0886, 84.3466);
-    private final Pose shootTwoControl1 = poseFactory.of(90.8954, 112.0252, 0);
-    private final Pose shootTwoControl2 = poseFactory.of(140.0766, 21.794, 0);
-    private final Pose pickUpFlowerPollen = poseFactory.of(96.2249, 22.4006, -97.8131);
-    private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(93.7, 4, 0);
-    private final Pose shootThree = poseFactory.of(84.237, 30.8644, 83.9652);
-    private final Pose pickUpFlowerPollen2 = poseFactory.of(124.8986, 98.8559, 0.8421);
-    private final Pose pickUpFlowerPollen2Control1 = poseFactory.of(114.0538, 25.2474, 0);
-    private final Pose pickUpFlowerPollen2Segment1Target = poseFactory.of(134.7, 99, 0);
-    private final Pose parkAtEnd = poseFactory.of(131.589, 21.4783, -85.0583);
+    private final Pose start =
+            poseFactory.of(87.289, 140.3444, 89.69);
 
-    // Autonomous routine
+    private final Pose shootOne =
+            poseFactory.of(87, 139, 90);
+
+    private final Pose shootOneSegment1Target =
+            poseFactory.of(87, 87, 0);
+
+    private final Pose pickUpPollen =
+            poseFactory.of(137.3065, 141, 84.4535);
+
+    private final Pose pickUpPollenControl1 =
+            poseFactory.of(118.236, 112.3265, 0);
+
+    private final Pose pickUpPollenSegment1Target =
+            poseFactory.of(138, 144, 0);
+
+    private final Pose shootTwo =
+            poseFactory.of(85.5477, 9.9471, -91.7679);
+
+    private final Pose shootTwoControl1 =
+            poseFactory.of(109.8479, 47.5719, 0);
+
+    private final Pose shootTwoSegment1Target =
+            poseFactory.of(87, 57, 0);
+
+    private final Pose pickUpFlowerPollen =
+            poseFactory.of(94.3704, 10.6, -94.2004);
+
+    private final Pose pickUpFlowerPollenSegment1Target =
+            poseFactory.of(93.7, 4, 0);
+
+    private final Pose shootThree =
+            poseFactory.of(84.7934, 9.9083, -92.6828);
+
+    private final Pose shootThreeSegment1Target =
+            poseFactory.of(87, 57, 0);
+
+    private final Pose pickUpFlowerPollen2 =
+            poseFactory.of(126.5677, 94.0341, -0.0692);
+
+    private final Pose pickUpFlowerPollen2Control1 =
+            poseFactory.of(105.3375, 29.1419, 0);
+
+    private final Pose pickUpFlowerPollen2Segment1Target =
+            poseFactory.of(130, 94.03, 0);
+
+    private final Pose park =
+            poseFactory.of(133.2291, 45.8434, -87.5766);
+
+    private final Pose parkSegment1Target =
+            poseFactory.of(135, 4, 0);
+
+
     public Command autoRoutine() {
         return sequential(
                 instant(() -> {
@@ -81,45 +124,77 @@ public class Auto1 extends LinearOpMode {
                     outtakeController.close();
                 }),
                 instant(() -> currentTargetHive = FRONT_CELL),
-                waitMs(5000),
-                follow(follower, shootOne()),
+
+                waitMs(500),
+
+                // MOVE 1 - Initial shooting position
+                follow(follower, move1()),
+                waitMs(1100),
                 aimAndShoot(),
-                follow(follower, pickUpPollen()),
-                follow(follower, pickUpPollen2()),
-                waitMs(2000),
+
+                // MOVE 2 - Garden pickup
+                follow(follower, move2()),
+                waitMs(0),
+
                 instant(() -> currentTargetHive = REAR_CELL),
-                follow(follower, shootTwo()),
+
+                // MOVE 4 - Second shooting position
+                follow(follower, move4()),
+                waitMs(1100),
                 aimAndShoot(),
-                waitMs(2000),
+
+                // MOVE 5 - First flower intake
                 instant(() -> intakeTransferController.flowerIntakeDown()),
-                follow(follower, pickUpFlowerPollen()),
-                waitMs(1500),
+                follow(follower, move5()),
+                waitMs(1000),
                 instant(() -> intakeTransferController.flowerIntakeUp()),
+
                 instant(() -> currentTargetHive = REAR_CELL),
-                follow(follower, shootThree()),
+
+                // MOVE 6 - Third shooting position
+                follow(follower, move6()),
+                waitMs(1100),
                 aimAndShoot(),
-                waitMs(2000),
+
+                // MOVE 7 - Second flower intake
                 instant(() -> intakeTransferController.flowerIntakeDown()),
-                follow(follower, pickUpFlowerPollen2()),
-                waitMs(1500),
+                follow(follower, move7()),
+                waitMs(1000),
                 instant(() -> intakeTransferController.flowerIntakeUp()),
-                follow(follower, parkAtEnd())
+
+                // PARK
+                follow(follower, park()),
+                waitMs(0)
         );
     }
 
     private Command aimAndShoot() {
+
         return sequential(
+
                 instant(settleTimer::reset),
-                waitUntil(() -> follower.distanceToEndpoint() < SETTLE_DISTANCE_IN || settleTimer.milliseconds() > SETTLE_TIMEOUT_MS),
+
+                waitUntil(() ->
+                        follower.distanceToEndpoint() < SETTLE_DISTANCE_IN
+                                || settleTimer.milliseconds() > SETTLE_TIMEOUT_MS
+                ),
+
                 instant(() -> shouldAutoAim = true),
+
                 waitMs(AIM_MS),
-                repeat(sequential(
-                        instant(shooter::openGate),
-                        waitMs(AutoShooter.SHOT_OPEN_MS),
-                        instant(shooter::closeGate),
-                        waitMs(AutoShooter.SHOT_GAP_MS)
-                ), Math.max(1, AutoShooter.GATE_OPENS_PER_SHOOT)),
+
+                repeat(
+                        sequential(
+                                instant(shooter::openGate),
+                                waitMs(AutoShooter.SHOT_OPEN_MS),
+                                instant(shooter::closeGate),
+                                waitMs(AutoShooter.SHOT_GAP_MS)
+                        ),
+                        Math.max(1, AutoShooter.GATE_OPENS_PER_SHOOT)
+                ),
+
                 waitMs(SHOT_FINISH_MS),
+
                 instant(() -> {
                     shouldAutoAim = false;
                     currentTargetHive = null;
@@ -129,12 +204,22 @@ public class Auto1 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
         Scheduler.reset();
+
         follower = Constants.create(hardwareMap);
-        intakeTransferController = new IntakeTransferController(hardwareMap);
-        outtakeController = new OuttakeController(hardwareMap);
+
+        intakeTransferController =
+                new IntakeTransferController(hardwareMap);
+
+        outtakeController =
+                new OuttakeController(hardwareMap);
+
         shooter = new AutoShooter(outtakeController);
-        autoAimController = new AutoAimController(hardwareMap);
+
+        autoAimController =
+                new AutoAimController(hardwareMap);
+
         follower.setPose(start);
         follower.update();
 
@@ -142,22 +227,36 @@ public class Auto1 extends LinearOpMode {
 
         try {
             waitForStart();
+
             autoTimer.reset();
+
             schedule(autoRoutine());
 
             while (opModeIsActive()) {
+
                 follower.update();
+
                 Scheduler.execute();
 
                 Pose robot = follower.pose();
+
                 if (currentTargetHive != null) {
                     autoAimController.update(currentTargetHive, robot);
                 }
+
                 shooter.update();
+
                 intakeTransferController.update();
 
                 if (shouldAutoAim) {
-                    ManualDrive.driveOrHold(follower, new DrivePowers(0, 0, autoAimController.rotation));
+                    ManualDrive.driveOrHold(
+                            follower,
+                            new DrivePowers(
+                                    0,
+                                    0,
+                                    autoAimController.rotation
+                            )
+                    );
                 }
 
                 telemetry.addData("auto time", autoTimer.seconds());
@@ -167,48 +266,128 @@ public class Auto1 extends LinearOpMode {
                 telemetry.addData("heading", robot.heading());
 
                 if (follower.currentPath() != null) {
-                    telemetry.addData("Current path distance remaining", follower.distanceToEndpoint());
-                    telemetry.addData("Path number", follower.pathIndex());
+                    telemetry.addData(
+                            "Current path distance remaining",
+                            follower.distanceToEndpoint()
+                    );
+
+                    telemetry.addData(
+                            "Path number",
+                            follower.pathIndex()
+                    );
                 }
 
                 telemetry.update();
             }
 
         } finally {
-            //robots stopping position carries over to teleop!
             OpModeStorage.autonomousEndPose = follower.pose();
         }
     }
 
-    public Path shootOne() {
-        return line(start, shootOne).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose).reverse()));
+
+
+    public Path move1() {
+
+        return line(start, shootOne)
+                .heading(
+                        Interpolator.piecewise()
+                                .until(
+                                        1,
+                                        Interpolator.facingPoint(
+                                                shootOneSegment1Target
+                                        ).reverse()
+                                )
+                );
     }
 
-    public Path pickUpPollen() {
-        return curve(shootOne, pickUpPollenControl1, pickUpPollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpPollenSegment1Target)));
+
+    public Path move2() {
+
+        return curve(shootOne, pickUpPollenControl1, pickUpPollen)
+                .heading(
+                        Interpolator.piecewise()
+                                .until(
+                                        1,
+                                        Interpolator.facingPoint(
+                                                pickUpPollenSegment1Target
+                                        )
+                                )
+                );
     }
 
-    public Path pickUpPollen2() {
-        return line(pickUpPollen, pickUpPollen2).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpPollen2Segment1Target)));
+
+    public Path move4() {
+
+        return curve(pickUpPollen, shootTwoControl1, shootTwo)
+                .heading(
+                        Interpolator.piecewise()
+                                .until(
+                                        1,
+                                        Interpolator.facingPoint(
+                                                shootTwoSegment1Target
+                                        ).reverse()
+                                )
+                );
     }
 
-    public Path shootTwo() {
-        return curve(pickUpPollen2, shootTwoControl1, shootTwoControl2, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose).reverse()));
+
+    public Path move5() {
+
+        return line(shootTwo, pickUpFlowerPollen)
+                .heading(
+                        Interpolator.piecewise()
+                                .until(
+                                        1,
+                                        Interpolator.facingPoint(
+                                                pickUpFlowerPollenSegment1Target
+                                        )
+                                )
+                );
     }
 
-    public Path pickUpFlowerPollen() {
-        return line(shootTwo, pickUpFlowerPollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpFlowerPollenSegment1Target)));
+
+    public Path move6() {
+
+        return line(pickUpFlowerPollen, shootThree)
+                .heading(
+                        Interpolator.piecewise()
+                                .until(
+                                        1,
+                                        Interpolator.facingPoint(
+                                                shootThreeSegment1Target
+                                        ).reverse()
+                                )
+                );
     }
 
-    public Path shootThree() {
-        return line(pickUpFlowerPollen, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose).reverse()));
+
+    public Path move7() {
+
+        return curve(shootThree, pickUpFlowerPollen2Control1, pickUpFlowerPollen2)
+                .heading(
+                        Interpolator.piecewise()
+                                .until(
+                                        1,
+                                        Interpolator.facingPoint(
+                                                pickUpFlowerPollen2Segment1Target
+                                        )
+                                )
+                );
     }
 
-    public Path pickUpFlowerPollen2() {
-        return curve(shootThree, pickUpFlowerPollen2Control1, pickUpFlowerPollen2).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpFlowerPollen2Segment1Target)));
-    }
 
-    public Path parkAtEnd() {
-        return line(pickUpFlowerPollen2, parkAtEnd).tangent();
+    public Path park() {
+
+        return line(pickUpFlowerPollen2, park)
+                .heading(
+                        Interpolator.piecewise()
+                                .until(
+                                        1,
+                                        Interpolator.facingPoint(
+                                                parkSegment1Target
+                                        )
+                                )
+                );
     }
 }
