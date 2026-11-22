@@ -60,14 +60,14 @@ public class Auto1 extends LinearOpMode {
     private final Pose pickUpPollen = poseFactory.of(113.7, 141.5, 5.1387);
     private final Pose pickUpPollenSegment1Target = poseFactory.of(141.5, 144, 0);
     private final Pose pushPollen = poseFactory.of(141.5, 141.5, 0);
-    private final Pose shootTwo = poseFactory.of(85.5477, 9.9471, -91.7679);
+    private final Pose shootTwo = poseFactory.of(83, 9.9471, -91.7679);
     private final Pose shootTwoControl1 = poseFactory.of(113.3854, 33.2253, 0);
     private final Pose shootTwoSegment1Target = poseFactory.of(87, 57, 0);
     private final Pose approachFlowerPollen = poseFactory.of(96, 26.392, -90);
     private final Pose approachFlowerPollenSegment1Target = poseFactory.of(96, 18, 0);
     private final Pose pickUpFlowerPollen = poseFactory.of(95.3723, 4.584, -95.9308);
     private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(95, 1, 0);
-    private final Pose shootThree = poseFactory.of(85.5795, 10.1048, -91.7351);
+    private final Pose shootThree = poseFactory.of(83, 9.9471, -91.7679);
     private final Pose shootThreeControl1 = poseFactory.of(90.5256, 14.8378, 0);
     private final Pose shootThreeSegment1Target = poseFactory.of(87, 57, 0);
     private final Pose parkStart = poseFactory.of(85.5795, 10.1048, 0);
@@ -81,25 +81,25 @@ public class Auto1 extends LinearOpMode {
                     outtakeController.close();
                 }),
                 instant(() -> currentTargetHive = FRONT_CELL),
-                waitMs(1500),
+                waitMs(3000),
                 follow(follower, shootOne()),
-                waitMs(1100),
+                waitMs(1000),
                 aimAndShoot(),
                 follow(follower, pickUpPollen()),
                 follow(follower, pushPollen()),
-                waitMs(1000),
+                waitMs(850),
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, shootTwo()),
-                waitMs(1100),
+                waitMs(1000),
                 aimAndShoot(),
                 follow(follower, approachFlowerPollen()),
                 instant(() -> intakeTransferController.flowerIntakeDown()),
                 follow(follower, pickUpFlowerPollen()),
-                waitMs(1500),
+                waitMs(1370),
                 instant(() -> intakeTransferController.flowerIntakeUp()),
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, shootThree()),
-                waitMs(1100),
+                waitMs(1000),
                 aimAndShoot(),
                 follow(follower, parkAtEnd())
         );
