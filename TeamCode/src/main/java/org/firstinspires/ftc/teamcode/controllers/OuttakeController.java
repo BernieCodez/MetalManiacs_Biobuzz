@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 @Configurable
 public class OuttakeController {
-    public static double TELEOP_FLYWHEEL_VELOCITY = 1160;
+    public static double TELEOP_FLYWHEEL_VELOCITY = 1150;
     public static double TELEOP_SHOT_OPEN_MS = 1400;
     public static double TELEOP_SHOT_GAP_MS = 400;
     public static int TELEOP_SHOTS_PER_PRESS = 1;

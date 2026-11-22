@@ -34,6 +34,7 @@ public class Auto1 extends LinearOpMode {
     private static final long SHOT_FINISH_MS = 750;
     private static final double SETTLE_DISTANCE_IN = 1.5;
     private static final long SETTLE_TIMEOUT_MS = 1500;
+    private static final double REAR_SHOT_FLYWHEEL_VELOCITY = 1150;
     private final ElapsedTime settleTimer = new ElapsedTime();
 
     private Follower follower;
@@ -57,21 +58,24 @@ public class Auto1 extends LinearOpMode {
     private final Pose start = poseFactory.of(87.289, 140.3444, 89.69);
     private final Pose shootOne = poseFactory.of(87, 139, 90);
     private final Pose shootOneSegment1Target = poseFactory.of(87, 87, 0);
-    private final Pose pickUpPollen = poseFactory.of(113.7, 141.5, 5.1387);
+    private final Pose pickUpPollen = poseFactory.of(113.7, 140, 8.1878);
     private final Pose pickUpPollenSegment1Target = poseFactory.of(141.5, 144, 0);
-    private final Pose pushPollen = poseFactory.of(141.5, 141.5, 0);
-    private final Pose shootTwo = poseFactory.of(83, 9.9471, -91.7679);
-    private final Pose shootTwoControl1 = poseFactory.of(113.3854, 33.2253, 0);
+    private final Pose pushPollen = poseFactory.of(141, 140, 0);
+    private final Pose pushPollenSegment1Start = poseFactory.of(141, 140, 8.1878);
+    private final Pose pushPollenSegment1End = poseFactory.of(141, 140, 0);
+    private final Pose shootTwo = poseFactory.of(81, 9.9471, -97.2669);
+    private final Pose shootTwoControl1 = poseFactory.of(114.9576, 28.3121, 0);
     private final Pose shootTwoSegment1Target = poseFactory.of(87, 57, 0);
     private final Pose approachFlowerPollen = poseFactory.of(96, 26.392, -90);
     private final Pose approachFlowerPollenSegment1Target = poseFactory.of(96, 18, 0);
-    private final Pose pickUpFlowerPollen = poseFactory.of(95.3723, 4.584, -95.9308);
+    private final Pose pickUpFlowerPollen = poseFactory.of(95.3723, 4.584, -95.9305);
     private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(95, 1, 0);
-    private final Pose shootThree = poseFactory.of(83, 9.9471, -91.7679);
+    private final Pose shootThree = poseFactory.of(81, 9.9471, -97.2669);
     private final Pose shootThreeControl1 = poseFactory.of(90.5256, 14.8378, 0);
     private final Pose shootThreeSegment1Target = poseFactory.of(87, 57, 0);
-    private final Pose parkStart = poseFactory.of(85.5795, 10.1048, 0);
     private final Pose parkAtEnd = poseFactory.of(133.2291, 45.8434, 0);
+    private final Pose parkAtEndSegment1Start = poseFactory.of(133.2291, 45.8434, 0);
+    private final Pose parkAtEndSegment1End = poseFactory.of(133.2291, 45.8434, 0);
 
     public Command autoRoutine() {
         return sequential(
@@ -81,25 +85,29 @@ public class Auto1 extends LinearOpMode {
                     outtakeController.close();
                 }),
                 instant(() -> currentTargetHive = FRONT_CELL),
-                waitMs(3000),
+                waitMs(4000),
                 follow(follower, shootOne()),
-                waitMs(1000),
+                waitMs(300),
                 aimAndShoot(),
                 follow(follower, pickUpPollen()),
                 follow(follower, pushPollen()),
                 waitMs(850),
-                instant(() -> currentTargetHive = REAR_CELL),
+                instant(() -> {
+                    currentTargetHive = REAR_CELL;
+                    shooter.setBaseVelocity(REAR_SHOT_FLYWHEEL_VELOCITY);
+                }),
                 follow(follower, shootTwo()),
-                waitMs(1000),
+                waitMs(300),
                 aimAndShoot(),
                 follow(follower, approachFlowerPollen()),
                 instant(() -> intakeTransferController.flowerIntakeDown()),
+                waitMs(500),
                 follow(follower, pickUpFlowerPollen()),
-                waitMs(1370),
+                waitMs(870),
                 instant(() -> intakeTransferController.flowerIntakeUp()),
                 instant(() -> currentTargetHive = REAR_CELL),
                 follow(follower, shootThree()),
-                waitMs(1000),
+                waitMs(300),
                 aimAndShoot(),
                 follow(follower, parkAtEnd())
         );
@@ -186,7 +194,7 @@ public class Auto1 extends LinearOpMode {
     }
 
     public Path pushPollen() {
-        return line(pickUpPollen, pushPollen).heading(Interpolator.piecewise().until(1, Interpolator.linear(pickUpPollen, pushPollen)));
+        return line(pickUpPollen, pushPollen).heading(Interpolator.piecewise().until(1, Interpolator.linear(pushPollenSegment1Start, pushPollenSegment1End)));
     }
 
     public Path shootTwo() {
@@ -206,6 +214,6 @@ public class Auto1 extends LinearOpMode {
     }
 
     public Path parkAtEnd() {
-        return line(shootThree, parkAtEnd).heading(Interpolator.piecewise().until(1, Interpolator.linear(parkStart, parkAtEnd)));
+        return line(shootThree, parkAtEnd).heading(Interpolator.piecewise().until(1, Interpolator.linear(parkAtEndSegment1Start, parkAtEndSegment1End)));
     }
 }
