@@ -58,11 +58,9 @@ public class Auto1 extends LinearOpMode {
     private final Pose start = poseFactory.of(87.289, 140.3444, 89.69);
     private final Pose shootOne = poseFactory.of(87, 139, 90);
     private final Pose shootOneSegment1Target = poseFactory.of(87, 87, 0);
-    private final Pose pickUpPollen = poseFactory.of(113.7, 140, 8.1878);
-    private final Pose pickUpPollenSegment1Target = poseFactory.of(141.5, 144, 0);
-    private final Pose pushPollen = poseFactory.of(141, 140, 0);
-    private final Pose pushPollenSegment1Start = poseFactory.of(141, 140, 8.1878);
-    private final Pose pushPollenSegment1End = poseFactory.of(141, 140, 0);
+    private final Pose pickUpGarden = poseFactory.of(141, 130, 90.2204);
+    private final Pose pickUpGardenControl1 = poseFactory.of(141.5, 110.5469, 0);
+    private final Pose pickUpGardenSegment1Target = poseFactory.of(141.5, 0, 0);
     private final Pose shootTwo = poseFactory.of(81, 9.9471, -97.2669);
     private final Pose shootTwoControl1 = poseFactory.of(114.9576, 28.3121, 0);
     private final Pose shootTwoSegment1Target = poseFactory.of(87, 57, 0);
@@ -89,9 +87,10 @@ public class Auto1 extends LinearOpMode {
                 follow(follower, shootOne()),
                 waitMs(300),
                 aimAndShoot(),
-                follow(follower, pickUpPollen()),
-                follow(follower, pushPollen()),
+                instant(() -> intakeTransferController.flowerIntakeUp()),
+                follow(follower, pickUpGarden()),
                 waitMs(850),
+                instant(() -> intakeTransferController.flowerIntakeDown()),
                 instant(() -> {
                     currentTargetHive = REAR_CELL;
                     shooter.setBaseVelocity(REAR_SHOT_FLYWHEEL_VELOCITY);
@@ -189,16 +188,12 @@ public class Auto1 extends LinearOpMode {
         return line(start, shootOne).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootOneSegment1Target).reverse()));
     }
 
-    public Path pickUpPollen() {
-        return line(shootOne, pickUpPollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpPollenSegment1Target)));
-    }
-
-    public Path pushPollen() {
-        return line(pickUpPollen, pushPollen).heading(Interpolator.piecewise().until(1, Interpolator.linear(pushPollenSegment1Start, pushPollenSegment1End)));
+    public Path pickUpGarden() {
+        return curve(shootOne, pickUpGardenControl1, pickUpGarden).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpGardenSegment1Target).reverse()));
     }
 
     public Path shootTwo() {
-        return curve(pushPollen, shootTwoControl1, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootTwoSegment1Target).reverse()));
+        return curve(pickUpGarden, shootTwoControl1, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootTwoSegment1Target).reverse()));
     }
 
     public Path approachFlowerPollen() {
