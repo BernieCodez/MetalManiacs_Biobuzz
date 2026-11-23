@@ -44,12 +44,12 @@ public class Config {
     public static final String RIGHT_FLYWHEEL = "rightFlywheel";
 
     //PIDF for flywheels
-    public static final double FLYWHEEL_SHOOTING_KP = 75;
+    public static final double FLYWHEEL_SHOOTING_KP = 85;
     public static final double FLYWHEEL_STARTUP_KP = 1;
 
     public static final double FLYWHEEL_KI = 0.0;
-    public static final double FLYWHEEL_KD = 1;
-    public static final double FLYWHEEL_KF = 17.5;//OG is 16.5
+    public static final double FLYWHEEL_KD = 2;
+    public static final double FLYWHEEL_KF = 18;//OG is 16.5
 
     public static final double FLYWHEEL_VELOCITY_TOLERANCE = 20;
     //Slope calculator
