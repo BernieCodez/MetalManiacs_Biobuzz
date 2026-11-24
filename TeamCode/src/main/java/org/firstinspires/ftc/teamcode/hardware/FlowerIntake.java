@@ -26,7 +26,7 @@ public class FlowerIntake {
     }
     public void update(){
         rightWedge.setPosition(wedgeUp ? RIGHT_WEDGE_UP : RIGHT_WEDGE_DOWN);
-        leftWedge.setPosition(wedgeUp ? LEFT_WEDGE_UP : LEFT_WEDGE_DOWN);
+//        leftWedge.setPosition(wedgeUp ? LEFT_WEDGE_UP : LEFT_WEDGE_DOWN);
     }
 
     public double getRightPosition(){
