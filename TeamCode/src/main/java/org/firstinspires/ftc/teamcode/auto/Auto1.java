@@ -189,7 +189,7 @@ public class Auto1 extends LinearOpMode {
     }
 
     public Path pickUpGarden() {
-        return curve(shootOne, pickUpGardenControl1, pickUpGarden).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpGardenSegment1Target).reverse()));
+        return curve(shootOne, pickUpGardenControl1, pickUpGarden).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpGardenSegment1Target).reverse())).with(Constants.foresightConfig.maxPathSpeed.at(0.5));
     }
 
     public Path shootTwo() {
