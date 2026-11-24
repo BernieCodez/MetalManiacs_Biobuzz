@@ -58,7 +58,7 @@ public class Auto1 extends LinearOpMode {
     private final Pose start = poseFactory.of(87.289, 140.3444, 89.69);
     private final Pose shootOne = poseFactory.of(87, 139, 90);
     private final Pose shootOneSegment1Target = poseFactory.of(87, 87, 0);
-    private final Pose pickUpGarden = poseFactory.of(141, 130, 90.2204);
+    private final Pose pickUpGarden = poseFactory.of(141, 133.52, 90.2204);
     private final Pose pickUpGardenControl1 = poseFactory.of(141.5, 110.5469, 0);
     private final Pose pickUpGardenSegment1Target = poseFactory.of(141.5, 0, 0);
     private final Pose shootTwo = poseFactory.of(81, 9.9471, -97.2669);
@@ -87,10 +87,10 @@ public class Auto1 extends LinearOpMode {
                 follow(follower, shootOne()),
                 waitMs(300),
                 aimAndShoot(),
-                instant(() -> intakeTransferController.flowerIntakeUp()),
+                instant(() -> intakeTransferController.flowerIntakeDown()),
                 follow(follower, pickUpGarden()),
                 waitMs(850),
-                instant(() -> intakeTransferController.flowerIntakeDown()),
+                instant(() -> intakeTransferController.flowerIntakeUp()),
                 instant(() -> {
                     currentTargetHive = REAR_CELL;
                     shooter.setBaseVelocity(REAR_SHOT_FLYWHEEL_VELOCITY);
