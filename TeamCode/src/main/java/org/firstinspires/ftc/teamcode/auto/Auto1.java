@@ -34,7 +34,7 @@ public class Auto1 extends LinearOpMode {
     private static final long SHOT_FINISH_MS = 750;
     private static final double SETTLE_DISTANCE_IN = 1.5;
     private static final long SETTLE_TIMEOUT_MS = 1500;
-    private static final double REAR_SHOT_FLYWHEEL_VELOCITY = 1090;
+    private static final double REAR_SHOT_FLYWHEEL_VELOCITY = 1086;
     private final ElapsedTime settleTimer = new ElapsedTime();
 
     private Follower follower;
@@ -92,12 +92,15 @@ public class Auto1 extends LinearOpMode {
                 waitMs(200),
                 follow(follower, pushFlower()),
                 waitMs(1500),
-                instant(() -> intakeTransferController.flowerIntakeUp()),
                 instant(() -> {
                     currentTargetHive = REAR_CELL;
                     shooter.setBaseVelocity(REAR_SHOT_FLYWHEEL_VELOCITY);
                 }),
                 follow(follower, shootTwo()),
+                sequential(
+                        waitMs(150),
+                        instant(() -> intakeTransferController.flowerIntakeUp())
+                ),
                 waitMs(300),
                 aimAndShoot(),
                 follow(follower, approachFlowerPollen()),
