@@ -8,12 +8,12 @@ import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 @Configurable
 public class AutoShooter {
 
-    public static long SHOT_OPEN_MS = 1400;
+    public static long SHOT_OPEN_MS = 1500;
     public static long SHOT_GAP_MS = 400;
     public static int GATE_OPENS_PER_SHOOT = 1;
     public static boolean NECTAR_GATE_ONLY = false;
-    public static double SHOT_FLYWHEEL_VELOCITY = 1160;
-    public static boolean RAMP_ENABLED = true;
+    public static double SHOT_FLYWHEEL_VELOCITY = 1105;
+    public static boolean RAMP_ENABLED = false;
     public static double RAMP_START_MS = 30;
     public static double RAMP_DURATION_MS = 5000;
     public static double RAMP_AMOUNT = 300;
