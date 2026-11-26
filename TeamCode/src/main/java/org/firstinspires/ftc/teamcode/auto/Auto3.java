@@ -34,6 +34,7 @@ public class Auto3 extends LinearOpMode {
     private static final long SHOT_FINISH_MS = 750;
     private static final double SETTLE_DISTANCE_IN = 1.5;
     private static final long SETTLE_TIMEOUT_MS = 1500;
+    private static final double REAR_SHOT_FLYWHEEL_VELOCITY = 1115;
     private final ElapsedTime settleTimer = new ElapsedTime();
 
     private Follower follower;
@@ -54,48 +55,61 @@ public class Auto3 extends LinearOpMode {
             ? PoseFactory.degrees()
             : PoseFactory.degrees().mirrorX(72).mirrorY(72);
 
-    private final Pose start = poseFactory.of(87.289, 140.3444, -90);
-    private final Pose shootOne = poseFactory.of(87.1548, 133.3804, -91.4576);
+    private final Pose start = poseFactory.of(87.289, 140.3444, 89.69);
+    private final Pose shootOne = poseFactory.of(87, 139, 90);
+    private final Pose shootOneSegment1Target = poseFactory.of(87, 87, 0);
     private final Pose pickUpPollen = poseFactory.of(139.5348, 126.8552, 95.1153);
     private final Pose pickUpPollenControl1 = poseFactory.of(131.9595, 88.2177, 0);
     private final Pose pickUpPollenSegment1Target = poseFactory.of(138, 144, 0);
     private final Pose pickUpPollen2 = poseFactory.of(139.5347, 141.5, 93.5996);
     private final Pose pickUpPollen2Segment1Target = poseFactory.of(139, 150, 0);
-    private final Pose shootTwo = poseFactory.of(84.435, 31.0886, -95.6534);
+    private final Pose shootTwo = poseFactory.of(80, 9.9471, -90);
     private final Pose shootTwoControl1 = poseFactory.of(90.8954, 112.0252, 0);
     private final Pose shootTwoControl2 = poseFactory.of(140.0766, 21.794, 0);
-    private final Pose pickUpFlowerPollen = poseFactory.of(95.0457, 30.4583, -92.9117);
-    private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(93.7, 4, 0);
-    private final Pose shootThree = poseFactory.of(86.5064, 133.4041, -90.639);
+    private final Pose shootTwoSegment1Target = poseFactory.of(85, 57, 0);
+    private final Pose approachFlowerPollen = poseFactory.of(96, 26.392, -90);
+    private final Pose approachFlowerPollenSegment1Target = poseFactory.of(96, 18, 0);
+    private final Pose pickUpFlowerPollen = poseFactory.of(95.3723, 4.584, -90);
+    private final Pose pickUpFlowerPollenSegment1Target = poseFactory.of(95, 1, 0);
+    private final Pose shootThree = poseFactory.of(87, 139, 90);
     private final Pose shootThreeControl1 = poseFactory.of(129.5497, 83.5041, 0);
-    private final Pose parkAtEnd = poseFactory.of(134.4141, 47.3126, -60.9);
+    private final Pose shootThreeSegment1Target = poseFactory.of(87, 87, 0);
+    private final Pose parkAtEnd = poseFactory.of(133.2291, 45.8434, 180);
+    private final Pose parkAtEndSegment1Start = poseFactory.of(133.2291, 45.8434, 180);
+    private final Pose parkAtEndSegment1End = poseFactory.of(133.2291, 45.8434, 180);
 
-    // Autonomous routine
     public Command autoRoutine() {
         return sequential(
+                instant(() -> currentTargetHive = FRONT_CELL),
+                follow(follower, shootOne()),
                 instant(() -> {
                     intakeTransferController.toggleForward();
                     intakeTransferController.flowerIntakeUp();
                     outtakeController.close();
                 }),
-                instant(() -> currentTargetHive = FRONT_CELL),
-                waitMs(500),
-                follow(follower, shootOne()),
-                waitMs(1100),
+                waitMs(3000),
                 aimAndShoot(),
                 follow(follower, pickUpPollen()),
                 follow(follower, pickUpPollen2()),
-                instant(() -> currentTargetHive = REAR_CELL),
+                instant(() -> {
+                    currentTargetHive = REAR_CELL;
+                    shooter.setBaseVelocity(REAR_SHOT_FLYWHEEL_VELOCITY);
+                }),
                 follow(follower, shootTwo()),
-                waitMs(1100),
+                waitMs(300),
                 aimAndShoot(),
+                follow(follower, approachFlowerPollen()),
                 instant(() -> intakeTransferController.flowerIntakeDown()),
+                waitMs(100),
                 follow(follower, pickUpFlowerPollen()),
-                waitMs(1000),
+                waitMs(900),
                 instant(() -> intakeTransferController.flowerIntakeUp()),
-                instant(() -> currentTargetHive = FRONT_CELL),
+                instant(() -> {
+                    currentTargetHive = FRONT_CELL;
+                    shooter.clearBaseVelocity();
+                }),
                 follow(follower, shootThree()),
-                waitMs(1100),
+                waitMs(300),
                 aimAndShoot(),
                 follow(follower, parkAtEnd())
         );
@@ -169,13 +183,12 @@ public class Auto3 extends LinearOpMode {
             }
 
         } finally {
-            //robots stopping position carries over to teleop!
             OpModeStorage.autonomousEndPose = follower.pose();
         }
     }
 
     public Path shootOne() {
-        return line(start, shootOne).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose).reverse()));
+        return line(start, shootOne).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootOneSegment1Target).reverse()));
     }
 
     public Path pickUpPollen() {
@@ -187,18 +200,22 @@ public class Auto3 extends LinearOpMode {
     }
 
     public Path shootTwo() {
-        return curve(pickUpPollen2, shootTwoControl1, shootTwoControl2, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose).reverse()));
+        return curve(pickUpPollen2, shootTwoControl1, shootTwoControl2, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootTwoSegment1Target).reverse()));
+    }
+
+    public Path approachFlowerPollen() {
+        return line(shootTwo, approachFlowerPollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(approachFlowerPollenSegment1Target)));
     }
 
     public Path pickUpFlowerPollen() {
-        return line(shootTwo, pickUpFlowerPollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpFlowerPollenSegment1Target)));
+        return line(approachFlowerPollen, pickUpFlowerPollen).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pickUpFlowerPollenSegment1Target))).with(Constants.foresightConfig.maxPathSpeed.at(0.7));
     }
 
     public Path shootThree() {
-        return curve(pickUpFlowerPollen, shootThreeControl1, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose).reverse()));
+        return curve(pickUpFlowerPollen, shootThreeControl1, shootThree).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootThreeSegment1Target).reverse()));
     }
 
     public Path parkAtEnd() {
-        return line(shootThree, parkAtEnd).tangent();
+        return line(shootThree, parkAtEnd).heading(Interpolator.piecewise().until(1, Interpolator.linear(parkAtEndSegment1Start, parkAtEndSegment1End)));
     }
 }

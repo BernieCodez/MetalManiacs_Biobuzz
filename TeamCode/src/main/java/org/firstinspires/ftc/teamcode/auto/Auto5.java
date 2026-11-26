@@ -55,10 +55,12 @@ public class Auto5 extends LinearOpMode {
             : PoseFactory.degrees().mirrorX(72).mirrorY(72);
 
     private final Pose start = poseFactory.of(87.289, 140.3444, 89.69);
-    private final Pose shootOne = poseFactory.of(87, 139, -90);
-    private final Pose parkAtEnd = poseFactory.of(125.1036, 52.7262, -66.1709);
+    private final Pose shootOne = poseFactory.of(87, 139, 90);
+    private final Pose shootOneSegment1Target = poseFactory.of(87, 87, 0);
+    private final Pose parkAtEnd = poseFactory.of(133.2291, 45.8434, 180);
+    private final Pose parkAtEndSegment1Start = poseFactory.of(133.2291, 45.8434, 180);
+    private final Pose parkAtEndSegment1End = poseFactory.of(133.2291, 45.8434, 180);
 
-    // Autonomous routine
     public Command autoRoutine() {
         return sequential(
                 instant(() -> {
@@ -143,16 +145,15 @@ public class Auto5 extends LinearOpMode {
             }
 
         } finally {
-            //robots stopping position carries over to teleop!
             OpModeStorage.autonomousEndPose = follower.pose();
         }
     }
 
     public Path shootOne() {
-        return line(start, shootOne).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose).reverse()));
+        return line(start, shootOne).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootOneSegment1Target).reverse()));
     }
 
     public Path parkAtEnd() {
-        return line(shootOne, parkAtEnd).tangent();
+        return line(shootOne, parkAtEnd).heading(Interpolator.piecewise().until(1, Interpolator.linear(parkAtEndSegment1Start, parkAtEndSegment1End)));
     }
 }

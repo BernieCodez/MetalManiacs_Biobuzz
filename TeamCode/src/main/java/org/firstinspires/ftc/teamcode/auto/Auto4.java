@@ -34,6 +34,7 @@ public class Auto4 extends LinearOpMode {
     private static final long SHOT_FINISH_MS = 750;
     private static final double SETTLE_DISTANCE_IN = 1.5;
     private static final long SETTLE_TIMEOUT_MS = 1500;
+    private static final double REAR_SHOT_FLYWHEEL_VELOCITY = 1115;
     private final ElapsedTime settleTimer = new ElapsedTime();
 
     private static final long WAIT_BEFORE_PRELOAD_MS = 3250;
@@ -59,16 +60,19 @@ public class Auto4 extends LinearOpMode {
             : PoseFactory.degrees().mirrorX(72).mirrorY(72);
 
     private final Pose start = poseFactory.of(85.3292, 5.1915, 90);
-    private final Pose waitThenShootPreloadsBackCell = poseFactory.of(85.087, 11.8986, 88.9126);
+    private final Pose waitThenShootPreloadsBackCell = poseFactory.of(80, 9.9471, -90);
+    private final Pose waitThenShootPreloadsBackCellSegment1Target = poseFactory.of(85, 57, 0);
     private final Pose holdForPartner = poseFactory.of(132, 28, 83.3);
-    private final Pose waitForUsThenWallFlower = poseFactory.of(115.4, 96.5859, -4.9781);
-    private final Pose waitForUsThenWallFlowerSegment1Target = poseFactory.of(140, 96, 0);
-    private final Pose shootFrontCell = poseFactory.of(86.3095, 133.7184, -90.3879);
+    private final Pose waitForUsThenWallFlower = poseFactory.of(114, 95.1221, 0);
+    private final Pose waitForUsThenWallFlowerSegment1Target = poseFactory.of(140.15, 96, 0);
+    private final Pose pushFlower = poseFactory.of(134.5, 95, 6.9952);
+    private final Pose pushFlowerSegment1Target = poseFactory.of(140.15, 96, 0);
+    private final Pose shootFrontCell = poseFactory.of(87, 139, 90);
+    private final Pose shootFrontCellSegment1Target = poseFactory.of(87, 87, 0);
     private final Pose clearFrontCell = poseFactory.of(128, 134, -86.9);
     private final Pose waitForUsThenPark = poseFactory.of(133.6, 26, -86.4);
     private final Pose waitForUsThenParkSegment1Target = poseFactory.of(135, 4, 0);
 
-    // Autonomous routine
     public Command autoRoutine() {
         return sequential(
                 instant(() -> {
@@ -77,19 +81,26 @@ public class Auto4 extends LinearOpMode {
                     outtakeController.close();
                 }),
                 waitMs(WAIT_BEFORE_PRELOAD_MS),
-                instant(() -> currentTargetHive = REAR_CELL),
+                instant(() -> {
+                    currentTargetHive = REAR_CELL;
+                    shooter.setBaseVelocity(REAR_SHOT_FLYWHEEL_VELOCITY);
+                }),
                 follow(follower, waitThenShootPreloadsBackCell()),
                 waitMs(1100),
                 aimAndShoot(),
                 follow(follower, holdForPartner()),
                 waitMs(WAIT_BEFORE_WALL_FLOWER_MS),
-                instant(() -> intakeTransferController.flowerIntakeDown()),
                 follow(follower, waitForUsThenWallFlower()),
-                waitMs(1000),
+                instant(() -> intakeTransferController.flowerIntakeDown()),
+                follow(follower, pushFlower()),
+                waitMs(900),
                 instant(() -> intakeTransferController.flowerIntakeUp()),
-                instant(() -> currentTargetHive = FRONT_CELL),
+                instant(() -> {
+                    currentTargetHive = FRONT_CELL;
+                    shooter.clearBaseVelocity();
+                }),
                 follow(follower, shootFrontCell()),
-                waitMs(1100),
+                waitMs(300),
                 aimAndShoot(),
                 follow(follower, clearFrontCell()),
                 waitMs(WAIT_BEFORE_PARK_MS),
@@ -165,13 +176,12 @@ public class Auto4 extends LinearOpMode {
             }
 
         } finally {
-            //robots stopping position carries over to teleop!
             OpModeStorage.autonomousEndPose = follower.pose();
         }
     }
 
     public Path waitThenShootPreloadsBackCell() {
-        return line(start, waitThenShootPreloadsBackCell).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose).reverse()));
+        return line(start, waitThenShootPreloadsBackCell).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(waitThenShootPreloadsBackCellSegment1Target).reverse()));
     }
 
     public Path holdForPartner() {
@@ -182,8 +192,12 @@ public class Auto4 extends LinearOpMode {
         return line(holdForPartner, waitForUsThenWallFlower).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(waitForUsThenWallFlowerSegment1Target)));
     }
 
+    public Path pushFlower() {
+        return line(waitForUsThenWallFlower, pushFlower).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(pushFlowerSegment1Target))).with(Constants.foresightConfig.maxPathSpeed.at(0.7));
+    }
+
     public Path shootFrontCell() {
-        return line(waitForUsThenWallFlower, shootFrontCell).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(FRONT_CELL.pose).reverse()));
+        return line(pushFlower, shootFrontCell).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootFrontCellSegment1Target).reverse()));
     }
 
     public Path clearFrontCell() {

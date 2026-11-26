@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.auto;
+package org.firstinspires.ftc.teamcode;
 
 import static com.pedropathing.api.Paths.*;
 import com.pedropathing.api.Paths;
@@ -15,6 +15,7 @@ import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.pedropathing.paths.interpolator.Interpolator;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
@@ -26,14 +27,15 @@ public class Auto2 extends LinearOpMode {
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     private final Pose start = poseFactory.of(140.0219, 72.6705, 180);
-    private final Pose goForward = poseFactory.of(133.4425, 72.7376, 179.4157);
-    private final Pose parkAtEnd = poseFactory.of(134.2257, 22.6501, -89.1042);
+    private final Pose move1 = poseFactory.of(132.8529, 72.5411, -178.9657);
+    private final Pose park = poseFactory.of(132.6174, 26, -83.8189);
+    private final Pose parkSegment1Target = poseFactory.of(135, 4, 0);
 
     // Autonomous routine
     public Command autoRoutine() {
         return sequential(
-                follow(follower, goForward()),
-                follow(follower, parkAtEnd())
+                follow(follower, move1()),
+                follow(follower, park())
         );
     }
 
@@ -64,11 +66,11 @@ public class Auto2 extends LinearOpMode {
         }
     }
 
-    public Path goForward() {
-        return Paths.line(start, goForward).tangent();
+    public Path move1() {
+        return Paths.line(start, move1).tangent();
     }
 
-    public Path parkAtEnd() {
-        return Paths.line(goForward, parkAtEnd).tangent();
+    public Path park() {
+        return Paths.line(move1, park).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(parkSegment1Target)));
     }
 }

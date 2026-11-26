@@ -34,6 +34,7 @@ public class Auto6 extends LinearOpMode {
     private static final long SHOT_FINISH_MS = 750;
     private static final double SETTLE_DISTANCE_IN = 1.5;
     private static final long SETTLE_TIMEOUT_MS = 1500;
+    private static final double REAR_SHOT_FLYWHEEL_VELOCITY = 1115;
     private final ElapsedTime settleTimer = new ElapsedTime();
 
     private Follower follower;
@@ -55,10 +56,10 @@ public class Auto6 extends LinearOpMode {
             : PoseFactory.degrees().mirrorX(72).mirrorY(72);
 
     private final Pose start = poseFactory.of(87.289, 3.6556, -89.69);
-    private final Pose shootOne = poseFactory.of(87, 5, 90);
+    private final Pose shootOne = poseFactory.of(80, 9.9471, -90);
+    private final Pose shootOneSegment1Target = poseFactory.of(85, 57, 0);
     private final Pose parkAtEnd = poseFactory.of(131.7856, 24.8193, 23.8712);
 
-    // Autonomous routine
     public Command autoRoutine() {
         return sequential(
                 instant(() -> {
@@ -66,7 +67,10 @@ public class Auto6 extends LinearOpMode {
                     intakeTransferController.flowerIntakeUp();
                     outtakeController.close();
                 }),
-                instant(() -> currentTargetHive = REAR_CELL),
+                instant(() -> {
+                    currentTargetHive = REAR_CELL;
+                    shooter.setBaseVelocity(REAR_SHOT_FLYWHEEL_VELOCITY);
+                }),
                 waitMs(5000),
                 follow(follower, shootOne()),
                 waitMs(1100),
@@ -143,13 +147,12 @@ public class Auto6 extends LinearOpMode {
             }
 
         } finally {
-            //robots stopping position carries over to teleop!
             OpModeStorage.autonomousEndPose = follower.pose();
         }
     }
 
     public Path shootOne() {
-        return line(start, shootOne).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(REAR_CELL.pose).reverse()));
+        return line(start, shootOne).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootOneSegment1Target).reverse()));
     }
 
     public Path parkAtEnd() {

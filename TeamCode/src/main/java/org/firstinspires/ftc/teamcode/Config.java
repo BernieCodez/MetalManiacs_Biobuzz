@@ -75,9 +75,9 @@ public class Config {
     public static final String RIGHT_WEDGE = "rightWedge";
     public static final String LEFT_WEDGE = "leftWedge";
     public static final double RIGHT_WEDGE_UP = 0;
-    public static final double RIGHT_WEDGE_DOWN = 0.70;
-    public static final double LEFT_WEDGE_UP = .75;
-    public static final double LEFT_WEDGE_DOWN = 0.05;
+    public static final double RIGHT_WEDGE_DOWN = 1;
+    public static final double LEFT_WEDGE_UP = 1;
+    public static final double LEFT_WEDGE_DOWN = 0;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                      LOCALIZATION                                              //
