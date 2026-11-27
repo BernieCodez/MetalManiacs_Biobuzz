@@ -45,7 +45,7 @@ public class Config {
 
     //PIDF for flywheels
     public static final double FLYWHEEL_SHOOTING_KP = 85;
-    public static final double FLYWHEEL_STARTUP_KP = 1;
+    public static final double FLYWHEEL_STARTUP_KP = 10; //was 1
 
     public static final double FLYWHEEL_KI = 0.0;
     public static final double FLYWHEEL_KD = 2;
@@ -56,7 +56,7 @@ public class Config {
     public static final double FLYWHEEL_DISTANCE_SLOPE = 4.1;
     public static final double FLYWHEEL_DISTANCE_INTERCEPT = 926.886;
 
-    public static final double FLYWHEEL_RAMP_RATE = 5000;
+    public static final double FLYWHEEL_RAMP_RATE = 5000; //larger val = more aggressive startup ramp | was 5000
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //                                        AUTOAIM                                                 //
@@ -67,6 +67,8 @@ public class Config {
     //PIDF for position turret
     public static final double AUTOAIM_P = 0.015; //make lower if robot is not spinning fast enough, make higher if robot is spinning too fast and overshooting
     public static final double AUTOAIM_MAX_ROTATION_SPEED = 1; //0-1 1 is max
+    public static final double AUTOAIM_DEADBAND = 0.5;
+    public static final double AUTOAIM_TX_OFFSET = 0;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

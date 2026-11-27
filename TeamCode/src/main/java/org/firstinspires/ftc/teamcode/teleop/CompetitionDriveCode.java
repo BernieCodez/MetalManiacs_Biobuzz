@@ -18,7 +18,7 @@ import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.pedropathing.drivetrain.DrivePowers;
-import com.pedropathing.follower.ManualDrive;;
+import com.pedropathing.follower.ManualDrive;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.RADIANS;
 import static org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit.INCH;
@@ -127,7 +127,7 @@ public class CompetitionDriveCode extends OpMode {
         if (driver.isDown(user.FIRE)){
             outtake.startBurst();
         }
-        outtake.updateTeleop(activeHive, robot);
+        outtake.update(activeHive, robot);
 
         //INTAKE & TRANSFER
         if (driver.wasJustPressed(user.INTAKE_FORWARD)){
@@ -203,9 +203,16 @@ public class CompetitionDriveCode extends OpMode {
         telemetry.addData("Robot X", robot.x());
         telemetry.addData("Robot Y", robot.y());
         telemetry.addData("Robot Heading", Math.toDegrees(robot.heading()));
+        telemetry.addData("Using Limelight", autoAim.usingLimelight);
+        for(String s : autoAim.limelight.debugString){
+            telemetry.addData("Limelight data", s);
+        }
+        telemetry.addData("Right Flywheel", outtake.flywheel.getRightVelocity());
+        telemetry.addData("Left Flywheel", outtake.flywheel.getLeftVelocity());
+//        telemetry.addData("Limelight data",autoAim.limelight.debugString);
         telemetry.addData("AprilTag Visible", autoAim.isAprilTag());
         telemetry.addData("Shot Phase", outtake.shotPhase.name());
-        telemetry.addData("Target Velocity", "%.0f", outtake.targetVelocity);
+        telemetry.addData("Target Velocity", "%.0f", outtake.getTargetVelocity());
         //TELEMETRY
         if (DEBUG){
             telemetry.addData("Robot X", robot.x());

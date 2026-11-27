@@ -15,7 +15,9 @@ import java.util.ArrayList;
 
 @Configurable
 public class OuttakeController {
-    public static double TELEOP_FLYWHEEL_VELOCITY = 1150;
+//    public static double TELEOP_FLYWHEEL_VELOCITY = 1150;
+    public double targetVelocity = 1125;
+
     public static double TELEOP_SHOT_OPEN_MS = 1400;
     public static double TELEOP_SHOT_GAP_MS = 400;
     public static int TELEOP_SHOTS_PER_PRESS = 1;
@@ -23,14 +25,13 @@ public class OuttakeController {
     public static boolean TELEOP_RAMP_ENABLED = true;
     public static double TELEOP_RAMP_START_MS = 30;
     public static double TELEOP_RAMP_DURATION_MS = 5000;
-    public static double TELEOP_RAMP_AMOUNT = 300;
+    public static double TELEOP_RAMP_AMOUNT = 125;//originally 300 | 150
 
     public enum ShotPhase { IDLE, OPEN, GAP }
 
     public ShotPhase shotPhase = ShotPhase.IDLE;
     private int shotsLeft = 0;
     private final ElapsedTime shotTimer = new ElapsedTime();
-    public double targetVelocity = 0;
 
     public Flywheel flywheel;
     private Gate gate;
@@ -55,7 +56,8 @@ public class OuttakeController {
         return colorSensor.getDetectedColor();
     }
 
-    public void update(Alliance.Hive activeHive, Pose robot){
+    @Deprecated
+    public void updateOld(Alliance.Hive activeHive, Pose robot){
         if (activeHive == null) {
             flywheel.stop();
             useFlywheel = false;
@@ -83,13 +85,20 @@ public class OuttakeController {
         flywheel.update();
     }
 
-    public void updateTeleop(Alliance.Hive activeHive, Pose robot){
+    public void update(Alliance.Hive activeHive, Pose robot){ //params useful for dynamic flywheel speeds later
         if (activeHive != null) {
+            //calculate distance between robot and target hive if it exists
             distance = Math.hypot(robot.x() - activeHive.pose.x(), robot.y() - activeHive.pose.y());
         }
         stepBurst();
-        targetVelocity = teleopTargetVelocity();
-        flywheel.setVelocity(targetVelocity);
+        flywheel.setVelocity(getTargetVelocity());
+        useFlywheel = true;
+        flywheel.update();
+    }
+
+    public void update(){
+        stepBurst();
+        flywheel.setVelocity(getTargetVelocity());
         useFlywheel = true;
         flywheel.update();
     }
@@ -127,15 +136,17 @@ public class OuttakeController {
         }
     }
 
-    private double teleopTargetVelocity(){
-        if (!TELEOP_RAMP_ENABLED || shotPhase != ShotPhase.OPEN) return TELEOP_FLYWHEEL_VELOCITY;
+    public double getTargetVelocity(){
+        //ramp if ramp is enabled AND gate is open, otherwise use default velo
+        if (!TELEOP_RAMP_ENABLED || shotPhase != ShotPhase.OPEN) return targetVelocity;
         double msIntoRamp = shotTimer.milliseconds() - TELEOP_RAMP_START_MS;
-        if (msIntoRamp <= 0) return TELEOP_FLYWHEEL_VELOCITY;
+        if (msIntoRamp <= 0) return targetVelocity;
         double fraction = 1;
         if (TELEOP_RAMP_DURATION_MS > 0) fraction = Math.min(1, msIntoRamp / TELEOP_RAMP_DURATION_MS);
-        return TELEOP_FLYWHEEL_VELOCITY + TELEOP_RAMP_AMOUNT * fraction;
+        return targetVelocity + TELEOP_RAMP_AMOUNT * fraction;
     }
 
+    @Deprecated
     public void fire(){
         gate.open();
         if (!elementList.isEmpty()) {

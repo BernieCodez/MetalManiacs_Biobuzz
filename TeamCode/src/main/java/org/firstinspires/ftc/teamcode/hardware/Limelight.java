@@ -5,6 +5,7 @@ import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
 import static org.firstinspires.ftc.teamcode.Config.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class Limelight {
     public boolean tVisible = false;
     public double tx;
     public double ty;
+    public String[] debugString = new String[4];
 
     public Limelight(HardwareMap hardwareMap){
         limelight = hardwareMap.get(Limelight3A.class, LIMELIGHT);
@@ -30,23 +32,22 @@ public class Limelight {
 
     public void start(){limelight.start();}
 
-    public void update(Alliance.Hive activeHive){
-        currentResult = limelight.getLatestResult();//fetch info packet
-        if (currentResult != null && currentResult.isValid()){ //if it currently sees a tag
-            lastGoodResult = currentResult;
-            lastGoodTime = System.currentTimeMillis(); //start a stopwatch
+
+    public void update(Alliance.Hive activeHive) {
+        currentResult = limelight.getLatestResult();
+
+        // Only use the latest camera frame.
+        // Never feed an old AprilTag measurement into auto aim.
+        if (currentResult != null && currentResult.isValid()) {
+            finalResult = currentResult;
+        } else {
+            finalResult = null;
         }
 
-        if (lastGoodResult != null && System.currentTimeMillis() - lastGoodTime <= RESULT_TIMEOUT_MS){ //if the stopwatch is less than 1 second
-            //use the last good result
-            finalResult = lastGoodResult;
-        }else{
-            //has not seen an april tag for more than 1 second!
-            finalResult = currentResult;
-        }
         tVisible = getBestTVisible(activeHive);
-        tx = getBestTX(activeHive);
-        ty = lastGoodResult != null ? lastGoodResult.getTy() : 0;
+
+        tx = tVisible ? getBestTX(activeHive) : 0;
+        ty = tVisible ? finalResult.getTy() : 0;
     }
 
     public boolean isActiveHiveTag(int id, Alliance.Hive activeHive){ return activeHive.allTagIds.contains(id);}
@@ -75,54 +76,78 @@ public class Limelight {
     //maintain outer tags as backups in case no middle tags are seen
     //if AT LEAST two middle tags are seen it will average together the tx
     //otherwise if it sees two outer tags it will average together the tx
+
     public double getBestTX(Alliance.Hive activeHive){
-        if (finalResult == null) { //safety checks in case finalResult is null
-            return 0;
-        }
-        List<LLResultTypes.FiducialResult> fiducials = finalResult.getFiducialResults();
-        if (fiducials == null || fiducials.isEmpty()) {//return 0 if no tags
+        if (finalResult == null) {
             return 0;
         }
 
-        double average = 0;
-        int middleTagCount = 0;//needs to be two in order to average (should only ever be max of two)
-        int backupTagCount = 0;
+        List<LLResultTypes.FiducialResult> fiducials =
+                finalResult.getFiducialResults();
+
+        if (fiducials == null || fiducials.isEmpty()) {
+            return 0;
+        }
+
+        double middleAverage = 0;
+        int middleCount = 0;
+
         double backupAverage = 0;
+        int backupCount = 0;
 
-        double optimalTX = Double.NaN;
-        double backupTX = 0;
+        debugString = new String[fiducials.size()]; //del
+        int index = 0; //del
+
         for (LLResultTypes.FiducialResult fiducial : fiducials) {
+
             int id = fiducial.getFiducialId();
-            if (!isActiveHiveTag(id, activeHive)){
-                //random ah tag from nowhere so we ignore it completely
+
+            // Ignore tags belonging to other hives
+            if (!isActiveHiveTag(id, activeHive)) {
                 continue;
             }
 
             double tx = fiducial.getTargetXDegrees();
-            backupTX = tx;
 
-            if(isMiddleTag(id, activeHive)){
-                //it must be an april on the inside
-                optimalTX = tx;
-                middleTagCount++;
-                average += tx;
-            }else{
-                //it must be an april tag on the outside
-                backupTagCount++;
+//            debugString = activeHive.name +
+//                    " | ID: " + id +
+//                    " | TX: " + tx +
+//                    " | Middle: " + isMiddleTag(id, activeHive);
+//            telemetry.addData("Limelight Debug", debugString);
+            debugString[index] =
+                    activeHive.name +
+                    " | ID: " + id +
+                    " | TX: " + tx +
+                    " | Middle: " + isMiddleTag(id, activeHive);
+            index++;
+
+            if (isMiddleTag(id, activeHive)) {
+
+                // Prioritize the inner two tags
+                middleAverage += tx;
+                middleCount++;
+
+            } else {
+
+                // Keep outer tags as backup
                 backupAverage += tx;
+                backupCount++;
             }
         }
 
-        if (middleTagCount >= 2){
-            optimalTX = average/middleTagCount;
-        } else if (backupTagCount >= 2) {
-            optimalTX = backupAverage/backupTagCount;
+        // Priority 1: Average all visible middle tags
+        if (middleCount > 0) {
+            return middleAverage / middleCount;
         }
-        if (Double.isNaN(optimalTX)){
-            optimalTX = backupTX;
+
+        // Priority 2: Average all visible outer tags
+        if (backupCount > 0) {
+            return backupAverage / backupCount;
         }
-        return optimalTX;
+
+        return 0;
     }
+
 
     public void stop(){limelight.stop();}
 }

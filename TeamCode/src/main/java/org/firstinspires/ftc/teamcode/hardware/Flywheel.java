@@ -142,9 +142,6 @@ public class Flywheel {
     }
 
     public double getPower() {return (rightFlywheel.getPower() + leftFlywheel.getPower()) / 2;}
-
-    public double getCurrent() {return rightFlywheel.getCurrent(CurrentUnit.AMPS) + leftFlywheel.getCurrent(CurrentUnit.AMPS);}
-
     public boolean atTargetVelocity() {return Math.abs(getVelocity() - optimalSpeed) < FLYWHEEL_VELOCITY_TOLERANCE;}
     public double getLeftVelocity() {
         return leftFlywheel.getVelocity();
@@ -157,4 +154,5 @@ public class Flywheel {
     public double getTargetVelocity() {
         return optimalSpeed;
     }
+    public double getCurrent(){return (rightFlywheel.getCurrent(CurrentUnit.AMPS) + leftFlywheel.getCurrent(CurrentUnit.AMPS))/2;}
 }

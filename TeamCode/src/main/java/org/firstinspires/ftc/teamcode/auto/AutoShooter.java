@@ -35,7 +35,7 @@ public class AutoShooter {
         baseVelocityOverride = null;
     }
 
-    private double baseVelocity() {
+    public double baseVelocity() {
         return baseVelocityOverride != null ? baseVelocityOverride : SHOT_FLYWHEEL_VELOCITY;
     }
 
@@ -69,4 +69,7 @@ public class AutoShooter {
         outtake.flywheel.setVelocity(targetVelocity());
         outtake.flywheel.update();
     }
+
+    public double getRightVelocity(){return outtake.flywheel.getRightVelocity();}
+    public double getLeftVelocity(){return outtake.flywheel.getLeftVelocity();}
 }

@@ -15,7 +15,7 @@ public class AutoAimController {
     private double headingError;
     public double rotation = 0;
     private boolean REAR_SHOOTER = true; //true for auto aim with the butt, false for aiming with face
-
+    public boolean usingLimelight = false;
     public AutoAimController(HardwareMap hardwareMap) {
         limelight = new Limelight(hardwareMap);
 
@@ -34,10 +34,17 @@ public class AutoAimController {
         headingError = normalizeAngle(targetHeading - Math.toDegrees(robot.heading()));
 
         //april tag is visible
-//        if (limelight.tVisible) {
-//            //correct calculated localized target angle with limelight calculated angle
-//            headingError = normalizeAngle(headingError - limelight.tx); //USE + IF THE ROBOT ENDS UP SPINNING THE OPPOSITE WAY WHEN IT SEES AN APRIL TAG
-//        }
+//        if (limelight.getBestTVisible(activeHive)) {
+        if(limelight.tVisible){
+            usingLimelight = true;
+            //correct calculated localized target angle with limelight calculated angle
+            headingError = normalizeAngle(headingError - limelight.getBestTX(activeHive)); //USE + IF THE ROBOT ENDS UP SPINNING THE OPPOSITE WAY WHEN IT SEES AN APRIL TAG
+            if (Math.abs(headingError) < AUTOAIM_DEADBAND) {
+                headingError = 0;
+            }
+        }else{
+            usingLimelight = false;
+        }
 
         //tell the robot body where to go
         rotation = clip(AUTOAIM_P * headingError, -AUTOAIM_MAX_ROTATION_SPEED, AUTOAIM_MAX_ROTATION_SPEED);

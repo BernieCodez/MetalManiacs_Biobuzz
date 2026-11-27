@@ -28,7 +28,7 @@ import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 
-@Autonomous(name = "Everything (Path 1) v29", group = "Autonomous")
+@Autonomous(name = "Everything (Path 1) v34", group = "Autonomous")
 public class Everything extends LinearOpMode {
     private double FRONT_FLYWHEEL_VELOCITY = 1070;
     private double BACK_FLYWHEEL_VELOCITY = 1070;
@@ -67,10 +67,10 @@ public class Everything extends LinearOpMode {
     private final Pose shootOne = poseFactory.of(87, 139, 90);
     private final Pose shootOneSegment1Target = poseFactory.of(87, 87, 0);
 
-    //garden sh-- shtuff
-    private final Pose faceGarden = poseFactory.of(136.5, 137.5, 45);
+    //Garden Poses
+    private final Pose faceGarden = poseFactory.of(141, 128, 90);
     private final Pose faceGardenControl1 = poseFactory.of(113.3363, 123.0206, 0);
-    private final Pose pickUpGarden = poseFactory.of(140, 138.5, 0);
+    private final Pose pickUpGarden = poseFactory.of(141, 136, 90);
 
     private final Pose point2 = poseFactory.of(114, 95.1221, 0);
     private final Pose point2Segment1Target = poseFactory.of(140.15, 96, 0);
@@ -78,9 +78,10 @@ public class Everything extends LinearOpMode {
     private final Pose point3Segment1Target = poseFactory.of(140.15, 96, 0);
     private final Pose point4 = poseFactory.of(123.988, 95.0042, 0);
     private final Pose point3_2 = poseFactory.of(130.0976, 94.6899, 0);
-    private final Pose shootTwo = poseFactory.of(96, 11, -85);                //SHOT 2
-    private final Pose shootTwoControl1 = poseFactory.of(114.9576, 28.3121, 0);
-    private final Pose shootTwoSegment1Target = poseFactory.of(84, 57, 0);
+    private final Pose shootTwo = poseFactory.of(96, 11, -75.3791);             //SHOT 2
+    private final Pose shootTwoControl1 = poseFactory.of(115, 23, 0);
+    private final Pose shootTwoSegment1Heading = poseFactory.of(96, 11, 90);
+    private final Pose shootTwoSegment2Target = poseFactory.of(84, 57, 0);
     private final Pose approachFlowerPollen = poseFactory.of(96, 9.9, -90); //BACK FLOWER!
     private final Pose approachFlowerPollenSegment1Target = poseFactory.of(96, 18, 0);
     private final Pose pickUpFlowerPollen = poseFactory.of(95.3723, 6, -90); //COLLET BACK FLOWER | was 4
@@ -91,7 +92,8 @@ public class Everything extends LinearOpMode {
     private final Pose shootThreeControl1 = poseFactory.of(90.5256, 14.8378, 0);
     private final Pose shootThreeSegment1Target = poseFactory.of(84, 57, 0);
 
-    private final Pose faceFlower = poseFactory.of(114, 95, 9.2356);
+    //second flower
+    private final Pose faceFlower = poseFactory.of(130, 95, 9.2356);
     private final Pose faceFlowerControl1 = poseFactory.of(132.0375, 18.7276, 0);
     private final Pose faceFlowerSegment1Target = poseFactory.of(140.15, 96, 0);
 
@@ -123,20 +125,23 @@ public class Everything extends LinearOpMode {
                 }),
                 aimAndShoot(),
 
-                follow(follower, faceGarden()),
+                //Calling Garden Methods
+                parallel(
+                        follow(follower, faceGarden()),
+                        instant(() -> intakeTransfer.flowerIntakeDown())
+                ),
                 follow(follower, pickUpGarden()),
+                follow(follower, backupGarden()),
+                waitMs(250),
+                follow(follower, pickUpAgainGarden()),
+                waitMs(500),
 
                 instant(() -> {
                     currentTargetHive = REAR_CELL;
                     outtake.targetVelocity = BACK_FLYWHEEL_VELOCITY;
                 }), //for auto aim
-                parallel( //raise intake while moving
-                        sequential(
-                            waitMs(1500),
-                            instant(() -> intakeTransfer.flowerIntakeDown())
-                        ),
-                        follow(follower, shootTwo())
-                ),
+
+                follow(follower, shootTwo()),
                 aimAndShoot(),
 
                 follow(follower, approachFlowerPollen()),
@@ -369,13 +374,21 @@ public class Everything extends LinearOpMode {
     }
 
 
+    //Garden Methods
     public Path faceGarden() {
-        return curve(shootOne, faceGardenControl1, faceGarden).linear(shootOne, faceGarden);
+        return curve(start, faceGardenControl1, faceGarden).linear(start, faceGarden);
     }
 
     public Path pickUpGarden() {
-        return line(faceGarden, pickUpGarden).linear(faceGarden, pickUpGarden)
-                .with(Constants.foresightConfig.maxPathSpeed.at(0.2));
+        return line(faceGarden, pickUpGarden).constant(pickUpGarden);
+    }
+
+    public Path backupGarden() {
+        return line(pickUpGarden, faceGarden).constant(pickUpGarden);
+    }
+
+    public Path pickUpAgainGarden(){
+        return line(faceGarden, pickUpGarden).constant(pickUpGarden);
     }
 
     public Path faceFlower() {
@@ -395,9 +408,7 @@ public class Everything extends LinearOpMode {
     }
 
     public Path shootTwo() {
-//        return curve(point3_2, shootTwoControl1, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootTwoSegment1Target).reverse()));
-        return curve(pickUpGarden, shootTwoControl1, shootTwo).heading(Interpolator.piecewise().until(1, Interpolator.facingPoint(shootTwoSegment1Target).reverse()));
-
+        return curve(pickUpGarden, shootTwoControl1, shootTwo).heading(Interpolator.piecewise().until(0.3022, Interpolator.constant(shootTwoSegment1Heading)).until(1, Interpolator.facingPoint(shootTwoSegment2Target).reverse()));
     }
 
     public Path approachFlowerPollen() {
