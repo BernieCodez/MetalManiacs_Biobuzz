@@ -28,7 +28,7 @@ import static org.firstinspires.ftc.teamcode.Config.*;
 import org.firstinspires.ftc.teamcode.controllers.OuttakeController;
 import org.firstinspires.ftc.teamcode.controllers.AutoAimController;
 
-@Autonomous(name = "Everything (Path 1) v23", group = "Autonomous")
+@Autonomous(name = "Everything (Path 1) v29", group = "Autonomous")
 public class Everything extends LinearOpMode {
     private double FRONT_FLYWHEEL_VELOCITY = 1070;
     private double BACK_FLYWHEEL_VELOCITY = 1070;
@@ -68,22 +68,9 @@ public class Everything extends LinearOpMode {
     private final Pose shootOneSegment1Target = poseFactory.of(87, 87, 0);
 
     //garden sh-- shtuff
-    private final Pose faceGarden = poseFactory.of(121.6587, 141.5, 0);
-    private final Pose faceGardenControl1 = poseFactory.of(100.6271, 141.5, 0);
-    private final Pose faceGardenSegment1Start = poseFactory.of(121.6587, 141.5, 90);
-    private final Pose faceGardenSegment1End = poseFactory.of(121.6587, 141.5, 90);
-    private final Pose faceGardenSegment2Start = poseFactory.of(121.6587, 141.5, 90);
-    private final Pose faceGardenSegment2End = poseFactory.of(121.6587, 141.5, 0);
-    private final Pose faceGardenSegment3Start = poseFactory.of(121.6587, 141.5, 0);
-    private final Pose faceGardenSegment3End = poseFactory.of(121.6587, 141.5, 0);
-
-    private final Pose pickUpGarden = poseFactory.of(140.25, 141.5, -10);
-    private final Pose pickUpGardenSegment1Start = poseFactory.of(140.25, 141.5, 0);
-    private final Pose pickUpGardenSegment1End = poseFactory.of(140.25, 141.5, 15);
-    private final Pose pickUpGardenSegment2Start = poseFactory.of(140.25, 141.5, 15);
-    private final Pose pickUpGardenSegment2End = poseFactory.of(140.25, 141.5, 15);
-    private final Pose pickUpGardenSegment3Start = poseFactory.of(140.25, 141.5, 15);
-    private final Pose pickUpGardenSegment3End = poseFactory.of(140.25, 141.5, -10);
+    private final Pose faceGarden = poseFactory.of(136.5, 137.5, 45);
+    private final Pose faceGardenControl1 = poseFactory.of(113.3363, 123.0206, 0);
+    private final Pose pickUpGarden = poseFactory.of(140, 138.5, 0);
 
     private final Pose point2 = poseFactory.of(114, 95.1221, 0);
     private final Pose point2Segment1Target = poseFactory.of(140.15, 96, 0);
@@ -145,7 +132,6 @@ public class Everything extends LinearOpMode {
                 }), //for auto aim
                 parallel( //raise intake while moving
                         sequential(
-                            instant(() -> intakeTransfer.flowerIntakeUp()),
                             waitMs(1500),
                             instant(() -> intakeTransfer.flowerIntakeDown())
                         ),
@@ -202,11 +188,11 @@ public class Everything extends LinearOpMode {
                     lurchForward = 0.15;
                 }),
 
-                waitMs(450),
+                waitMs(300),
 
                 // Lurch forward
-                instant(() -> lurchForward = -0.5),
-                waitMs(450),
+                instant(() -> lurchForward = -0.50),
+                waitMs(500),
 
                 // Lurch backward
                 instant(() -> lurchForward = 1),
@@ -384,11 +370,11 @@ public class Everything extends LinearOpMode {
 
 
     public Path faceGarden() {
-        return curve(shootOne, faceGardenControl1, faceGarden).heading(Interpolator.piecewise().until(0.0001, Interpolator.linear(faceGardenSegment1Start, faceGardenSegment1End)).until(0.446, Interpolator.linear(faceGardenSegment2Start, faceGardenSegment2End)).until(1, Interpolator.linear(faceGardenSegment3Start, faceGardenSegment3End)));
+        return curve(shootOne, faceGardenControl1, faceGarden).linear(shootOne, faceGarden);
     }
 
     public Path pickUpGarden() {
-        return line(faceGarden, pickUpGarden).heading(Interpolator.piecewise().until(0.3741, Interpolator.linear(pickUpGardenSegment1Start, pickUpGardenSegment1End)).until(0.8669, Interpolator.linear(pickUpGardenSegment2Start, pickUpGardenSegment2End)).until(1, Interpolator.linear(pickUpGardenSegment3Start, pickUpGardenSegment3End)))
+        return line(faceGarden, pickUpGarden).linear(faceGarden, pickUpGarden)
                 .with(Constants.foresightConfig.maxPathSpeed.at(0.2));
     }
 
